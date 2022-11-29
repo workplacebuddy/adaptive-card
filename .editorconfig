@@ -1,0 +1,11 @@
+root = true
+
+[*]
+indent_style = space
+indent_size = 4
+
+[package.json]
+indent_size = 2
+
+[.prettierrc]
+indent_size = 2
