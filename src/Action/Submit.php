@@ -46,7 +46,7 @@ final class Submit extends Action implements
      *
      * @since 1.0
      */
-    public string|object|null $data = null;
+    public string|object|array|null $data = null;
 
     /**
      * Controls which inputs are associated with the submit action.
@@ -59,7 +59,7 @@ final class Submit extends Action implements
      * Make an instance in a single call
      */
     public static function make(
-        string|object|null $data = null,
+        string|object|array|null $data = null,
         ?AssociatedInputs $associatedInputs = null,
         ?string $title = null,
         ?string $iconUrl = null,

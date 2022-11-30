@@ -455,6 +455,10 @@ class GenerateCommand extends Command
                     fn(mixed $t) => $t !== 'null',
                 );
 
+                if (in_array('object', $types)) {
+                    $types[] = 'array';
+                }
+
                 $phpProperty->setType(implode('|', $types));
             }
 
@@ -501,7 +505,7 @@ class GenerateCommand extends Command
                 } elseif ($property['type'] === 'string') {
                     $phpProperty->setType('string');
                 } elseif ($property['type'] === 'object') {
-                    $phpProperty->setType('object');
+                    $phpProperty->setType('object|array');
                 } elseif ($property['type'] === 'number') {
                     $phpProperty->setType('int');
                 }

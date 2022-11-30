@@ -53,7 +53,7 @@ final class Execute extends Action implements
      *
      * @since 1.0
      */
-    public string|object|null $data = null;
+    public string|object|array|null $data = null;
 
     /**
      * Controls which inputs are associated with the action.
@@ -67,7 +67,7 @@ final class Execute extends Action implements
      */
     public static function make(
         ?string $verb = null,
-        string|object|null $data = null,
+        string|object|array|null $data = null,
         ?AssociatedInputs $associatedInputs = null,
         ?string $title = null,
         ?string $iconUrl = null,

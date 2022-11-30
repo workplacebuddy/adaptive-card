@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace AdaptiveCardTests;
 
+use AdaptiveCard\Action\Execute;
 use AdaptiveCard\Action\OpenUrl;
 use AdaptiveCard\Action\ShowCard;
 use AdaptiveCard\Action\Submit;
@@ -83,6 +84,43 @@ final class AdaptiveCardTest extends TestCase
                     'http://adaptivecards.io/schemas/adaptive-card.json',
                 'version' => '1.0',
                 'verticalContentAlignment' => 'center',
+            ],
+            $card,
+        );
+    }
+
+    /**
+     * @covers AdaptiveCard
+     */
+    public function testExecuteActionCard(): void
+    {
+        $card = AdaptiveCard::make(
+            version: Version::Version14,
+            actions: [
+                Execute::make(
+                    title: 'Go!',
+                    verb: 'lets-go',
+                    data: ['id' => 123],
+                ),
+            ],
+        );
+
+        $this->assertJsonStructure(
+            [
+                'type' => 'AdaptiveCard',
+                '$schema' =>
+                    'http://adaptivecards.io/schemas/adaptive-card.json',
+                'version' => '1.4',
+                'actions' => [
+                    [
+                        'type' => 'Action.Execute',
+                        'title' => 'Go!',
+                        'verb' => 'lets-go',
+                        'data' => [
+                            'id' => 123,
+                        ],
+                    ],
+                ],
             ],
             $card,
         );

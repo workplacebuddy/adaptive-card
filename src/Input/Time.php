@@ -80,7 +80,7 @@ final class Time extends Input implements
         ?bool $separator = null,
         ?\AdaptiveCard\Spacing $spacing = null,
         ?bool $isVisible = null,
-        ?object $requires = null,
+        object|array|null $requires = null,
     ): self {
         $self = new self();
 

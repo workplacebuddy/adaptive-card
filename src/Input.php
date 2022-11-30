@@ -90,7 +90,7 @@ abstract class Input implements JsonSerializable
      *
      * @since 1.2
      */
-    public ?object $requires = null;
+    public object|array|null $requires = null;
 
     /**
      * Specify data which should be serialized to JSON

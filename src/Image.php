@@ -144,7 +144,7 @@ final class Image implements
      *
      * @since 1.2
      */
-    public ?object $requires = null;
+    public object|array|null $requires = null;
 
     /**
      * Make an instance in a single call
@@ -164,7 +164,7 @@ final class Image implements
         ?Spacing $spacing = null,
         ?string $id = null,
         ?bool $isVisible = null,
-        ?object $requires = null,
+        object|array|null $requires = null,
     ): self {
         $self = new self();
 
