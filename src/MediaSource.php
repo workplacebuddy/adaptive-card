@@ -28,14 +28,14 @@ final class MediaSource implements JsonSerializable
     /**
      * Mime type of associated media (e.g. `"video/mp4"`).
      *
-     * @since 1.0
+     * @since 1.1
      */
     public string $mimeType;
 
     /**
      * URL to media. Supports data URI in version 1.2+
      *
-     * @since 1.0
+     * @since 1.1
      */
     public string $url;
 

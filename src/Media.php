@@ -33,21 +33,21 @@ final class Media extends Element implements
      * Array of media sources to attempt to play.
      *
      * @var MediaSource[]
-     * @since 1.0
+     * @since 1.1
      */
     public array $sources;
 
     /**
      * URL of an image to display before playing. Supports data URI in version 1.2+
      *
-     * @since 1.0
+     * @since 1.1
      */
     public ?string $poster = null;
 
     /**
      * Alternate text describing the audio or video.
      *
-     * @since 1.0
+     * @since 1.1
      */
     public ?string $altText = null;
 

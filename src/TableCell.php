@@ -29,7 +29,7 @@ final class TableCell implements JsonSerializable
      * The card elements to render inside the `TableCell`.
      *
      * @var ElementInterface[]
-     * @since 1.0
+     * @since 1.5
      */
     public array $items;
 
@@ -44,7 +44,7 @@ final class TableCell implements JsonSerializable
     /**
      * Style hint for `TableCell`.
      *
-     * @since 1.0
+     * @since 1.5
      */
     public ?ContainerStyle $style = null;
 

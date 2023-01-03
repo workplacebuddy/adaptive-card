@@ -31,7 +31,7 @@ final class Refresh implements JsonSerializable
      * action automatically or can provide an affordance for users to trigger it
      * manually.
      *
-     * @since 1.0
+     * @since 1.4
      */
     public ?Execute $action = null;
 
@@ -42,7 +42,7 @@ final class Refresh implements JsonSerializable
      * property and always run the refresh action automatically.
      *
      * @var string[]|null
-     * @since 1.0
+     * @since 1.4
      */
     public ?array $userIds = null;
 

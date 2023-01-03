@@ -28,14 +28,14 @@ final class BackgroundImage implements JsonSerializable
     /**
      * The URL (or data url) of the image. Acceptable formats are PNG, JPEG, and GIF
      *
-     * @since 1.0
+     * @since 1.2
      */
     public string $url;
 
     /**
      * Describes how the image should fill the area.
      *
-     * @since 1.0
+     * @since 1.2
      */
     public ?ImageFillMode $fillMode = null;
 
@@ -43,7 +43,7 @@ final class BackgroundImage implements JsonSerializable
      * Describes how the image should be aligned if it must be cropped or if using
      * repeat fill mode.
      *
-     * @since 1.0
+     * @since 1.2
      */
     public ?HorizontalAlignment $horizontalAlignment = null;
 
@@ -51,7 +51,7 @@ final class BackgroundImage implements JsonSerializable
      * Describes how the image should be aligned if it must be cropped or if using
      * repeat fill mode.
      *
-     * @since 1.0
+     * @since 1.2
      */
     public ?VerticalAlignment $verticalAlignment = null;
 

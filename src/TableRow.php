@@ -30,14 +30,14 @@ final class TableRow implements JsonSerializable
      * defined on the Table element, the extra cells are ignored.
      *
      * @var TableCell[]|null
-     * @since 1.0
+     * @since 1.5
      */
     public ?array $cells = null;
 
     /**
      * Defines the style of the entire row.
      *
-     * @since 1.0
+     * @since 1.5
      */
     public ?ContainerStyle $style = null;
 
@@ -47,7 +47,7 @@ final class TableRow implements JsonSerializable
      * columns level. When not specified, horizontal alignment is defined at the table,
      * column or cell level.
      *
-     * @since 1.0
+     * @since 1.5
      */
     public ?HorizontalAlignment $horizontalCellContentAlignment = null;
 
@@ -57,7 +57,7 @@ final class TableRow implements JsonSerializable
      * column level. When not specified, vertical alignment is defined either at the
      * table, column or cell level.
      *
-     * @since 1.0
+     * @since 1.5
      */
     public ?VerticalAlignment $verticalCellContentAlignment = null;
 

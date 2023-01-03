@@ -30,14 +30,14 @@ final class Authentication implements JsonSerializable
     /**
      * Text that can be displayed to the end user when prompting them to authenticate.
      *
-     * @since 1.0
+     * @since 1.4
      */
     public ?string $text = null;
 
     /**
      * The identifier for registered OAuth connection setting information.
      *
-     * @since 1.0
+     * @since 1.4
      */
     public ?string $connectionName = null;
 
@@ -45,7 +45,7 @@ final class Authentication implements JsonSerializable
      * Provides information required to enable on-behalf-of single sign-on user
      * authentication.
      *
-     * @since 1.0
+     * @since 1.4
      */
     public ?TokenExchangeResource $tokenExchangeResource = null;
 
@@ -55,7 +55,7 @@ final class Authentication implements JsonSerializable
      * currently supported.
      *
      * @var AuthCardButton[]|null
-     * @since 1.0
+     * @since 1.4
      */
     public ?array $buttons = null;
 

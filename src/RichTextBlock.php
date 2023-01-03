@@ -33,7 +33,7 @@ final class RichTextBlock extends Element implements
      * The array of inlines.
      *
      * @var InlineInterface[]
-     * @since 1.0
+     * @since 1.2
      */
     public array $inlines;
 
@@ -42,7 +42,7 @@ final class RichTextBlock extends Element implements
      * horizontalAlignment is inherited from the parent container. If no parent
      * container has horizontalAlignment set, it defaults to Left.
      *
-     * @since 1.0
+     * @since 1.2
      */
     public ?HorizontalAlignment $horizontalAlignment = null;
 

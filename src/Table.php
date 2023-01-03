@@ -33,7 +33,7 @@ final class Table extends Element implements
      * Defines the number of columns in the table, their sizes, and more.
      *
      * @var TableColumnDefinition[]|null
-     * @since 1.0
+     * @since 1.5
      */
     public ?array $columns = null;
 
@@ -41,7 +41,7 @@ final class Table extends Element implements
      * Defines the rows of the table.
      *
      * @var TableRow[]|null
-     * @since 1.0
+     * @since 1.5
      */
     public ?array $rows = null;
 
@@ -49,14 +49,14 @@ final class Table extends Element implements
      * Specifies whether the first row of the table should be treated as a header row,
      * and be announced as such by accessibility software.
      *
-     * @since 1.0
+     * @since 1.5
      */
     public ?bool $firstRowAsHeader = null;
 
     /**
      * Specifies whether grid lines should be displayed.
      *
-     * @since 1.0
+     * @since 1.5
      */
     public ?bool $showGridLines = null;
 
@@ -64,7 +64,7 @@ final class Table extends Element implements
      * Defines the style of the grid. This property currently only controls the grid's
      * color.
      *
-     * @since 1.0
+     * @since 1.5
      */
     public ?ContainerStyle $gridStyle = null;
 
@@ -72,7 +72,7 @@ final class Table extends Element implements
      * Controls how the content of all cells is horizontally aligned by default. When
      * not specified, horizontal alignment is defined on a per-cell basis.
      *
-     * @since 1.0
+     * @since 1.5
      */
     public ?HorizontalAlignment $horizontalCellContentAlignment = null;
 
@@ -80,7 +80,7 @@ final class Table extends Element implements
      * Controls how the content of all cells is vertically aligned by default. When not
      * specified, vertical alignment is defined on a per-cell basis.
      *
-     * @since 1.0
+     * @since 1.5
      */
     public ?VerticalAlignment $verticalCellContentAlignment = null;
 

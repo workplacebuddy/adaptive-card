@@ -33,7 +33,7 @@ final class ActionSet extends Element implements
      * The array of `Action` elements to show.
      *
      * @var ActionInterface[]
-     * @since 1.0
+     * @since 1.2
      */
     public array $actions;
 

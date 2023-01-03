@@ -42,7 +42,7 @@ final class ToggleVisibility extends Action implements
      * for more information.
      *
      * @var TargetElement[]
-     * @since 1.0
+     * @since 1.2
      */
     public array $targetElements;
 

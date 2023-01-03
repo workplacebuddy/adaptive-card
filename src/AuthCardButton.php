@@ -30,14 +30,14 @@ final class AuthCardButton implements JsonSerializable
     /**
      * The caption of the button.
      *
-     * @since 1.0
+     * @since 1.4
      */
     public ?string $title = null;
 
     /**
      * A URL to an image to display alongside the button's caption.
      *
-     * @since 1.0
+     * @since 1.4
      */
     public ?string $image = null;
 
@@ -45,7 +45,7 @@ final class AuthCardButton implements JsonSerializable
      * The value associated with the button. The meaning of value depends on the
      * button's type.
      *
-     * @since 1.0
+     * @since 1.4
      */
     public string $value;
 

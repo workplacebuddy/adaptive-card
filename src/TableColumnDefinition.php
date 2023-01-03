@@ -31,7 +31,7 @@ final class TableColumnDefinition implements JsonSerializable
      * as a string, width must by in the format "<number>px" (for instance, "50px") and
      * represents an explicit number of pixels.
      *
-     * @since 1.0
+     * @since 1.5
      */
     public string|int|null $width = null;
 
@@ -41,7 +41,7 @@ final class TableColumnDefinition implements JsonSerializable
      * When not specified, horizontal alignment is defined at the table, row or cell
      * level.
      *
-     * @since 1.0
+     * @since 1.5
      */
     public ?HorizontalAlignment $horizontalCellContentAlignment = null;
 
@@ -51,7 +51,7 @@ final class TableColumnDefinition implements JsonSerializable
      * When not specified, vertical alignment is defined at the table, row or cell
      * level.
      *
-     * @since 1.0
+     * @since 1.5
      */
     public ?VerticalAlignment $verticalCellContentAlignment = null;
 

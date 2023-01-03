@@ -31,7 +31,7 @@ final class TokenExchangeResource implements JsonSerializable
     /**
      * The unique identified of this token exchange instance.
      *
-     * @since 1.0
+     * @since 1.4
      */
     public string $id;
 
@@ -39,14 +39,14 @@ final class TokenExchangeResource implements JsonSerializable
      * An application ID or resource identifier with which to exchange a token on
      * behalf of. This property is identity provider- and application-specific.
      *
-     * @since 1.0
+     * @since 1.4
      */
     public string $uri;
 
     /**
      * An identifier for the identity provider with which to attempt a token exchange.
      *
-     * @since 1.0
+     * @since 1.4
      */
     public string $providerId;
 

@@ -516,7 +516,8 @@ class GenerateCommand extends Command
             }
 
             $phpProperty->addComment(
-                '@since ' . ($property['version'] ?? '1.0'),
+                '@since ' .
+                    ($property['version'] ?? ($definition['version'] ?? '1.0')),
             );
 
             if ($propertyName !== '$schema') {

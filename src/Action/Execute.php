@@ -43,7 +43,7 @@ final class Execute extends Action implements
     /**
      * The card author-defined verb associated with this action.
      *
-     * @since 1.0
+     * @since 1.4
      */
     public ?string $verb = null;
 
@@ -51,14 +51,14 @@ final class Execute extends Action implements
      * Initial data that input fields will be combined with. These are essentially
      * ‘hidden’ properties.
      *
-     * @since 1.0
+     * @since 1.4
      */
     public string|object|array|null $data = null;
 
     /**
      * Controls which inputs are associated with the action.
      *
-     * @since 1.0
+     * @since 1.4
      */
     public ?AssociatedInputs $associatedInputs = null;
 
