@@ -77,10 +77,13 @@ final class OpenUrl extends Action implements
     {
         return array_merge(
             parent::jsonSerialize(),
-            array_filter([
-                'type' => self::TYPE,
-                'url' => $this->url,
-            ]),
+            array_filter(
+                [
+                    'type' => self::TYPE,
+                    'url' => $this->url,
+                ],
+                fn(mixed $value): bool => $value !== null,
+            ),
         );
     }
 }

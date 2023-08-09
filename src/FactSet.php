@@ -68,10 +68,13 @@ final class FactSet extends Element implements
     {
         return array_merge(
             parent::jsonSerialize(),
-            array_filter([
-                'type' => self::TYPE,
-                'facts' => $this->facts,
-            ]),
+            array_filter(
+                [
+                    'type' => self::TYPE,
+                    'facts' => $this->facts,
+                ],
+                fn(mixed $value): bool => $value !== null,
+            ),
         );
     }
 }

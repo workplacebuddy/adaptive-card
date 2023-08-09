@@ -37,10 +37,13 @@ abstract class ToggleableItem extends Item implements JsonSerializable
     {
         return array_merge(
             parent::jsonSerialize(),
-            array_filter([
-                'id' => $this->id,
-                'isVisible' => $this->isVisible,
-            ]),
+            array_filter(
+                [
+                    'id' => $this->id,
+                    'isVisible' => $this->isVisible,
+                ],
+                fn(mixed $value): bool => $value !== null,
+            ),
         );
     }
 }

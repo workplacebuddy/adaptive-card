@@ -148,19 +148,22 @@ final class TextBlock extends Element implements
     {
         return array_merge(
             parent::jsonSerialize(),
-            array_filter([
-                'type' => self::TYPE,
-                'text' => $this->text,
-                'color' => $this->color,
-                'fontType' => $this->fontType,
-                'horizontalAlignment' => $this->horizontalAlignment,
-                'isSubtle' => $this->isSubtle,
-                'maxLines' => $this->maxLines,
-                'size' => $this->size,
-                'weight' => $this->weight,
-                'wrap' => $this->wrap,
-                'style' => $this->style,
-            ]),
+            array_filter(
+                [
+                    'type' => self::TYPE,
+                    'text' => $this->text,
+                    'color' => $this->color,
+                    'fontType' => $this->fontType,
+                    'horizontalAlignment' => $this->horizontalAlignment,
+                    'isSubtle' => $this->isSubtle,
+                    'maxLines' => $this->maxLines,
+                    'size' => $this->size,
+                    'weight' => $this->weight,
+                    'wrap' => $this->wrap,
+                    'style' => $this->style,
+                ],
+                fn(mixed $value): bool => $value !== null,
+            ),
         );
     }
 }

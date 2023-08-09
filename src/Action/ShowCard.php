@@ -79,10 +79,13 @@ final class ShowCard extends Action implements
     {
         return array_merge(
             parent::jsonSerialize(),
-            array_filter([
-                'type' => self::TYPE,
-                'card' => $this->card,
-            ]),
+            array_filter(
+                [
+                    'type' => self::TYPE,
+                    'card' => $this->card,
+                ],
+                fn(mixed $value): bool => $value !== null,
+            ),
         );
     }
 }

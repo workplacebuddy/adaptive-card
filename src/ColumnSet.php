@@ -115,15 +115,18 @@ final class ColumnSet extends Element implements
     {
         return array_merge(
             parent::jsonSerialize(),
-            array_filter([
-                'type' => self::TYPE,
-                'columns' => $this->columns,
-                'selectAction' => $this->selectAction,
-                'style' => $this->style,
-                'bleed' => $this->bleed,
-                'minHeight' => $this->minHeight,
-                'horizontalAlignment' => $this->horizontalAlignment,
-            ]),
+            array_filter(
+                [
+                    'type' => self::TYPE,
+                    'columns' => $this->columns,
+                    'selectAction' => $this->selectAction,
+                    'style' => $this->style,
+                    'bleed' => $this->bleed,
+                    'minHeight' => $this->minHeight,
+                    'horizontalAlignment' => $this->horizontalAlignment,
+                ],
+                fn(mixed $value): bool => $value !== null,
+            ),
         );
     }
 }

@@ -693,7 +693,7 @@ class GenerateCommand extends Command
         if ($isExtending) {
             $body .= <<<BODY
 
-            ]));
+            ], fn(mixed \$value): bool => \$value !== null));
             BODY;
         } else {
             $body .= <<<BODY

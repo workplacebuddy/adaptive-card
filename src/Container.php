@@ -137,17 +137,21 @@ final class Container extends Element implements
     {
         return array_merge(
             parent::jsonSerialize(),
-            array_filter([
-                'type' => self::TYPE,
-                'items' => $this->items,
-                'selectAction' => $this->selectAction,
-                'style' => $this->style,
-                'verticalContentAlignment' => $this->verticalContentAlignment,
-                'bleed' => $this->bleed,
-                'backgroundImage' => $this->backgroundImage,
-                'minHeight' => $this->minHeight,
-                'rtl' => $this->rtl,
-            ]),
+            array_filter(
+                [
+                    'type' => self::TYPE,
+                    'items' => $this->items,
+                    'selectAction' => $this->selectAction,
+                    'style' => $this->style,
+                    'verticalContentAlignment' =>
+                        $this->verticalContentAlignment,
+                    'bleed' => $this->bleed,
+                    'backgroundImage' => $this->backgroundImage,
+                    'minHeight' => $this->minHeight,
+                    'rtl' => $this->rtl,
+                ],
+                fn(mixed $value): bool => $value !== null,
+            ),
         );
     }
 }

@@ -78,11 +78,14 @@ final class RichTextBlock extends Element implements
     {
         return array_merge(
             parent::jsonSerialize(),
-            array_filter([
-                'type' => self::TYPE,
-                'inlines' => $this->inlines,
-                'horizontalAlignment' => $this->horizontalAlignment,
-            ]),
+            array_filter(
+                [
+                    'type' => self::TYPE,
+                    'inlines' => $this->inlines,
+                    'horizontalAlignment' => $this->horizontalAlignment,
+                ],
+                fn(mixed $value): bool => $value !== null,
+            ),
         );
     }
 }

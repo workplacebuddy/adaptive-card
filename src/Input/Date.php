@@ -109,13 +109,16 @@ final class Date extends Input implements
     {
         return array_merge(
             parent::jsonSerialize(),
-            array_filter([
-                'type' => self::TYPE,
-                'max' => $this->max,
-                'min' => $this->min,
-                'placeholder' => $this->placeholder,
-                'value' => $this->value,
-            ]),
+            array_filter(
+                [
+                    'type' => self::TYPE,
+                    'max' => $this->max,
+                    'min' => $this->min,
+                    'placeholder' => $this->placeholder,
+                    'value' => $this->value,
+                ],
+                fn(mixed $value): bool => $value !== null,
+            ),
         );
     }
 }

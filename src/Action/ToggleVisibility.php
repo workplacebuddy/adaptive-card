@@ -84,10 +84,13 @@ final class ToggleVisibility extends Action implements
     {
         return array_merge(
             parent::jsonSerialize(),
-            array_filter([
-                'type' => self::TYPE,
-                'targetElements' => $this->targetElements,
-            ]),
+            array_filter(
+                [
+                    'type' => self::TYPE,
+                    'targetElements' => $this->targetElements,
+                ],
+                fn(mixed $value): bool => $value !== null,
+            ),
         );
     }
 }

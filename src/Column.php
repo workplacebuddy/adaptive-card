@@ -171,21 +171,25 @@ final class Column extends ToggleableItem implements
     {
         return array_merge(
             parent::jsonSerialize(),
-            array_filter([
-                'type' => self::TYPE,
-                'items' => $this->items,
-                'backgroundImage' => $this->backgroundImage,
-                'bleed' => $this->bleed,
-                'fallback' => $this->fallback,
-                'minHeight' => $this->minHeight,
-                'rtl' => $this->rtl,
-                'separator' => $this->separator,
-                'spacing' => $this->spacing,
-                'selectAction' => $this->selectAction,
-                'style' => $this->style,
-                'verticalContentAlignment' => $this->verticalContentAlignment,
-                'width' => $this->width,
-            ]),
+            array_filter(
+                [
+                    'type' => self::TYPE,
+                    'items' => $this->items,
+                    'backgroundImage' => $this->backgroundImage,
+                    'bleed' => $this->bleed,
+                    'fallback' => $this->fallback,
+                    'minHeight' => $this->minHeight,
+                    'rtl' => $this->rtl,
+                    'separator' => $this->separator,
+                    'spacing' => $this->spacing,
+                    'selectAction' => $this->selectAction,
+                    'style' => $this->style,
+                    'verticalContentAlignment' =>
+                        $this->verticalContentAlignment,
+                    'width' => $this->width,
+                ],
+                fn(mixed $value): bool => $value !== null,
+            ),
         );
     }
 }

@@ -102,12 +102,15 @@ final class Execute extends Action implements
     {
         return array_merge(
             parent::jsonSerialize(),
-            array_filter([
-                'type' => self::TYPE,
-                'verb' => $this->verb,
-                'data' => $this->data,
-                'associatedInputs' => $this->associatedInputs,
-            ]),
+            array_filter(
+                [
+                    'type' => self::TYPE,
+                    'verb' => $this->verb,
+                    'data' => $this->data,
+                    'associatedInputs' => $this->associatedInputs,
+                ],
+                fn(mixed $value): bool => $value !== null,
+            ),
         );
     }
 }

@@ -85,12 +85,15 @@ final class Media extends Element implements
     {
         return array_merge(
             parent::jsonSerialize(),
-            array_filter([
-                'type' => self::TYPE,
-                'sources' => $this->sources,
-                'poster' => $this->poster,
-                'altText' => $this->altText,
-            ]),
+            array_filter(
+                [
+                    'type' => self::TYPE,
+                    'sources' => $this->sources,
+                    'poster' => $this->poster,
+                    'altText' => $this->altText,
+                ],
+                fn(mixed $value): bool => $value !== null,
+            ),
         );
     }
 }

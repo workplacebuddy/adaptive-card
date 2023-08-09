@@ -140,16 +140,19 @@ final class Text extends Input implements
     {
         return array_merge(
             parent::jsonSerialize(),
-            array_filter([
-                'type' => self::TYPE,
-                'isMultiline' => $this->isMultiline,
-                'maxLength' => $this->maxLength,
-                'placeholder' => $this->placeholder,
-                'regex' => $this->regex,
-                'style' => $this->style,
-                'inlineAction' => $this->inlineAction,
-                'value' => $this->value,
-            ]),
+            array_filter(
+                [
+                    'type' => self::TYPE,
+                    'isMultiline' => $this->isMultiline,
+                    'maxLength' => $this->maxLength,
+                    'placeholder' => $this->placeholder,
+                    'regex' => $this->regex,
+                    'style' => $this->style,
+                    'inlineAction' => $this->inlineAction,
+                    'value' => $this->value,
+                ],
+                fn(mixed $value): bool => $value !== null,
+            ),
         );
     }
 }

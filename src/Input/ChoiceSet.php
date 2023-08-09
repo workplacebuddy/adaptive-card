@@ -129,15 +129,18 @@ final class ChoiceSet extends Input implements
     {
         return array_merge(
             parent::jsonSerialize(),
-            array_filter([
-                'type' => self::TYPE,
-                'choices' => $this->choices,
-                'isMultiSelect' => $this->isMultiSelect,
-                'style' => $this->style,
-                'value' => $this->value,
-                'placeholder' => $this->placeholder,
-                'wrap' => $this->wrap,
-            ]),
+            array_filter(
+                [
+                    'type' => self::TYPE,
+                    'choices' => $this->choices,
+                    'isMultiSelect' => $this->isMultiSelect,
+                    'style' => $this->style,
+                    'value' => $this->value,
+                    'placeholder' => $this->placeholder,
+                    'wrap' => $this->wrap,
+                ],
+                fn(mixed $value): bool => $value !== null,
+            ),
         );
     }
 }

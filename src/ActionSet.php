@@ -67,10 +67,13 @@ final class ActionSet extends Element implements
     {
         return array_merge(
             parent::jsonSerialize(),
-            array_filter([
-                'type' => self::TYPE,
-                'actions' => $this->actions,
-            ]),
+            array_filter(
+                [
+                    'type' => self::TYPE,
+                    'actions' => $this->actions,
+                ],
+                fn(mixed $value): bool => $value !== null,
+            ),
         );
     }
 }

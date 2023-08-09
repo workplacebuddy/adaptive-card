@@ -84,16 +84,19 @@ abstract class Action extends Item implements JsonSerializable
     {
         return array_merge(
             parent::jsonSerialize(),
-            array_filter([
-                'title' => $this->title,
-                'iconUrl' => $this->iconUrl,
-                'id' => $this->id,
-                'style' => $this->style,
-                'fallback' => $this->fallback,
-                'tooltip' => $this->tooltip,
-                'isEnabled' => $this->isEnabled,
-                'mode' => $this->mode,
-            ]),
+            array_filter(
+                [
+                    'title' => $this->title,
+                    'iconUrl' => $this->iconUrl,
+                    'id' => $this->id,
+                    'style' => $this->style,
+                    'fallback' => $this->fallback,
+                    'tooltip' => $this->tooltip,
+                    'isEnabled' => $this->isEnabled,
+                    'mode' => $this->mode,
+                ],
+                fn(mixed $value): bool => $value !== null,
+            ),
         );
     }
 }

@@ -52,12 +52,15 @@ abstract class Element extends ToggleableItem implements JsonSerializable
     {
         return array_merge(
             parent::jsonSerialize(),
-            array_filter([
-                'fallback' => $this->fallback,
-                'height' => $this->height,
-                'separator' => $this->separator,
-                'spacing' => $this->spacing,
-            ]),
+            array_filter(
+                [
+                    'fallback' => $this->fallback,
+                    'height' => $this->height,
+                    'separator' => $this->separator,
+                    'spacing' => $this->spacing,
+                ],
+                fn(mixed $value): bool => $value !== null,
+            ),
         );
     }
 }

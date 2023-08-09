@@ -79,11 +79,14 @@ final class ImageSet extends Element implements
     {
         return array_merge(
             parent::jsonSerialize(),
-            array_filter([
-                'type' => self::TYPE,
-                'images' => $this->images,
-                'imageSize' => $this->imageSize,
-            ]),
+            array_filter(
+                [
+                    'type' => self::TYPE,
+                    'images' => $this->images,
+                    'imageSize' => $this->imageSize,
+                ],
+                fn(mixed $value): bool => $value !== null,
+            ),
         );
     }
 }

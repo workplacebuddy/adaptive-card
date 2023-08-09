@@ -119,14 +119,17 @@ final class Toggle extends Input implements
     {
         return array_merge(
             parent::jsonSerialize(),
-            array_filter([
-                'type' => self::TYPE,
-                'title' => $this->title,
-                'value' => $this->value,
-                'valueOff' => $this->valueOff,
-                'valueOn' => $this->valueOn,
-                'wrap' => $this->wrap,
-            ]),
+            array_filter(
+                [
+                    'type' => self::TYPE,
+                    'title' => $this->title,
+                    'value' => $this->value,
+                    'valueOff' => $this->valueOff,
+                    'valueOn' => $this->valueOn,
+                    'wrap' => $this->wrap,
+                ],
+                fn(mixed $value): bool => $value !== null,
+            ),
         );
     }
 }

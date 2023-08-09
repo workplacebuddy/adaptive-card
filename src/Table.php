@@ -127,18 +127,21 @@ final class Table extends Element implements
     {
         return array_merge(
             parent::jsonSerialize(),
-            array_filter([
-                'type' => self::TYPE,
-                'columns' => $this->columns,
-                'rows' => $this->rows,
-                'firstRowAsHeader' => $this->firstRowAsHeader,
-                'showGridLines' => $this->showGridLines,
-                'gridStyle' => $this->gridStyle,
-                'horizontalCellContentAlignment' =>
-                    $this->horizontalCellContentAlignment,
-                'verticalCellContentAlignment' =>
-                    $this->verticalCellContentAlignment,
-            ]),
+            array_filter(
+                [
+                    'type' => self::TYPE,
+                    'columns' => $this->columns,
+                    'rows' => $this->rows,
+                    'firstRowAsHeader' => $this->firstRowAsHeader,
+                    'showGridLines' => $this->showGridLines,
+                    'gridStyle' => $this->gridStyle,
+                    'horizontalCellContentAlignment' =>
+                        $this->horizontalCellContentAlignment,
+                    'verticalCellContentAlignment' =>
+                        $this->verticalCellContentAlignment,
+                ],
+                fn(mixed $value): bool => $value !== null,
+            ),
         );
     }
 }
