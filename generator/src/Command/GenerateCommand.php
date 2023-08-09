@@ -752,7 +752,18 @@ class GenerateCommand extends Command
             $className = str_replace('.', '\\', $replaced);
 
             $resolvedClassName = $phpBaseNamespace->resolveName($className);
-            $phpNamespace->addUse($resolvedClassName);
+
+            $hasClass = false;
+            foreach ($phpNamespace->getClasses() as $classLike) {
+                if ($classLike->getName() === $className) {
+                    $hasClass = true;
+                    break;
+                }
+            }
+
+            if (!$hasClass) {
+                $phpNamespace->addUse($resolvedClassName);
+            }
 
             if ($resolve) {
                 return $resolvedClassName;
