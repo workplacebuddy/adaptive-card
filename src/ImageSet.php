@@ -85,6 +85,7 @@ final class ImageSet extends Element implements
                     'images' => $this->images,
                     'imageSize' => $this->imageSize,
                 ],
+                /** @psalm-suppress RedundantConditionGivenDocblockType */
                 fn(mixed $value): bool => $value !== null,
             ),
         );

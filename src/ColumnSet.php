@@ -125,6 +125,7 @@ final class ColumnSet extends Element implements
                     'minHeight' => $this->minHeight,
                     'horizontalAlignment' => $this->horizontalAlignment,
                 ],
+                /** @psalm-suppress RedundantConditionGivenDocblockType */
                 fn(mixed $value): bool => $value !== null,
             ),
         );

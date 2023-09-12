@@ -42,6 +42,7 @@ abstract class ToggleableItem extends Item implements JsonSerializable
                     'id' => $this->id,
                     'isVisible' => $this->isVisible,
                 ],
+                /** @psalm-suppress RedundantConditionGivenDocblockType */
                 fn(mixed $value): bool => $value !== null,
             ),
         );

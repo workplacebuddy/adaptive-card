@@ -188,6 +188,7 @@ final class Column extends ToggleableItem implements
                         $this->verticalContentAlignment,
                     'width' => $this->width,
                 ],
+                /** @psalm-suppress RedundantConditionGivenDocblockType */
                 fn(mixed $value): bool => $value !== null,
             ),
         );

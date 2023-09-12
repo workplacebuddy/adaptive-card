@@ -140,6 +140,7 @@ final class Table extends Element implements
                     'verticalCellContentAlignment' =>
                         $this->verticalCellContentAlignment,
                 ],
+                /** @psalm-suppress RedundantConditionGivenDocblockType */
                 fn(mixed $value): bool => $value !== null,
             ),
         );

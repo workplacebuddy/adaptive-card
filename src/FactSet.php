@@ -73,6 +73,7 @@ final class FactSet extends Element implements
                     'type' => self::TYPE,
                     'facts' => $this->facts,
                 ],
+                /** @psalm-suppress RedundantConditionGivenDocblockType */
                 fn(mixed $value): bool => $value !== null,
             ),
         );

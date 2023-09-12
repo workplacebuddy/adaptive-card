@@ -84,6 +84,7 @@ final class ShowCard extends Action implements
                     'type' => self::TYPE,
                     'card' => $this->card,
                 ],
+                /** @psalm-suppress RedundantConditionGivenDocblockType */
                 fn(mixed $value): bool => $value !== null,
             ),
         );

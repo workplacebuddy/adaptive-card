@@ -59,6 +59,7 @@ abstract class Element extends ToggleableItem implements JsonSerializable
                     'separator' => $this->separator,
                     'spacing' => $this->spacing,
                 ],
+                /** @psalm-suppress RedundantConditionGivenDocblockType */
                 fn(mixed $value): bool => $value !== null,
             ),
         );

@@ -162,6 +162,7 @@ final class TextBlock extends Element implements
                     'wrap' => $this->wrap,
                     'style' => $this->style,
                 ],
+                /** @psalm-suppress RedundantConditionGivenDocblockType */
                 fn(mixed $value): bool => $value !== null,
             ),
         );

@@ -117,6 +117,7 @@ final class Number extends Input implements
                     'placeholder' => $this->placeholder,
                     'value' => $this->value,
                 ],
+                /** @psalm-suppress RedundantConditionGivenDocblockType */
                 fn(mixed $value): bool => $value !== null,
             ),
         );

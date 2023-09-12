@@ -128,6 +128,7 @@ final class Toggle extends Input implements
                     'valueOn' => $this->valueOn,
                     'wrap' => $this->wrap,
                 ],
+                /** @psalm-suppress RedundantConditionGivenDocblockType */
                 fn(mixed $value): bool => $value !== null,
             ),
         );

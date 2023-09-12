@@ -693,7 +693,9 @@ class GenerateCommand extends Command
         if ($isExtending) {
             $body .= <<<BODY
 
-            ], fn(mixed \$value): bool => \$value !== null));
+            ],
+            /** @psalm-suppress RedundantConditionGivenDocblockType */
+            fn(mixed \$value): bool => \$value !== null));
             BODY;
         } else {
             $body .= <<<BODY

@@ -95,6 +95,7 @@ abstract class Action extends Item implements JsonSerializable
                     'isEnabled' => $this->isEnabled,
                     'mode' => $this->mode,
                 ],
+                /** @psalm-suppress RedundantConditionGivenDocblockType */
                 fn(mixed $value): bool => $value !== null,
             ),
         );

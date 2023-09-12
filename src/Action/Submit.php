@@ -99,6 +99,7 @@ final class Submit extends Action implements
                     'data' => $this->data,
                     'associatedInputs' => $this->associatedInputs,
                 ],
+                /** @psalm-suppress RedundantConditionGivenDocblockType */
                 fn(mixed $value): bool => $value !== null,
             ),
         );

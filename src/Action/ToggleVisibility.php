@@ -89,6 +89,7 @@ final class ToggleVisibility extends Action implements
                     'type' => self::TYPE,
                     'targetElements' => $this->targetElements,
                 ],
+                /** @psalm-suppress RedundantConditionGivenDocblockType */
                 fn(mixed $value): bool => $value !== null,
             ),
         );

@@ -139,6 +139,7 @@ final class ChoiceSet extends Input implements
                     'placeholder' => $this->placeholder,
                     'wrap' => $this->wrap,
                 ],
+                /** @psalm-suppress RedundantConditionGivenDocblockType */
                 fn(mixed $value): bool => $value !== null,
             ),
         );

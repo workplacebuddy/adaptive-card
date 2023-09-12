@@ -82,6 +82,7 @@ final class OpenUrl extends Action implements
                     'type' => self::TYPE,
                     'url' => $this->url,
                 ],
+                /** @psalm-suppress RedundantConditionGivenDocblockType */
                 fn(mixed $value): bool => $value !== null,
             ),
         );

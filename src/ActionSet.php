@@ -72,6 +72,7 @@ final class ActionSet extends Element implements
                     'type' => self::TYPE,
                     'actions' => $this->actions,
                 ],
+                /** @psalm-suppress RedundantConditionGivenDocblockType */
                 fn(mixed $value): bool => $value !== null,
             ),
         );

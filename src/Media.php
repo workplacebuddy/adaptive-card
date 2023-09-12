@@ -92,6 +92,7 @@ final class Media extends Element implements
                     'poster' => $this->poster,
                     'altText' => $this->altText,
                 ],
+                /** @psalm-suppress RedundantConditionGivenDocblockType */
                 fn(mixed $value): bool => $value !== null,
             ),
         );

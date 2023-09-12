@@ -150,6 +150,7 @@ final class Container extends Element implements
                     'minHeight' => $this->minHeight,
                     'rtl' => $this->rtl,
                 ],
+                /** @psalm-suppress RedundantConditionGivenDocblockType */
                 fn(mixed $value): bool => $value !== null,
             ),
         );

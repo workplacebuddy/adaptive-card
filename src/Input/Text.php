@@ -151,6 +151,7 @@ final class Text extends Input implements
                     'inlineAction' => $this->inlineAction,
                     'value' => $this->value,
                 ],
+                /** @psalm-suppress RedundantConditionGivenDocblockType */
                 fn(mixed $value): bool => $value !== null,
             ),
         );

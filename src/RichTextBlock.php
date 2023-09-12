@@ -84,6 +84,7 @@ final class RichTextBlock extends Element implements
                     'inlines' => $this->inlines,
                     'horizontalAlignment' => $this->horizontalAlignment,
                 ],
+                /** @psalm-suppress RedundantConditionGivenDocblockType */
                 fn(mixed $value): bool => $value !== null,
             ),
         );
