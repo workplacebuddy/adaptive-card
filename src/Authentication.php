@@ -85,12 +85,16 @@ final class Authentication implements JsonSerializable
      */
     public function jsonSerialize(): array
     {
-        return array_filter([
-            'type' => self::TYPE,
-            'text' => $this->text,
-            'connectionName' => $this->connectionName,
-            'tokenExchangeResource' => $this->tokenExchangeResource,
-            'buttons' => $this->buttons,
-        ]);
+        return array_filter(
+            [
+                'type' => self::TYPE,
+                'text' => $this->text,
+                'connectionName' => $this->connectionName,
+                'tokenExchangeResource' => $this->tokenExchangeResource,
+                'buttons' => $this->buttons,
+            ],
+            /** @psalm-suppress RedundantConditionGivenDocblockType */
+            fn(mixed $value): bool => $value !== null,
+        );
     }
 }

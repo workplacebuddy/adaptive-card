@@ -79,12 +79,16 @@ final class BackgroundImage implements JsonSerializable
      */
     public function jsonSerialize(): array
     {
-        return array_filter([
-            'type' => self::TYPE,
-            'url' => $this->url,
-            'fillMode' => $this->fillMode,
-            'horizontalAlignment' => $this->horizontalAlignment,
-            'verticalAlignment' => $this->verticalAlignment,
-        ]);
+        return array_filter(
+            [
+                'type' => self::TYPE,
+                'url' => $this->url,
+                'fillMode' => $this->fillMode,
+                'horizontalAlignment' => $this->horizontalAlignment,
+                'verticalAlignment' => $this->verticalAlignment,
+            ],
+            /** @psalm-suppress RedundantConditionGivenDocblockType */
+            fn(mixed $value): bool => $value !== null,
+        );
     }
 }

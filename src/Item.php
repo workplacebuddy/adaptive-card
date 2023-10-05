@@ -30,8 +30,12 @@ abstract class Item implements JsonSerializable
      */
     public function jsonSerialize(): array
     {
-        return array_filter([
-            'requires' => $this->requires,
-        ]);
+        return array_filter(
+            [
+                'requires' => $this->requires,
+            ],
+            /** @psalm-suppress RedundantConditionGivenDocblockType */
+            fn(mixed $value): bool => $value !== null,
+        );
     }
 }

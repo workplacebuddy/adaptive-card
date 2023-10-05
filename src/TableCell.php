@@ -123,16 +123,20 @@ final class TableCell implements JsonSerializable
      */
     public function jsonSerialize(): array
     {
-        return array_filter([
-            'type' => self::TYPE,
-            'items' => $this->items,
-            'selectAction' => $this->selectAction,
-            'style' => $this->style,
-            'verticalContentAlignment' => $this->verticalContentAlignment,
-            'bleed' => $this->bleed,
-            'backgroundImage' => $this->backgroundImage,
-            'minHeight' => $this->minHeight,
-            'rtl' => $this->rtl,
-        ]);
+        return array_filter(
+            [
+                'type' => self::TYPE,
+                'items' => $this->items,
+                'selectAction' => $this->selectAction,
+                'style' => $this->style,
+                'verticalContentAlignment' => $this->verticalContentAlignment,
+                'bleed' => $this->bleed,
+                'backgroundImage' => $this->backgroundImage,
+                'minHeight' => $this->minHeight,
+                'rtl' => $this->rtl,
+            ],
+            /** @psalm-suppress RedundantConditionGivenDocblockType */
+            fn(mixed $value): bool => $value !== null,
+        );
     }
 }

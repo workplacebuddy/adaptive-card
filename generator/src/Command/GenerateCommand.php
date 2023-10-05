@@ -690,19 +690,18 @@ class GenerateCommand extends Command
             BODY;
         }
 
+        $body .= <<<BODY
+
+        ],
+        /** @psalm-suppress RedundantConditionGivenDocblockType */
+        fn(mixed \$value): bool => \$value !== null)
+        BODY;
+
         if ($isExtending) {
-            $body .= <<<BODY
-
-            ],
-            /** @psalm-suppress RedundantConditionGivenDocblockType */
-            fn(mixed \$value): bool => \$value !== null));
-            BODY;
-        } else {
-            $body .= <<<BODY
-
-            ]);
-            BODY;
+            $body .= ')';
         }
+
+        $body .= ';';
 
         $phpMethod->setBody($body);
     }

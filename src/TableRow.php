@@ -87,14 +87,18 @@ final class TableRow implements JsonSerializable
      */
     public function jsonSerialize(): array
     {
-        return array_filter([
-            'type' => self::TYPE,
-            'cells' => $this->cells,
-            'style' => $this->style,
-            'horizontalCellContentAlignment' =>
-                $this->horizontalCellContentAlignment,
-            'verticalCellContentAlignment' =>
-                $this->verticalCellContentAlignment,
-        ]);
+        return array_filter(
+            [
+                'type' => self::TYPE,
+                'cells' => $this->cells,
+                'style' => $this->style,
+                'horizontalCellContentAlignment' =>
+                    $this->horizontalCellContentAlignment,
+                'verticalCellContentAlignment' =>
+                    $this->verticalCellContentAlignment,
+            ],
+            /** @psalm-suppress RedundantConditionGivenDocblockType */
+            fn(mixed $value): bool => $value !== null,
+        );
     }
 }

@@ -57,10 +57,14 @@ final class MediaSource implements JsonSerializable
      */
     public function jsonSerialize(): array
     {
-        return array_filter([
-            'type' => self::TYPE,
-            'mimeType' => $this->mimeType,
-            'url' => $this->url,
-        ]);
+        return array_filter(
+            [
+                'type' => self::TYPE,
+                'mimeType' => $this->mimeType,
+                'url' => $this->url,
+            ],
+            /** @psalm-suppress RedundantConditionGivenDocblockType */
+            fn(mixed $value): bool => $value !== null,
+        );
     }
 }

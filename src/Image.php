@@ -192,23 +192,27 @@ final class Image implements
      */
     public function jsonSerialize(): array
     {
-        return array_filter([
-            'type' => self::TYPE,
-            'url' => $this->url,
-            'altText' => $this->altText,
-            'backgroundColor' => $this->backgroundColor,
-            'height' => $this->height,
-            'horizontalAlignment' => $this->horizontalAlignment,
-            'selectAction' => $this->selectAction,
-            'size' => $this->size,
-            'style' => $this->style,
-            'width' => $this->width,
-            'fallback' => $this->fallback,
-            'separator' => $this->separator,
-            'spacing' => $this->spacing,
-            'id' => $this->id,
-            'isVisible' => $this->isVisible,
-            'requires' => $this->requires,
-        ]);
+        return array_filter(
+            [
+                'type' => self::TYPE,
+                'url' => $this->url,
+                'altText' => $this->altText,
+                'backgroundColor' => $this->backgroundColor,
+                'height' => $this->height,
+                'horizontalAlignment' => $this->horizontalAlignment,
+                'selectAction' => $this->selectAction,
+                'size' => $this->size,
+                'style' => $this->style,
+                'width' => $this->width,
+                'fallback' => $this->fallback,
+                'separator' => $this->separator,
+                'spacing' => $this->spacing,
+                'id' => $this->id,
+                'isVisible' => $this->isVisible,
+                'requires' => $this->requires,
+            ],
+            /** @psalm-suppress RedundantConditionGivenDocblockType */
+            fn(mixed $value): bool => $value !== null,
+        );
     }
 }

@@ -72,11 +72,15 @@ final class TokenExchangeResource implements JsonSerializable
      */
     public function jsonSerialize(): array
     {
-        return array_filter([
-            'type' => self::TYPE,
-            'id' => $this->id,
-            'uri' => $this->uri,
-            'providerId' => $this->providerId,
-        ]);
+        return array_filter(
+            [
+                'type' => self::TYPE,
+                'id' => $this->id,
+                'uri' => $this->uri,
+                'providerId' => $this->providerId,
+            ],
+            /** @psalm-suppress RedundantConditionGivenDocblockType */
+            fn(mixed $value): bool => $value !== null,
+        );
     }
 }

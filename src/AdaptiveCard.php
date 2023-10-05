@@ -180,22 +180,26 @@ final class AdaptiveCard implements JsonSerializable
      */
     public function jsonSerialize(): array
     {
-        return array_filter([
-            'type' => self::TYPE,
-            '$schema' => self::SCHEMA,
-            'version' => $this->version,
-            'refresh' => $this->refresh,
-            'authentication' => $this->authentication,
-            'body' => $this->body,
-            'actions' => $this->actions,
-            'selectAction' => $this->selectAction,
-            'fallbackText' => $this->fallbackText,
-            'backgroundImage' => $this->backgroundImage,
-            'minHeight' => $this->minHeight,
-            'rtl' => $this->rtl,
-            'speak' => $this->speak,
-            'lang' => $this->lang,
-            'verticalContentAlignment' => $this->verticalContentAlignment,
-        ]);
+        return array_filter(
+            [
+                'type' => self::TYPE,
+                '$schema' => self::SCHEMA,
+                'version' => $this->version,
+                'refresh' => $this->refresh,
+                'authentication' => $this->authentication,
+                'body' => $this->body,
+                'actions' => $this->actions,
+                'selectAction' => $this->selectAction,
+                'fallbackText' => $this->fallbackText,
+                'backgroundImage' => $this->backgroundImage,
+                'minHeight' => $this->minHeight,
+                'rtl' => $this->rtl,
+                'speak' => $this->speak,
+                'lang' => $this->lang,
+                'verticalContentAlignment' => $this->verticalContentAlignment,
+            ],
+            /** @psalm-suppress RedundantConditionGivenDocblockType */
+            fn(mixed $value): bool => $value !== null,
+        );
     }
 }

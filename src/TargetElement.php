@@ -60,10 +60,14 @@ final class TargetElement implements JsonSerializable
      */
     public function jsonSerialize(): array
     {
-        return array_filter([
-            'type' => self::TYPE,
-            'elementId' => $this->elementId,
-            'isVisible' => $this->isVisible,
-        ]);
+        return array_filter(
+            [
+                'type' => self::TYPE,
+                'elementId' => $this->elementId,
+                'isVisible' => $this->isVisible,
+            ],
+            /** @psalm-suppress RedundantConditionGivenDocblockType */
+            fn(mixed $value): bool => $value !== null,
+        );
     }
 }

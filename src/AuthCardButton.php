@@ -71,11 +71,15 @@ final class AuthCardButton implements JsonSerializable
      */
     public function jsonSerialize(): array
     {
-        return array_filter([
-            'type' => self::TYPE,
-            'title' => $this->title,
-            'image' => $this->image,
-            'value' => $this->value,
-        ]);
+        return array_filter(
+            [
+                'type' => self::TYPE,
+                'title' => $this->title,
+                'image' => $this->image,
+                'value' => $this->value,
+            ],
+            /** @psalm-suppress RedundantConditionGivenDocblockType */
+            fn(mixed $value): bool => $value !== null,
+        );
     }
 }

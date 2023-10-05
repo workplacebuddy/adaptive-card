@@ -97,17 +97,21 @@ abstract class Input implements JsonSerializable
      */
     public function jsonSerialize(): array
     {
-        return array_filter([
-            'id' => $this->id,
-            'errorMessage' => $this->errorMessage,
-            'isRequired' => $this->isRequired,
-            'label' => $this->label,
-            'fallback' => $this->fallback,
-            'height' => $this->height,
-            'separator' => $this->separator,
-            'spacing' => $this->spacing,
-            'isVisible' => $this->isVisible,
-            'requires' => $this->requires,
-        ]);
+        return array_filter(
+            [
+                'id' => $this->id,
+                'errorMessage' => $this->errorMessage,
+                'isRequired' => $this->isRequired,
+                'label' => $this->label,
+                'fallback' => $this->fallback,
+                'height' => $this->height,
+                'separator' => $this->separator,
+                'spacing' => $this->spacing,
+                'isVisible' => $this->isVisible,
+                'requires' => $this->requires,
+            ],
+            /** @psalm-suppress RedundantConditionGivenDocblockType */
+            fn(mixed $value): bool => $value !== null,
+        );
     }
 }

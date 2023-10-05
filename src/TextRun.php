@@ -143,19 +143,23 @@ final class TextRun implements JsonSerializable, InlineInterface
      */
     public function jsonSerialize(): array
     {
-        return array_filter([
-            'type' => self::TYPE,
-            'text' => $this->text,
-            'color' => $this->color,
-            'fontType' => $this->fontType,
-            'highlight' => $this->highlight,
-            'isSubtle' => $this->isSubtle,
-            'italic' => $this->italic,
-            'selectAction' => $this->selectAction,
-            'size' => $this->size,
-            'strikethrough' => $this->strikethrough,
-            'underline' => $this->underline,
-            'weight' => $this->weight,
-        ]);
+        return array_filter(
+            [
+                'type' => self::TYPE,
+                'text' => $this->text,
+                'color' => $this->color,
+                'fontType' => $this->fontType,
+                'highlight' => $this->highlight,
+                'isSubtle' => $this->isSubtle,
+                'italic' => $this->italic,
+                'selectAction' => $this->selectAction,
+                'size' => $this->size,
+                'strikethrough' => $this->strikethrough,
+                'underline' => $this->underline,
+                'weight' => $this->weight,
+            ],
+            /** @psalm-suppress RedundantConditionGivenDocblockType */
+            fn(mixed $value): bool => $value !== null,
+        );
     }
 }

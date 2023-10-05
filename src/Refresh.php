@@ -68,10 +68,14 @@ final class Refresh implements JsonSerializable
      */
     public function jsonSerialize(): array
     {
-        return array_filter([
-            'type' => self::TYPE,
-            'action' => $this->action,
-            'userIds' => $this->userIds,
-        ]);
+        return array_filter(
+            [
+                'type' => self::TYPE,
+                'action' => $this->action,
+                'userIds' => $this->userIds,
+            ],
+            /** @psalm-suppress RedundantConditionGivenDocblockType */
+            fn(mixed $value): bool => $value !== null,
+        );
     }
 }
