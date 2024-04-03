@@ -35,11 +35,11 @@
         "nette/php-generator": "^4.0",
         "phpunit/phpunit": "^9.5",
         "psalm/plugin-phpunit": "^0.18.3",
-        "symfony/console": "^6.1",
-        "symfony/error-handler": "^6.1",
-        "symfony/filesystem": "^6.1",
-        "symfony/string": "^6.1",
-        "symfony/var-dumper": "^6.1",
+        "symfony/console": "^6.4",
+        "symfony/error-handler": "^6.4",
+        "symfony/filesystem": "^6.4",
+        "symfony/string": "^6.4",
+        "symfony/var-dumper": "^6.4",
         "vimeo/psalm": "^4.30"
     },
     "config": {
