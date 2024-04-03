@@ -57,6 +57,8 @@ final class Submit extends Action implements
 
     /**
      * Make an instance in a single call
+     *
+     * @psalm-api
      */
     public static function make(
         string|object|array|null $data = null,

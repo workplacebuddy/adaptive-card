@@ -126,6 +126,7 @@ final class Column extends ToggleableItem implements
     /**
      * Make an instance in a single call
      *
+     * @psalm-api
      * @param ElementInterface[]|null $items
      */
     public static function make(

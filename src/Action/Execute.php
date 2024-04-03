@@ -64,6 +64,8 @@ final class Execute extends Action implements
 
     /**
      * Make an instance in a single call
+     *
+     * @psalm-api
      */
     public static function make(
         ?string $verb = null,

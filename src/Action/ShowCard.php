@@ -45,6 +45,8 @@ final class ShowCard extends Action implements
 
     /**
      * Make an instance in a single call
+     *
+     * @psalm-api
      */
     public static function make(
         ?AdaptiveCard $card = null,

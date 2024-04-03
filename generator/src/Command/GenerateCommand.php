@@ -44,8 +44,12 @@ use Symfony\Component\String\UnicodeString;
  * @psalm-type TDefinition = array{
  *     description?: ?string,
  *     version?: string,
+ *     type?: string,
+ *     enum?: string[],
  *     properties?: array<string, TProperty>,
  *     anyOf?: array<array{
+ *         type?: string,
+ *         description?: string,
  *         allOf?: array<array{
  *             $ref: string,
  *         }>,
@@ -229,7 +233,7 @@ class GenerateCommand extends Command
      * @param string $definitionName
      * @param array $definition
      * @psalm-param TDefinition $definition
-     * @param array<string, array<array{string, PhpFile}>> $implementations
+     * @param array<string, array<array{string, PhpFile, ...}>> $implementations
      * @psalm-param array<string, array<array{fullType: string, property: Property}>> $parentProperties
      * @return array{string, PhpFile, array<array{fullType: string, property: Property}>}
      */
@@ -575,6 +579,7 @@ class GenerateCommand extends Command
         $phpMethod->setStatic();
         $phpMethod->addComment('Make an instance in a single call');
         $phpMethod->addComment('');
+        $phpMethod->addComment('@psalm-api');
         $phpMethod->setReturnType('self');
 
         $sorted = $properties;
@@ -708,7 +713,7 @@ class GenerateCommand extends Command
 
     /**
      * @param ClassType|Constant|Property|EnumType $node
-     * @param array{description?: ?string} $item
+     * @param array{description?: ?string, ...} $item
      */
     private function addDescription(
         ClassType|Constant|Property|EnumType $node,
@@ -730,7 +735,7 @@ class GenerateCommand extends Command
     /**
      * Black magic method to generate a valid type
      *
-     * @param array{$ref?: string, type?: string} $info
+     * @param array{$ref?: string, type?: string, ...} $info
      */
     private function resolveType(
         PhpNamespace $phpNamespace,

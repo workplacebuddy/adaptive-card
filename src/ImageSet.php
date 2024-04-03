@@ -50,6 +50,7 @@ final class ImageSet extends Element implements
     /**
      * Make an instance in a single call
      *
+     * @psalm-api
      * @param Image[] $images
      */
     public static function make(

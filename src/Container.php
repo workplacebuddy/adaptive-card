@@ -96,6 +96,7 @@ final class Container extends Element implements
     /**
      * Make an instance in a single call
      *
+     * @psalm-api
      * @param ElementInterface[] $items
      */
     public static function make(

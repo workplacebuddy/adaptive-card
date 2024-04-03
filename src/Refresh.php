@@ -49,6 +49,7 @@ final class Refresh implements JsonSerializable
     /**
      * Make an instance in a single call
      *
+     * @psalm-api
      * @param string[]|null $userIds
      */
     public static function make(

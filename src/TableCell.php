@@ -92,6 +92,7 @@ final class TableCell implements JsonSerializable
     /**
      * Make an instance in a single call
      *
+     * @psalm-api
      * @param ElementInterface[] $items
      */
     public static function make(

@@ -87,6 +87,7 @@ final class Table extends Element implements
     /**
      * Make an instance in a single call
      *
+     * @psalm-api
      * @param TableColumnDefinition[]|null $columns
      * @param TableRow[]|null $rows
      */

@@ -54,6 +54,7 @@ final class Media extends Element implements
     /**
      * Make an instance in a single call
      *
+     * @psalm-api
      * @param MediaSource[] $sources
      */
     public static function make(

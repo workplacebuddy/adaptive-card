@@ -57,6 +57,8 @@ final class BackgroundImage implements JsonSerializable
 
     /**
      * Make an instance in a single call
+     *
+     * @psalm-api
      */
     public static function make(
         string $url,

@@ -65,6 +65,8 @@ final class Date extends Input implements
 
     /**
      * Make an instance in a single call
+     *
+     * @psalm-api
      */
     public static function make(
         string $id,

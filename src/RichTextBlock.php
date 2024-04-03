@@ -49,6 +49,7 @@ final class RichTextBlock extends Element implements
     /**
      * Make an instance in a single call
      *
+     * @psalm-api
      * @param InlineInterface[] $inlines
      */
     public static function make(

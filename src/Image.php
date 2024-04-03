@@ -148,6 +148,8 @@ final class Image implements
 
     /**
      * Make an instance in a single call
+     *
+     * @psalm-api
      */
     public static function make(
         string $url,

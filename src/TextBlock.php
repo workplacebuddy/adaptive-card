@@ -104,6 +104,8 @@ final class TextBlock extends Element implements
 
     /**
      * Make an instance in a single call
+     *
+     * @psalm-api
      */
     public static function make(
         string $text,

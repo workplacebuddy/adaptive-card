@@ -62,6 +62,7 @@ final class Authentication implements JsonSerializable
     /**
      * Make an instance in a single call
      *
+     * @psalm-api
      * @param AuthCardButton[]|null $buttons
      */
     public static function make(

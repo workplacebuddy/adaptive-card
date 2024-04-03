@@ -80,6 +80,7 @@ final class ChoiceSet extends Input implements
     /**
      * Make an instance in a single call
      *
+     * @psalm-api
      * @param Input\Choice[]|null $choices
      */
     public static function make(

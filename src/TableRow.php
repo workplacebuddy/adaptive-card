@@ -64,6 +64,7 @@ final class TableRow implements JsonSerializable
     /**
      * Make an instance in a single call
      *
+     * @psalm-api
      * @param TableCell[]|null $cells
      */
     public static function make(

@@ -49,6 +49,7 @@ final class ToggleVisibility extends Action implements
     /**
      * Make an instance in a single call
      *
+     * @psalm-api
      * @param TargetElement[] $targetElements
      */
     public static function make(

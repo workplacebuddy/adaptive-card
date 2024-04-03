@@ -78,6 +78,7 @@ final class ColumnSet extends Element implements
     /**
      * Make an instance in a single call
      *
+     * @psalm-api
      * @param Column[]|null $columns
      */
     public static function make(

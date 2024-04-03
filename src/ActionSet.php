@@ -40,6 +40,7 @@ final class ActionSet extends Element implements
     /**
      * Make an instance in a single call
      *
+     * @psalm-api
      * @param ActionInterface[] $actions
      */
     public static function make(

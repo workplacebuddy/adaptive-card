@@ -138,6 +138,7 @@ final class AdaptiveCard implements JsonSerializable
     /**
      * Make an instance in a single call
      *
+     * @psalm-api
      * @param ElementInterface[]|null $body
      * @param ActionInterface[]|null $actions
      */

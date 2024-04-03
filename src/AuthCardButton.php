@@ -51,6 +51,8 @@ final class AuthCardButton implements JsonSerializable
 
     /**
      * Make an instance in a single call
+     *
+     * @psalm-api
      */
     public static function make(
         string $value,

@@ -41,6 +41,7 @@ final class FactSet extends Element implements
     /**
      * Make an instance in a single call
      *
+     * @psalm-api
      * @param Fact[] $facts
      */
     public static function make(
