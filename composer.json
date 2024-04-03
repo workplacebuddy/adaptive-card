@@ -32,7 +32,7 @@
     },
     "require-dev": {
         "friendsofphp/php-cs-fixer": "^3.26",
-        "nette/php-generator": "^4.0",
+        "nette/php-generator": "^4.1",
         "phpunit/phpunit": "^9.5",
         "psalm/plugin-phpunit": "^0.18.3",
         "symfony/console": "^6.4",
