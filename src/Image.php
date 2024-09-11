@@ -14,7 +14,6 @@ use JsonSerializable;
  * Displays an image. Acceptable formats are PNG, JPEG, and GIF
  *
  * @since 1.0
- * @psalm-suppress MissingConstructor
  */
 final class Image implements
     JsonSerializable,
@@ -147,7 +146,44 @@ final class Image implements
     public object|array|null $requires = null;
 
     /**
-     * Make an instance in a single call
+     * Create a "Image" instance in a single call
+     */
+    public function __construct(
+        string $url,
+        ?string $altText = null,
+        ?string $backgroundColor = null,
+        string|BlockElementHeight|null $height = null,
+        ?HorizontalAlignment $horizontalAlignment = null,
+        ?ISelectActionInterface $selectAction = null,
+        ?ImageSize $size = null,
+        ?ImageStyle $style = null,
+        ?string $width = null,
+        ElementInterface|FallbackOption|null $fallback = null,
+        ?bool $separator = null,
+        ?Spacing $spacing = null,
+        ?string $id = null,
+        ?bool $isVisible = null,
+        object|array|null $requires = null,
+    ) {
+        $this->url = $url;
+        $this->altText = $altText;
+        $this->backgroundColor = $backgroundColor;
+        $this->height = $height;
+        $this->horizontalAlignment = $horizontalAlignment;
+        $this->selectAction = $selectAction;
+        $this->size = $size;
+        $this->style = $style;
+        $this->width = $width;
+        $this->fallback = $fallback;
+        $this->separator = $separator;
+        $this->spacing = $spacing;
+        $this->id = $id;
+        $this->isVisible = $isVisible;
+        $this->requires = $requires;
+    }
+
+    /**
+     * Make a "Image" instance in a single call
      *
      * @psalm-api
      */
@@ -168,25 +204,23 @@ final class Image implements
         ?bool $isVisible = null,
         object|array|null $requires = null,
     ): self {
-        $self = new self();
-
-        $self->url = $url;
-        $self->altText = $altText;
-        $self->backgroundColor = $backgroundColor;
-        $self->height = $height;
-        $self->horizontalAlignment = $horizontalAlignment;
-        $self->selectAction = $selectAction;
-        $self->size = $size;
-        $self->style = $style;
-        $self->width = $width;
-        $self->fallback = $fallback;
-        $self->separator = $separator;
-        $self->spacing = $spacing;
-        $self->id = $id;
-        $self->isVisible = $isVisible;
-        $self->requires = $requires;
-
-        return $self;
+        return new self(
+            $url,
+            $altText,
+            $backgroundColor,
+            $height,
+            $horizontalAlignment,
+            $selectAction,
+            $size,
+            $style,
+            $width,
+            $fallback,
+            $separator,
+            $spacing,
+            $id,
+            $isVisible,
+            $requires,
+        );
     }
 
     /**

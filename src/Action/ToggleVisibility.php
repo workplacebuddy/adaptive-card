@@ -19,7 +19,6 @@ use JsonSerializable;
  * An action that toggles the visibility of associated card elements.
  *
  * @since 1.2
- * @psalm-suppress MissingConstructor
  */
 final class ToggleVisibility extends Action implements
     JsonSerializable,
@@ -47,9 +46,37 @@ final class ToggleVisibility extends Action implements
     public array $targetElements;
 
     /**
-     * Make an instance in a single call
+     * Create a "ToggleVisibility" instance in a single call
+     *
+     * @param TargetElement[] $targetElements
+     */
+    public function __construct(
+        array $targetElements,
+        ?string $title = null,
+        ?string $iconUrl = null,
+        ?string $id = null,
+        ?\AdaptiveCard\ActionStyle $style = null,
+        ActionInterface|\AdaptiveCard\FallbackOption|null $fallback = null,
+        ?string $tooltip = null,
+        ?bool $isEnabled = null,
+        ?\AdaptiveCard\ActionMode $mode = null,
+    ) {
+        $this->targetElements = $targetElements;
+        $this->title = $title;
+        $this->iconUrl = $iconUrl;
+        $this->id = $id;
+        $this->style = $style;
+        $this->fallback = $fallback;
+        $this->tooltip = $tooltip;
+        $this->isEnabled = $isEnabled;
+        $this->mode = $mode;
+    }
+
+    /**
+     * Make a "ToggleVisibility" instance in a single call
      *
      * @psalm-api
+     *
      * @param TargetElement[] $targetElements
      */
     public static function make(
@@ -63,19 +90,17 @@ final class ToggleVisibility extends Action implements
         ?bool $isEnabled = null,
         ?\AdaptiveCard\ActionMode $mode = null,
     ): self {
-        $self = new self();
-
-        $self->targetElements = $targetElements;
-        $self->title = $title;
-        $self->iconUrl = $iconUrl;
-        $self->id = $id;
-        $self->style = $style;
-        $self->fallback = $fallback;
-        $self->tooltip = $tooltip;
-        $self->isEnabled = $isEnabled;
-        $self->mode = $mode;
-
-        return $self;
+        return new self(
+            $targetElements,
+            $title,
+            $iconUrl,
+            $id,
+            $style,
+            $fallback,
+            $tooltip,
+            $isEnabled,
+            $mode,
+        );
     }
 
     /**

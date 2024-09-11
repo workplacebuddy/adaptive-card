@@ -14,7 +14,6 @@ use JsonSerializable;
  * Defines a source for a Media element
  *
  * @since 1.1
- * @psalm-suppress MissingConstructor
  */
 final class MediaSource implements JsonSerializable
 {
@@ -26,11 +25,12 @@ final class MediaSource implements JsonSerializable
     private const TYPE = 'MediaSource';
 
     /**
-     * Mime type of associated media (e.g. `"video/mp4"`).
+     * Mime type of associated media (e.g. `"video/mp4"`). For YouTube and other Web
+     * video URLs, `mimeType` can be omitted.
      *
      * @since 1.1
      */
-    public string $mimeType;
+    public ?string $mimeType = null;
 
     /**
      * URL to media. Supports data URI in version 1.2+
@@ -40,18 +40,22 @@ final class MediaSource implements JsonSerializable
     public string $url;
 
     /**
-     * Make an instance in a single call
+     * Create a "MediaSource" instance in a single call
+     */
+    public function __construct(string $url, ?string $mimeType = null)
+    {
+        $this->url = $url;
+        $this->mimeType = $mimeType;
+    }
+
+    /**
+     * Make a "MediaSource" instance in a single call
      *
      * @psalm-api
      */
-    public static function make(string $mimeType, string $url): self
+    public static function make(string $url, ?string $mimeType = null): self
     {
-        $self = new self();
-
-        $self->mimeType = $mimeType;
-        $self->url = $url;
-
-        return $self;
+        return new self($url, $mimeType);
     }
 
     /**

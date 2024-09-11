@@ -14,7 +14,6 @@ use JsonSerializable;
  * Represents a row of cells within a Table element.
  *
  * @since 1.5
- * @psalm-suppress MissingConstructor
  */
 final class TableRow implements JsonSerializable
 {
@@ -62,9 +61,27 @@ final class TableRow implements JsonSerializable
     public ?VerticalAlignment $verticalCellContentAlignment = null;
 
     /**
-     * Make an instance in a single call
+     * Create a "TableRow" instance in a single call
+     *
+     * @param TableCell[]|null $cells
+     */
+    public function __construct(
+        ?array $cells = null,
+        ?ContainerStyle $style = null,
+        ?HorizontalAlignment $horizontalCellContentAlignment = null,
+        ?VerticalAlignment $verticalCellContentAlignment = null,
+    ) {
+        $this->cells = $cells;
+        $this->style = $style;
+        $this->horizontalCellContentAlignment = $horizontalCellContentAlignment;
+        $this->verticalCellContentAlignment = $verticalCellContentAlignment;
+    }
+
+    /**
+     * Make a "TableRow" instance in a single call
      *
      * @psalm-api
+     *
      * @param TableCell[]|null $cells
      */
     public static function make(
@@ -73,14 +90,12 @@ final class TableRow implements JsonSerializable
         ?HorizontalAlignment $horizontalCellContentAlignment = null,
         ?VerticalAlignment $verticalCellContentAlignment = null,
     ): self {
-        $self = new self();
-
-        $self->cells = $cells;
-        $self->style = $style;
-        $self->horizontalCellContentAlignment = $horizontalCellContentAlignment;
-        $self->verticalCellContentAlignment = $verticalCellContentAlignment;
-
-        return $self;
+        return new self(
+            $cells,
+            $style,
+            $horizontalCellContentAlignment,
+            $verticalCellContentAlignment,
+        );
     }
 
     /**

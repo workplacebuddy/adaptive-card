@@ -14,7 +14,6 @@ use JsonSerializable;
  * Containers group items together.
  *
  * @since 1.0
- * @psalm-suppress MissingConstructor
  */
 final class Container extends Element implements
     JsonSerializable,
@@ -94,9 +93,43 @@ final class Container extends Element implements
     public ?bool $rtl = null;
 
     /**
-     * Make an instance in a single call
+     * Create a "Container" instance in a single call
+     *
+     * @param ElementInterface[] $items
+     */
+    public function __construct(
+        array $items,
+        ?ISelectActionInterface $selectAction = null,
+        ?ContainerStyle $style = null,
+        ?VerticalContentAlignment $verticalContentAlignment = null,
+        ?bool $bleed = null,
+        BackgroundImage|string|null $backgroundImage = null,
+        ?string $minHeight = null,
+        ?bool $rtl = null,
+        ElementInterface|FallbackOption|null $fallback = null,
+        ?BlockElementHeight $height = null,
+        ?bool $separator = null,
+        ?Spacing $spacing = null,
+    ) {
+        $this->items = $items;
+        $this->selectAction = $selectAction;
+        $this->style = $style;
+        $this->verticalContentAlignment = $verticalContentAlignment;
+        $this->bleed = $bleed;
+        $this->backgroundImage = $backgroundImage;
+        $this->minHeight = $minHeight;
+        $this->rtl = $rtl;
+        $this->fallback = $fallback;
+        $this->height = $height;
+        $this->separator = $separator;
+        $this->spacing = $spacing;
+    }
+
+    /**
+     * Make a "Container" instance in a single call
      *
      * @psalm-api
+     *
      * @param ElementInterface[] $items
      */
     public static function make(
@@ -113,22 +146,20 @@ final class Container extends Element implements
         ?bool $separator = null,
         ?Spacing $spacing = null,
     ): self {
-        $self = new self();
-
-        $self->items = $items;
-        $self->selectAction = $selectAction;
-        $self->style = $style;
-        $self->verticalContentAlignment = $verticalContentAlignment;
-        $self->bleed = $bleed;
-        $self->backgroundImage = $backgroundImage;
-        $self->minHeight = $minHeight;
-        $self->rtl = $rtl;
-        $self->fallback = $fallback;
-        $self->height = $height;
-        $self->separator = $separator;
-        $self->spacing = $spacing;
-
-        return $self;
+        return new self(
+            $items,
+            $selectAction,
+            $style,
+            $verticalContentAlignment,
+            $bleed,
+            $backgroundImage,
+            $minHeight,
+            $rtl,
+            $fallback,
+            $height,
+            $separator,
+            $spacing,
+        );
     }
 
     /**

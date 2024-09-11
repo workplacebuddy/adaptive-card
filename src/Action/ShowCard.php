@@ -19,7 +19,6 @@ use JsonSerializable;
  * clicked.
  *
  * @since 1.0
- * @psalm-suppress MissingConstructor
  */
 final class ShowCard extends Action implements
     JsonSerializable,
@@ -44,7 +43,32 @@ final class ShowCard extends Action implements
     public ?AdaptiveCard $card = null;
 
     /**
-     * Make an instance in a single call
+     * Create a "ShowCard" instance in a single call
+     */
+    public function __construct(
+        ?AdaptiveCard $card = null,
+        ?string $title = null,
+        ?string $iconUrl = null,
+        ?string $id = null,
+        ?\AdaptiveCard\ActionStyle $style = null,
+        ActionInterface|\AdaptiveCard\FallbackOption|null $fallback = null,
+        ?string $tooltip = null,
+        ?bool $isEnabled = null,
+        ?\AdaptiveCard\ActionMode $mode = null,
+    ) {
+        $this->card = $card;
+        $this->title = $title;
+        $this->iconUrl = $iconUrl;
+        $this->id = $id;
+        $this->style = $style;
+        $this->fallback = $fallback;
+        $this->tooltip = $tooltip;
+        $this->isEnabled = $isEnabled;
+        $this->mode = $mode;
+    }
+
+    /**
+     * Make a "ShowCard" instance in a single call
      *
      * @psalm-api
      */
@@ -59,19 +83,17 @@ final class ShowCard extends Action implements
         ?bool $isEnabled = null,
         ?\AdaptiveCard\ActionMode $mode = null,
     ): self {
-        $self = new self();
-
-        $self->card = $card;
-        $self->title = $title;
-        $self->iconUrl = $iconUrl;
-        $self->id = $id;
-        $self->style = $style;
-        $self->fallback = $fallback;
-        $self->tooltip = $tooltip;
-        $self->isEnabled = $isEnabled;
-        $self->mode = $mode;
-
-        return $self;
+        return new self(
+            $card,
+            $title,
+            $iconUrl,
+            $id,
+            $style,
+            $fallback,
+            $tooltip,
+            $isEnabled,
+            $mode,
+        );
     }
 
     /**

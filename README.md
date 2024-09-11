@@ -23,18 +23,17 @@ All elements can be found here: https://adaptivecards.io/explorer/, everything
 should be available -- the elements are generated directly from the
 manifest/schema.
 
-All elements also have a static method to quickly create a single element:
-`make`.
+All elements also have a constructor to quickly create a single element:
 
 ### For example
 
 ```php
 $card = new AdaptiveCard\AdapticeCard();
 
-$card->body = [AdaptiveCard\TextBlock::make(text: 'Hello world!')];
+$card->body = [new AdaptiveCard\TextBlock(text: 'Hello world!')];
 
 $card->actions = [
-    AdapticeCard\Action\OpenUrl::make(
+    new AdapticeCard\Action\OpenUrl(
         title: 'Website',
         url: 'https://www.workplacebuddy.com/',
     ),
@@ -52,6 +51,6 @@ $card->actions = [
 -   Run `composer run generate` to generate a new version of classes/enums
 
 [adaptive card]: https://adaptivecards.io/
-[schema]: http://adaptivecards.io/schemas/adaptive-card.json
-[packagist]: https://packagist.org/?query=yy
+[schema]: https://raw.githubusercontent.com/microsoft/AdaptiveCards/main/schemas/1.6.0/adaptive-card.json
+[packagist]: https://packagist.org/packages/workplacebuddy/adaptive-card
 [npm]: https://www.npmjs.com/

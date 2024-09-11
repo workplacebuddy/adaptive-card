@@ -14,7 +14,6 @@ use JsonSerializable;
  * Base input class
  *
  * @since 1.0
- * @psalm-suppress MissingConstructor
  */
 abstract class Input implements JsonSerializable
 {
@@ -46,6 +45,34 @@ abstract class Input implements JsonSerializable
      * @since 1.3
      */
     public ?string $label = null;
+
+    /**
+     * [SUPPORTED ONLY IN JAVASCRIPT SDK] Determines the position of the label. It can
+     * take 'inline' and 'above' values. By default, the label is placed 'above' when
+     * label position is not specified.
+     *
+     * @since 1.6
+     */
+    public ?InputLabelPosition $labelPosition = null;
+
+    /**
+     * [SUPPORTED ONLY IN JAVASCRIPT SDK] Determines the width of the label in percent
+     * like 40 or a specific pixel width like '40px' when label is placed inline with
+     * the input. labelWidth would be ignored when the label is displayed above the
+     * input.
+     *
+     * @since 1.6
+     */
+    public string|int|null $labelWidth = null;
+
+    /**
+     * [SUPPORTED ONLY IN JAVASCRIPT SDK] Style hint for input fields. Allows input
+     * fields to appear as read-only but when user clicks/focuses on the field, it
+     * allows them to update those fields.
+     *
+     * @since 1.6
+     */
+    public ?InputStyle $inputStyle = null;
 
     /**
      * Describes what to do when an unknown element is encountered or the requires of
@@ -103,6 +130,9 @@ abstract class Input implements JsonSerializable
                 'errorMessage' => $this->errorMessage,
                 'isRequired' => $this->isRequired,
                 'label' => $this->label,
+                'labelPosition' => $this->labelPosition,
+                'labelWidth' => $this->labelWidth,
+                'inputStyle' => $this->inputStyle,
                 'fallback' => $this->fallback,
                 'height' => $this->height,
                 'separator' => $this->separator,

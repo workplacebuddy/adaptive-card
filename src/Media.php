@@ -14,7 +14,6 @@ use JsonSerializable;
  * Displays a media player for audio or video content.
  *
  * @since 1.1
- * @psalm-suppress MissingConstructor
  */
 final class Media extends Element implements
     JsonSerializable,
@@ -38,7 +37,11 @@ final class Media extends Element implements
     public array $sources;
 
     /**
-     * URL of an image to display before playing. Supports data URI in version 1.2+
+     * URL of an image to display before playing. Supports data URI in version 1.2+. If
+     * poster is omitted, the Media element will either use a default poster
+     * (controlled by the host application) or will attempt to automatically pull the
+     * poster from the target video service when the source URL points to a video from
+     * a Web provider such as YouTube.
      *
      * @since 1.1
      */
@@ -52,31 +55,67 @@ final class Media extends Element implements
     public ?string $altText = null;
 
     /**
-     * Make an instance in a single call
+     * Array of captions sources for the media element to provide.
+     *
+     * @var CaptionSource[]|null
+     * @since 1.6
+     */
+    public ?array $captionSources = null;
+
+    /**
+     * Create a "Media" instance in a single call
+     *
+     * @param MediaSource[] $sources
+     * @param CaptionSource[]|null $captionSources
+     */
+    public function __construct(
+        array $sources,
+        ?string $poster = null,
+        ?string $altText = null,
+        ?array $captionSources = null,
+        ElementInterface|FallbackOption|null $fallback = null,
+        ?BlockElementHeight $height = null,
+        ?bool $separator = null,
+        ?Spacing $spacing = null,
+    ) {
+        $this->sources = $sources;
+        $this->poster = $poster;
+        $this->altText = $altText;
+        $this->captionSources = $captionSources;
+        $this->fallback = $fallback;
+        $this->height = $height;
+        $this->separator = $separator;
+        $this->spacing = $spacing;
+    }
+
+    /**
+     * Make a "Media" instance in a single call
      *
      * @psalm-api
+     *
      * @param MediaSource[] $sources
+     * @param CaptionSource[]|null $captionSources
      */
     public static function make(
         array $sources,
         ?string $poster = null,
         ?string $altText = null,
+        ?array $captionSources = null,
         ElementInterface|FallbackOption|null $fallback = null,
         ?BlockElementHeight $height = null,
         ?bool $separator = null,
         ?Spacing $spacing = null,
     ): self {
-        $self = new self();
-
-        $self->sources = $sources;
-        $self->poster = $poster;
-        $self->altText = $altText;
-        $self->fallback = $fallback;
-        $self->height = $height;
-        $self->separator = $separator;
-        $self->spacing = $spacing;
-
-        return $self;
+        return new self(
+            $sources,
+            $poster,
+            $altText,
+            $captionSources,
+            $fallback,
+            $height,
+            $separator,
+            $spacing,
+        );
     }
 
     /**
@@ -92,6 +131,7 @@ final class Media extends Element implements
                     'sources' => $this->sources,
                     'poster' => $this->poster,
                     'altText' => $this->altText,
+                    'captionSources' => $this->captionSources,
                 ],
                 /** @psalm-suppress RedundantConditionGivenDocblockType */
                 fn(mixed $value): bool => $value !== null,

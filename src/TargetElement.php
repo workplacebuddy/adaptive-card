@@ -14,7 +14,6 @@ use JsonSerializable;
  * Represents an entry for Action.ToggleVisibility's targetElements property
  *
  * @since 1.0
- * @psalm-suppress MissingConstructor
  */
 final class TargetElement implements JsonSerializable
 {
@@ -41,7 +40,16 @@ final class TargetElement implements JsonSerializable
     public ?bool $isVisible = null;
 
     /**
-     * Make an instance in a single call
+     * Create a "TargetElement" instance in a single call
+     */
+    public function __construct(string $elementId, ?bool $isVisible = null)
+    {
+        $this->elementId = $elementId;
+        $this->isVisible = $isVisible;
+    }
+
+    /**
+     * Make a "TargetElement" instance in a single call
      *
      * @psalm-api
      */
@@ -49,12 +57,7 @@ final class TargetElement implements JsonSerializable
         string $elementId,
         ?bool $isVisible = null,
     ): self {
-        $self = new self();
-
-        $self->elementId = $elementId;
-        $self->isVisible = $isVisible;
-
-        return $self;
+        return new self($elementId, $isVisible);
     }
 
     /**
