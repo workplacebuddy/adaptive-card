@@ -45,7 +45,7 @@
         "symfony/stopwatch": "^6.4",
         "symfony/string": "^6.4",
         "symfony/var-dumper": "^6.4",
-        "vimeo/psalm": "^5.23"
+        "vimeo/psalm": "^5.26"
     },
     "config": {
         "sort-packages": true
