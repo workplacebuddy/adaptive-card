@@ -19,7 +19,6 @@ use JsonSerializable;
  * Lets a user choose between two options.
  *
  * @since 1.0
- * @psalm-suppress MissingConstructor
  */
 final class Toggle extends Input implements
     JsonSerializable,
@@ -72,7 +71,50 @@ final class Toggle extends Input implements
     public ?bool $wrap = null;
 
     /**
-     * Make an instance in a single call
+     * Create a "Toggle" instance in a single call
+     */
+    public function __construct(
+        string $title,
+        string $id,
+        ?string $value = null,
+        ?string $valueOff = null,
+        ?string $valueOn = null,
+        ?bool $wrap = null,
+        ?string $errorMessage = null,
+        ?bool $isRequired = null,
+        ?string $label = null,
+        ?\AdaptiveCard\InputLabelPosition $labelPosition = null,
+        string|int|null $labelWidth = null,
+        ?\AdaptiveCard\InputStyle $inputStyle = null,
+        ElementInterface|\AdaptiveCard\FallbackOption|null $fallback = null,
+        ?\AdaptiveCard\BlockElementHeight $height = null,
+        ?bool $separator = null,
+        ?\AdaptiveCard\Spacing $spacing = null,
+        ?bool $isVisible = null,
+        object|array|null $requires = null,
+    ) {
+        $this->title = $title;
+        $this->id = $id;
+        $this->value = $value;
+        $this->valueOff = $valueOff;
+        $this->valueOn = $valueOn;
+        $this->wrap = $wrap;
+        $this->errorMessage = $errorMessage;
+        $this->isRequired = $isRequired;
+        $this->label = $label;
+        $this->labelPosition = $labelPosition;
+        $this->labelWidth = $labelWidth;
+        $this->inputStyle = $inputStyle;
+        $this->fallback = $fallback;
+        $this->height = $height;
+        $this->separator = $separator;
+        $this->spacing = $spacing;
+        $this->isVisible = $isVisible;
+        $this->requires = $requires;
+    }
+
+    /**
+     * Make a "Toggle" instance in a single call
      *
      * @psalm-api
      */
@@ -96,28 +138,26 @@ final class Toggle extends Input implements
         ?bool $isVisible = null,
         object|array|null $requires = null,
     ): self {
-        $self = new self();
-
-        $self->title = $title;
-        $self->id = $id;
-        $self->value = $value;
-        $self->valueOff = $valueOff;
-        $self->valueOn = $valueOn;
-        $self->wrap = $wrap;
-        $self->errorMessage = $errorMessage;
-        $self->isRequired = $isRequired;
-        $self->label = $label;
-        $self->labelPosition = $labelPosition;
-        $self->labelWidth = $labelWidth;
-        $self->inputStyle = $inputStyle;
-        $self->fallback = $fallback;
-        $self->height = $height;
-        $self->separator = $separator;
-        $self->spacing = $spacing;
-        $self->isVisible = $isVisible;
-        $self->requires = $requires;
-
-        return $self;
+        return new self(
+            $title,
+            $id,
+            $value,
+            $valueOff,
+            $valueOn,
+            $wrap,
+            $errorMessage,
+            $isRequired,
+            $label,
+            $labelPosition,
+            $labelWidth,
+            $inputStyle,
+            $fallback,
+            $height,
+            $separator,
+            $spacing,
+            $isVisible,
+            $requires,
+        );
     }
 
     /**

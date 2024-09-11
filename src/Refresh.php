@@ -15,7 +15,6 @@ use JsonSerializable;
  * Defines how a card can be refreshed by making a request to the target Bot.
  *
  * @since 1.4
- * @psalm-suppress MissingConstructor
  */
 final class Refresh implements JsonSerializable
 {
@@ -56,9 +55,25 @@ final class Refresh implements JsonSerializable
     public ?array $userIds = null;
 
     /**
-     * Make an instance in a single call
+     * Create a "Refresh" instance in a single call
+     *
+     * @param string[]|null $userIds
+     */
+    public function __construct(
+        ?Execute $action = null,
+        ?string $expires = null,
+        ?array $userIds = null,
+    ) {
+        $this->action = $action;
+        $this->expires = $expires;
+        $this->userIds = $userIds;
+    }
+
+    /**
+     * Make a "Refresh" instance in a single call
      *
      * @psalm-api
+     *
      * @param string[]|null $userIds
      */
     public static function make(
@@ -66,13 +81,7 @@ final class Refresh implements JsonSerializable
         ?string $expires = null,
         ?array $userIds = null,
     ): self {
-        $self = new self();
-
-        $self->action = $action;
-        $self->expires = $expires;
-        $self->userIds = $userIds;
-
-        return $self;
+        return new self($action, $expires, $userIds);
     }
 
     /**

@@ -16,7 +16,6 @@ use JsonSerializable;
  * (https://docs.microsoft.com/dotnet/api/microsoft.bot.schema.cardaction).
  *
  * @since 1.4
- * @psalm-suppress MissingConstructor
  */
 final class AuthCardButton implements JsonSerializable
 {
@@ -50,7 +49,20 @@ final class AuthCardButton implements JsonSerializable
     public string $value;
 
     /**
-     * Make an instance in a single call
+     * Create a "AuthCardButton" instance in a single call
+     */
+    public function __construct(
+        string $value,
+        ?string $title = null,
+        ?string $image = null,
+    ) {
+        $this->value = $value;
+        $this->title = $title;
+        $this->image = $image;
+    }
+
+    /**
+     * Make a "AuthCardButton" instance in a single call
      *
      * @psalm-api
      */
@@ -59,13 +71,7 @@ final class AuthCardButton implements JsonSerializable
         ?string $title = null,
         ?string $image = null,
     ): self {
-        $self = new self();
-
-        $self->value = $value;
-        $self->title = $title;
-        $self->image = $image;
-
-        return $self;
+        return new self($value, $title, $image);
     }
 
     /**

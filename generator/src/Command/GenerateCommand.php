@@ -9,6 +9,7 @@ use Nette\PhpGenerator\ClassType;
 use Nette\PhpGenerator\Constant;
 use Nette\PhpGenerator\EnumType;
 use Nette\PhpGenerator\Literal;
+use Nette\PhpGenerator\Method;
 use Nette\PhpGenerator\PhpFile;
 use Nette\PhpGenerator\PhpNamespace;
 use Nette\PhpGenerator\Property;
@@ -326,7 +327,6 @@ class GenerateCommand extends Command
 
         $this->addDescription($phpClass, $definition);
         $phpClass->addComment('@since ' . ($definition['version'] ?? '1.0'));
-        $phpClass->addComment('@psalm-suppress MissingConstructor');
 
         $currentParentProperties = [];
         if (isset($definition['allOf'])) {
@@ -368,6 +368,11 @@ class GenerateCommand extends Command
         }
 
         if (!$isExtentable) {
+            $this->addTheConstructor($phpClass, [
+                ...$ownProperties,
+                ...$currentParentProperties,
+            ]);
+
             $this->addTheMaker($phpClass, [
                 ...$ownProperties,
                 ...$currentParentProperties,
@@ -579,15 +584,87 @@ class GenerateCommand extends Command
     /**
      * @param array<array{fullType: string, property: Property}> $properties
      */
+    private function addTheConstructor(
+        ClassType $phpClass,
+        array $properties,
+    ): void {
+        $phpMethod = $phpClass->addMethod('__construct');
+
+        $phpMethod->addComment(
+            sprintf(
+                'Create a "%s" instance in a single call',
+                $phpClass->getName() ?? 'unknown',
+            ),
+        );
+
+        $sorted = $this->getSortedProperties($properties);
+
+        $this->generateCreationParameters($phpMethod, $sorted);
+
+        $body = '';
+
+        foreach ($sorted as $property) {
+            $propertyName = $property['property']->getName();
+            $body .= <<<BODY
+
+            \$this->$propertyName = \$$propertyName;
+            BODY;
+        }
+
+        $phpMethod->setBody($body);
+    }
+
+    /**
+     * @param array<array{fullType: string, property: Property}> $properties
+     */
     private function addTheMaker(ClassType $phpClass, array $properties): void
     {
         $phpMethod = $phpClass->addMethod('make');
         $phpMethod->setStatic();
-        $phpMethod->addComment('Make an instance in a single call');
-        $phpMethod->addComment('');
-        $phpMethod->addComment('@psalm-api');
         $phpMethod->setReturnType('self');
 
+        $phpMethod->addComment(
+            sprintf(
+                'Make a "%s" instance in a single call',
+                $phpClass->getName() ?? 'unknown',
+            ),
+        );
+        $phpMethod->addComment('');
+        $phpMethod->addComment('@psalm-api');
+
+        // TODO deprecate in next version, no need for two ways to create an instance
+        // $phpMethod->addComment('@deprecated Use the constructor instead');
+
+        $sorted = $this->getSortedProperties($properties);
+
+        $this->generateCreationParameters($phpMethod, $sorted);
+
+        $body = <<<BODY
+        return new self(
+        BODY;
+
+        foreach ($sorted as $property) {
+            $propertyName = $property['property']->getName();
+            $body .= <<<BODY
+
+            \$$propertyName,
+            BODY;
+        }
+
+        $body .= <<<BODY
+
+        );
+        BODY;
+
+        $phpMethod->setBody($body);
+    }
+
+    /**
+     * @param array<array{fullType: string, property: Property}> $properties
+     * @return array<array{fullType: string, property: Property}>
+     */
+    private function getSortedProperties(array $properties): array
+    {
         $sorted = $properties;
 
         // move all the required arguments to the top
@@ -601,7 +678,19 @@ class GenerateCommand extends Command
                 $two['property']->isNullable(),
         );
 
-        foreach ($sorted as $property) {
+        return $sorted;
+    }
+
+    /**
+     * @param array<array{fullType: string, property: Property}> $properties
+     */
+    private function generateCreationParameters(
+        Method $phpMethod,
+        array $properties,
+    ): void {
+        $firstParamAnnotation = true;
+
+        foreach ($properties as $property) {
             $propertyName = $property['property']->getName();
             $phpParameter = $phpMethod->addParameter($propertyName);
 
@@ -613,6 +702,11 @@ class GenerateCommand extends Command
 
                 if ($property['property']->isNullable()) {
                     $arrayType .= '|null';
+                }
+
+                if ($firstParamAnnotation) {
+                    $firstParamAnnotation = false;
+                    $phpMethod->addComment('');
                 }
 
                 $phpMethod->addComment(
@@ -629,27 +723,6 @@ class GenerateCommand extends Command
                 $phpParameter->setDefaultValue(null);
             }
         }
-
-        $body = <<<BODY
-        \$self = new self();
-
-        BODY;
-
-        foreach ($sorted as $property) {
-            $propertyName = $property['property']->getName();
-            $body .= <<<BODY
-
-            \$self->$propertyName = \$$propertyName;
-            BODY;
-        }
-
-        $body .= <<<BODY
-
-
-        return \$self;
-        BODY;
-
-        $phpMethod->setBody($body);
     }
 
     /**

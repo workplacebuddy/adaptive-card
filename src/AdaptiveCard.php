@@ -15,7 +15,6 @@ use JsonSerializable;
  * set of actions.
  *
  * @since 1.0
- * @psalm-suppress MissingConstructor
  */
 final class AdaptiveCard implements JsonSerializable
 {
@@ -143,9 +142,48 @@ final class AdaptiveCard implements JsonSerializable
     public ?VerticalContentAlignment $verticalContentAlignment = null;
 
     /**
-     * Make an instance in a single call
+     * Create a "AdaptiveCard" instance in a single call
+     *
+     * @param ElementInterface[]|null $body
+     * @param ActionInterface[]|null $actions
+     */
+    public function __construct(
+        Version $version = Version::Version10,
+        ?Refresh $refresh = null,
+        ?Authentication $authentication = null,
+        ?array $body = null,
+        ?array $actions = null,
+        ?ISelectActionInterface $selectAction = null,
+        ?string $fallbackText = null,
+        BackgroundImage|string|null $backgroundImage = null,
+        ?Metadata $metadata = null,
+        ?string $minHeight = null,
+        ?bool $rtl = null,
+        ?string $speak = null,
+        ?string $lang = null,
+        ?VerticalContentAlignment $verticalContentAlignment = null,
+    ) {
+        $this->version = $version;
+        $this->refresh = $refresh;
+        $this->authentication = $authentication;
+        $this->body = $body;
+        $this->actions = $actions;
+        $this->selectAction = $selectAction;
+        $this->fallbackText = $fallbackText;
+        $this->backgroundImage = $backgroundImage;
+        $this->metadata = $metadata;
+        $this->minHeight = $minHeight;
+        $this->rtl = $rtl;
+        $this->speak = $speak;
+        $this->lang = $lang;
+        $this->verticalContentAlignment = $verticalContentAlignment;
+    }
+
+    /**
+     * Make a "AdaptiveCard" instance in a single call
      *
      * @psalm-api
+     *
      * @param ElementInterface[]|null $body
      * @param ActionInterface[]|null $actions
      */
@@ -165,24 +203,22 @@ final class AdaptiveCard implements JsonSerializable
         ?string $lang = null,
         ?VerticalContentAlignment $verticalContentAlignment = null,
     ): self {
-        $self = new self();
-
-        $self->version = $version;
-        $self->refresh = $refresh;
-        $self->authentication = $authentication;
-        $self->body = $body;
-        $self->actions = $actions;
-        $self->selectAction = $selectAction;
-        $self->fallbackText = $fallbackText;
-        $self->backgroundImage = $backgroundImage;
-        $self->metadata = $metadata;
-        $self->minHeight = $minHeight;
-        $self->rtl = $rtl;
-        $self->speak = $speak;
-        $self->lang = $lang;
-        $self->verticalContentAlignment = $verticalContentAlignment;
-
-        return $self;
+        return new self(
+            $version,
+            $refresh,
+            $authentication,
+            $body,
+            $actions,
+            $selectAction,
+            $fallbackText,
+            $backgroundImage,
+            $metadata,
+            $minHeight,
+            $rtl,
+            $speak,
+            $lang,
+            $verticalContentAlignment,
+        );
     }
 
     /**

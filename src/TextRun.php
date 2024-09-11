@@ -16,7 +16,6 @@ use JsonSerializable;
  * json object. These two representations are equivalent.
  *
  * @since 1.0
- * @psalm-suppress MissingConstructor
  */
 final class TextRun implements JsonSerializable, InlineInterface
 {
@@ -106,7 +105,36 @@ final class TextRun implements JsonSerializable, InlineInterface
     public ?FontWeight $weight = null;
 
     /**
-     * Make an instance in a single call
+     * Create a "TextRun" instance in a single call
+     */
+    public function __construct(
+        string $text,
+        ?Colors $color = null,
+        ?FontType $fontType = null,
+        ?bool $highlight = null,
+        ?bool $isSubtle = null,
+        ?bool $italic = null,
+        ?ISelectActionInterface $selectAction = null,
+        ?FontSize $size = null,
+        ?bool $strikethrough = null,
+        ?bool $underline = null,
+        ?FontWeight $weight = null,
+    ) {
+        $this->text = $text;
+        $this->color = $color;
+        $this->fontType = $fontType;
+        $this->highlight = $highlight;
+        $this->isSubtle = $isSubtle;
+        $this->italic = $italic;
+        $this->selectAction = $selectAction;
+        $this->size = $size;
+        $this->strikethrough = $strikethrough;
+        $this->underline = $underline;
+        $this->weight = $weight;
+    }
+
+    /**
+     * Make a "TextRun" instance in a single call
      *
      * @psalm-api
      */
@@ -123,21 +151,19 @@ final class TextRun implements JsonSerializable, InlineInterface
         ?bool $underline = null,
         ?FontWeight $weight = null,
     ): self {
-        $self = new self();
-
-        $self->text = $text;
-        $self->color = $color;
-        $self->fontType = $fontType;
-        $self->highlight = $highlight;
-        $self->isSubtle = $isSubtle;
-        $self->italic = $italic;
-        $self->selectAction = $selectAction;
-        $self->size = $size;
-        $self->strikethrough = $strikethrough;
-        $self->underline = $underline;
-        $self->weight = $weight;
-
-        return $self;
+        return new self(
+            $text,
+            $color,
+            $fontType,
+            $highlight,
+            $isSubtle,
+            $italic,
+            $selectAction,
+            $size,
+            $strikethrough,
+            $underline,
+            $weight,
+        );
     }
 
     /**
