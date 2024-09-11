@@ -19,4 +19,5 @@ enum Version: string
     case Version13 = '1.3';
     case Version14 = '1.4';
     case Version15 = '1.5';
+    case Version16 = '1.6';
 }

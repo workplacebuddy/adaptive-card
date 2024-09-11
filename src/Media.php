@@ -38,7 +38,11 @@ final class Media extends Element implements
     public array $sources;
 
     /**
-     * URL of an image to display before playing. Supports data URI in version 1.2+
+     * URL of an image to display before playing. Supports data URI in version 1.2+. If
+     * poster is omitted, the Media element will either use a default poster
+     * (controlled by the host application) or will attempt to automatically pull the
+     * poster from the target video service when the source URL points to a video from
+     * a Web provider such as YouTube.
      *
      * @since 1.1
      */
@@ -52,15 +56,25 @@ final class Media extends Element implements
     public ?string $altText = null;
 
     /**
+     * Array of captions sources for the media element to provide.
+     *
+     * @var CaptionSource[]|null
+     * @since 1.6
+     */
+    public ?array $captionSources = null;
+
+    /**
      * Make an instance in a single call
      *
      * @psalm-api
      * @param MediaSource[] $sources
+     * @param CaptionSource[]|null $captionSources
      */
     public static function make(
         array $sources,
         ?string $poster = null,
         ?string $altText = null,
+        ?array $captionSources = null,
         ElementInterface|FallbackOption|null $fallback = null,
         ?BlockElementHeight $height = null,
         ?bool $separator = null,
@@ -71,6 +85,7 @@ final class Media extends Element implements
         $self->sources = $sources;
         $self->poster = $poster;
         $self->altText = $altText;
+        $self->captionSources = $captionSources;
         $self->fallback = $fallback;
         $self->height = $height;
         $self->separator = $separator;
@@ -92,6 +107,7 @@ final class Media extends Element implements
                     'sources' => $this->sources,
                     'poster' => $this->poster,
                     'altText' => $this->altText,
+                    'captionSources' => $this->captionSources,
                 ],
                 /** @psalm-suppress RedundantConditionGivenDocblockType */
                 fn(mixed $value): bool => $value !== null,

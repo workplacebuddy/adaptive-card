@@ -105,6 +105,9 @@ final class Text extends Input implements
         ?string $errorMessage = null,
         ?bool $isRequired = null,
         ?string $label = null,
+        ?\AdaptiveCard\InputLabelPosition $labelPosition = null,
+        string|int|null $labelWidth = null,
+        ?\AdaptiveCard\InputStyle $inputStyle = null,
         ElementInterface|\AdaptiveCard\FallbackOption|null $fallback = null,
         ?\AdaptiveCard\BlockElementHeight $height = null,
         ?bool $separator = null,
@@ -125,6 +128,9 @@ final class Text extends Input implements
         $self->errorMessage = $errorMessage;
         $self->isRequired = $isRequired;
         $self->label = $label;
+        $self->labelPosition = $labelPosition;
+        $self->labelWidth = $labelWidth;
+        $self->inputStyle = $inputStyle;
         $self->fallback = $fallback;
         $self->height = $height;
         $self->separator = $separator;

@@ -11,46 +11,58 @@ namespace AdaptiveCard;
 use JsonSerializable;
 
 /**
- * Defines a source for a Media element
+ * Defines a source for captions
  *
- * @since 1.1
+ * @since 1.6
  * @psalm-suppress MissingConstructor
  */
-final class MediaSource implements JsonSerializable
+final class CaptionSource implements JsonSerializable
 {
     /**
-     * Must be `MediaSource`
+     * Must be `CaptionSource`
      *
-     * @since 1.1
+     * @since 1.6
      */
-    private const TYPE = 'MediaSource';
+    private const TYPE = 'CaptionSource';
 
     /**
-     * Mime type of associated media (e.g. `"video/mp4"`). For YouTube and other Web
-     * video URLs, `mimeType` can be omitted.
+     * Mime type of associated caption file (e.g. `"vtt"`). For rendering in
+     * JavaScript, only `"vtt"` is supported, for rendering in UWP, `"vtt"` and `"srt"`
+     * are supported.
      *
-     * @since 1.1
+     * @since 1.6
      */
-    public ?string $mimeType = null;
+    public string $mimeType;
 
     /**
-     * URL to media. Supports data URI in version 1.2+
+     * URL to captions.
      *
-     * @since 1.1
+     * @since 1.6
      */
     public string $url;
+
+    /**
+     * Label of this caption to show to the user.
+     *
+     * @since 1.6
+     */
+    public string $label;
 
     /**
      * Make an instance in a single call
      *
      * @psalm-api
      */
-    public static function make(string $url, ?string $mimeType = null): self
-    {
+    public static function make(
+        string $mimeType,
+        string $url,
+        string $label,
+    ): self {
         $self = new self();
 
-        $self->url = $url;
         $self->mimeType = $mimeType;
+        $self->url = $url;
+        $self->label = $label;
 
         return $self;
     }
@@ -65,6 +77,7 @@ final class MediaSource implements JsonSerializable
                 'type' => self::TYPE,
                 'mimeType' => $this->mimeType,
                 'url' => $this->url,
+                'label' => $this->label,
             ],
             /** @psalm-suppress RedundantConditionGivenDocblockType */
             fn(mixed $value): bool => $value !== null,

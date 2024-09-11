@@ -17,4 +17,5 @@ enum ChoiceInputStyle: string
 {
     case Compact = 'compact';
     case Expanded = 'expanded';
+    case Filtered = 'filtered';
 }
