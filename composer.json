@@ -12,8 +12,8 @@
     "scripts": {
         "lint": "psalm --show-info=false",
         "test": "phpunit",
-        "fetch-schema": "./generator/bin/main.php adaptive-card:fetch-schema && yarn format",
-        "generate": "./generator/bin/main.php adaptive-card:generate && php-cs-fixer fix src --rules=no_unused_imports && yarn format"
+        "fetch-schema": "./generator/bin/main.php adaptive-card:fetch-schema && npm run format",
+        "generate": "./generator/bin/main.php adaptive-card:generate && php-cs-fixer fix src --rules=no_unused_imports && npm run format"
     },
     "autoload": {
         "psr-4": {

@@ -46,7 +46,7 @@ $card->actions = [
 -   Clone this repo
 -   Install the dependencies, both from [Packagist] and [NPM]
     -   `composer install`
-    -   `yarn`
+    -   `npm install`
     -   Prettier is used to format the end result
 -   Optionally run `composer run fetch-schema` to fetch a fresh schema
 -   Run `composer run generate` to generate a new version of classes/enums
