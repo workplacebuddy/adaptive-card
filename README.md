@@ -53,5 +53,5 @@ $card->actions = [
 
 [adaptive card]: https://adaptivecards.io/
 [schema]: https://raw.githubusercontent.com/microsoft/AdaptiveCards/main/schemas/1.6.0/adaptive-card.json
-[packagist]: https://packagist.org/?query=yy
+[packagist]: https://packagist.org/packages/workplacebuddy/adaptive-card
 [npm]: https://www.npmjs.com/
