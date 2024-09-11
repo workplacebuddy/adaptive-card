@@ -14,7 +14,6 @@ use JsonSerializable;
  * Defines the characteristics of a column in a Table element.
  *
  * @since 1.5
- * @psalm-suppress MissingConstructor
  */
 final class TableColumnDefinition implements JsonSerializable
 {
@@ -56,7 +55,20 @@ final class TableColumnDefinition implements JsonSerializable
     public ?VerticalAlignment $verticalCellContentAlignment = null;
 
     /**
-     * Make an instance in a single call
+     * Create a "TableColumnDefinition" instance in a single call
+     */
+    public function __construct(
+        string|int|null $width = null,
+        ?HorizontalAlignment $horizontalCellContentAlignment = null,
+        ?VerticalAlignment $verticalCellContentAlignment = null,
+    ) {
+        $this->width = $width;
+        $this->horizontalCellContentAlignment = $horizontalCellContentAlignment;
+        $this->verticalCellContentAlignment = $verticalCellContentAlignment;
+    }
+
+    /**
+     * Make a "TableColumnDefinition" instance in a single call
      *
      * @psalm-api
      */
@@ -65,13 +77,11 @@ final class TableColumnDefinition implements JsonSerializable
         ?HorizontalAlignment $horizontalCellContentAlignment = null,
         ?VerticalAlignment $verticalCellContentAlignment = null,
     ): self {
-        $self = new self();
-
-        $self->width = $width;
-        $self->horizontalCellContentAlignment = $horizontalCellContentAlignment;
-        $self->verticalCellContentAlignment = $verticalCellContentAlignment;
-
-        return $self;
+        return new self(
+            $width,
+            $horizontalCellContentAlignment,
+            $verticalCellContentAlignment,
+        );
     }
 
     /**

@@ -19,7 +19,6 @@ use JsonSerializable;
  * Lets a user choose a date.
  *
  * @since 1.0
- * @psalm-suppress MissingConstructor
  */
 final class Date extends Input implements
     JsonSerializable,
@@ -64,7 +63,48 @@ final class Date extends Input implements
     public ?string $value = null;
 
     /**
-     * Make an instance in a single call
+     * Create a "Date" instance in a single call
+     */
+    public function __construct(
+        string $id,
+        ?string $max = null,
+        ?string $min = null,
+        ?string $placeholder = null,
+        ?string $value = null,
+        ?string $errorMessage = null,
+        ?bool $isRequired = null,
+        ?string $label = null,
+        ?\AdaptiveCard\InputLabelPosition $labelPosition = null,
+        string|int|null $labelWidth = null,
+        ?\AdaptiveCard\InputStyle $inputStyle = null,
+        ElementInterface|\AdaptiveCard\FallbackOption|null $fallback = null,
+        ?\AdaptiveCard\BlockElementHeight $height = null,
+        ?bool $separator = null,
+        ?\AdaptiveCard\Spacing $spacing = null,
+        ?bool $isVisible = null,
+        object|array|null $requires = null,
+    ) {
+        $this->id = $id;
+        $this->max = $max;
+        $this->min = $min;
+        $this->placeholder = $placeholder;
+        $this->value = $value;
+        $this->errorMessage = $errorMessage;
+        $this->isRequired = $isRequired;
+        $this->label = $label;
+        $this->labelPosition = $labelPosition;
+        $this->labelWidth = $labelWidth;
+        $this->inputStyle = $inputStyle;
+        $this->fallback = $fallback;
+        $this->height = $height;
+        $this->separator = $separator;
+        $this->spacing = $spacing;
+        $this->isVisible = $isVisible;
+        $this->requires = $requires;
+    }
+
+    /**
+     * Make a "Date" instance in a single call
      *
      * @psalm-api
      */
@@ -87,27 +127,25 @@ final class Date extends Input implements
         ?bool $isVisible = null,
         object|array|null $requires = null,
     ): self {
-        $self = new self();
-
-        $self->id = $id;
-        $self->max = $max;
-        $self->min = $min;
-        $self->placeholder = $placeholder;
-        $self->value = $value;
-        $self->errorMessage = $errorMessage;
-        $self->isRequired = $isRequired;
-        $self->label = $label;
-        $self->labelPosition = $labelPosition;
-        $self->labelWidth = $labelWidth;
-        $self->inputStyle = $inputStyle;
-        $self->fallback = $fallback;
-        $self->height = $height;
-        $self->separator = $separator;
-        $self->spacing = $spacing;
-        $self->isVisible = $isVisible;
-        $self->requires = $requires;
-
-        return $self;
+        return new self(
+            $id,
+            $max,
+            $min,
+            $placeholder,
+            $value,
+            $errorMessage,
+            $isRequired,
+            $label,
+            $labelPosition,
+            $labelWidth,
+            $inputStyle,
+            $fallback,
+            $height,
+            $separator,
+            $spacing,
+            $isVisible,
+            $requires,
+        );
     }
 
     /**

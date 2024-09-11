@@ -12,7 +12,6 @@ use JsonSerializable;
 
 /**
  * @since 1.0
- * @psalm-suppress MissingConstructor
  */
 abstract class ToggleableItem extends Item implements JsonSerializable
 {

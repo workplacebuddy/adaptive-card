@@ -21,7 +21,6 @@ use JsonSerializable;
  * Lets a user enter text.
  *
  * @since 1.0
- * @psalm-suppress MissingConstructor
  */
 final class Text extends Input implements
     JsonSerializable,
@@ -89,7 +88,54 @@ final class Text extends Input implements
     public ?string $value = null;
 
     /**
-     * Make an instance in a single call
+     * Create a "Text" instance in a single call
+     */
+    public function __construct(
+        string $id,
+        ?bool $isMultiline = null,
+        ?int $maxLength = null,
+        ?string $placeholder = null,
+        ?string $regex = null,
+        ?TextInputStyle $style = null,
+        ?ISelectActionInterface $inlineAction = null,
+        ?string $value = null,
+        ?string $errorMessage = null,
+        ?bool $isRequired = null,
+        ?string $label = null,
+        ?\AdaptiveCard\InputLabelPosition $labelPosition = null,
+        string|int|null $labelWidth = null,
+        ?\AdaptiveCard\InputStyle $inputStyle = null,
+        ElementInterface|\AdaptiveCard\FallbackOption|null $fallback = null,
+        ?\AdaptiveCard\BlockElementHeight $height = null,
+        ?bool $separator = null,
+        ?\AdaptiveCard\Spacing $spacing = null,
+        ?bool $isVisible = null,
+        object|array|null $requires = null,
+    ) {
+        $this->id = $id;
+        $this->isMultiline = $isMultiline;
+        $this->maxLength = $maxLength;
+        $this->placeholder = $placeholder;
+        $this->regex = $regex;
+        $this->style = $style;
+        $this->inlineAction = $inlineAction;
+        $this->value = $value;
+        $this->errorMessage = $errorMessage;
+        $this->isRequired = $isRequired;
+        $this->label = $label;
+        $this->labelPosition = $labelPosition;
+        $this->labelWidth = $labelWidth;
+        $this->inputStyle = $inputStyle;
+        $this->fallback = $fallback;
+        $this->height = $height;
+        $this->separator = $separator;
+        $this->spacing = $spacing;
+        $this->isVisible = $isVisible;
+        $this->requires = $requires;
+    }
+
+    /**
+     * Make a "Text" instance in a single call
      *
      * @psalm-api
      */
@@ -115,30 +161,28 @@ final class Text extends Input implements
         ?bool $isVisible = null,
         object|array|null $requires = null,
     ): self {
-        $self = new self();
-
-        $self->id = $id;
-        $self->isMultiline = $isMultiline;
-        $self->maxLength = $maxLength;
-        $self->placeholder = $placeholder;
-        $self->regex = $regex;
-        $self->style = $style;
-        $self->inlineAction = $inlineAction;
-        $self->value = $value;
-        $self->errorMessage = $errorMessage;
-        $self->isRequired = $isRequired;
-        $self->label = $label;
-        $self->labelPosition = $labelPosition;
-        $self->labelWidth = $labelWidth;
-        $self->inputStyle = $inputStyle;
-        $self->fallback = $fallback;
-        $self->height = $height;
-        $self->separator = $separator;
-        $self->spacing = $spacing;
-        $self->isVisible = $isVisible;
-        $self->requires = $requires;
-
-        return $self;
+        return new self(
+            $id,
+            $isMultiline,
+            $maxLength,
+            $placeholder,
+            $regex,
+            $style,
+            $inlineAction,
+            $value,
+            $errorMessage,
+            $isRequired,
+            $label,
+            $labelPosition,
+            $labelWidth,
+            $inputStyle,
+            $fallback,
+            $height,
+            $separator,
+            $spacing,
+            $isVisible,
+            $requires,
+        );
     }
 
     /**

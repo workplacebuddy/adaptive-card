@@ -14,7 +14,6 @@ use JsonSerializable;
  * Defines various metadata properties
  *
  * @since 1.6
- * @psalm-suppress MissingConstructor
  */
 final class Metadata implements JsonSerializable
 {
@@ -34,17 +33,21 @@ final class Metadata implements JsonSerializable
     public ?string $webUrl = null;
 
     /**
-     * Make an instance in a single call
+     * Create a "Metadata" instance in a single call
+     */
+    public function __construct(?string $webUrl = null)
+    {
+        $this->webUrl = $webUrl;
+    }
+
+    /**
+     * Make a "Metadata" instance in a single call
      *
      * @psalm-api
      */
     public static function make(?string $webUrl = null): self
     {
-        $self = new self();
-
-        $self->webUrl = $webUrl;
-
-        return $self;
+        return new self($webUrl);
     }
 
     /**

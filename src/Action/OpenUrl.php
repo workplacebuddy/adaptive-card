@@ -19,7 +19,6 @@ use JsonSerializable;
  * browser or showing within an embedded web browser.
  *
  * @since 1.0
- * @psalm-suppress MissingConstructor
  */
 final class OpenUrl extends Action implements
     JsonSerializable,
@@ -42,7 +41,32 @@ final class OpenUrl extends Action implements
     public string $url;
 
     /**
-     * Make an instance in a single call
+     * Create a "OpenUrl" instance in a single call
+     */
+    public function __construct(
+        string $url,
+        ?string $title = null,
+        ?string $iconUrl = null,
+        ?string $id = null,
+        ?\AdaptiveCard\ActionStyle $style = null,
+        ActionInterface|\AdaptiveCard\FallbackOption|null $fallback = null,
+        ?string $tooltip = null,
+        ?bool $isEnabled = null,
+        ?\AdaptiveCard\ActionMode $mode = null,
+    ) {
+        $this->url = $url;
+        $this->title = $title;
+        $this->iconUrl = $iconUrl;
+        $this->id = $id;
+        $this->style = $style;
+        $this->fallback = $fallback;
+        $this->tooltip = $tooltip;
+        $this->isEnabled = $isEnabled;
+        $this->mode = $mode;
+    }
+
+    /**
+     * Make a "OpenUrl" instance in a single call
      *
      * @psalm-api
      */
@@ -57,19 +81,17 @@ final class OpenUrl extends Action implements
         ?bool $isEnabled = null,
         ?\AdaptiveCard\ActionMode $mode = null,
     ): self {
-        $self = new self();
-
-        $self->url = $url;
-        $self->title = $title;
-        $self->iconUrl = $iconUrl;
-        $self->id = $id;
-        $self->style = $style;
-        $self->fallback = $fallback;
-        $self->tooltip = $tooltip;
-        $self->isEnabled = $isEnabled;
-        $self->mode = $mode;
-
-        return $self;
+        return new self(
+            $url,
+            $title,
+            $iconUrl,
+            $id,
+            $style,
+            $fallback,
+            $tooltip,
+            $isEnabled,
+            $mode,
+        );
     }
 
     /**

@@ -14,7 +14,6 @@ use JsonSerializable;
  * Displays a set of actions.
  *
  * @since 1.2
- * @psalm-suppress MissingConstructor
  */
 final class ActionSet extends Element implements
     JsonSerializable,
@@ -38,9 +37,29 @@ final class ActionSet extends Element implements
     public array $actions;
 
     /**
-     * Make an instance in a single call
+     * Create a "ActionSet" instance in a single call
+     *
+     * @param ActionInterface[] $actions
+     */
+    public function __construct(
+        array $actions,
+        ElementInterface|FallbackOption|null $fallback = null,
+        ?BlockElementHeight $height = null,
+        ?bool $separator = null,
+        ?Spacing $spacing = null,
+    ) {
+        $this->actions = $actions;
+        $this->fallback = $fallback;
+        $this->height = $height;
+        $this->separator = $separator;
+        $this->spacing = $spacing;
+    }
+
+    /**
+     * Make a "ActionSet" instance in a single call
      *
      * @psalm-api
+     *
      * @param ActionInterface[] $actions
      */
     public static function make(
@@ -50,15 +69,7 @@ final class ActionSet extends Element implements
         ?bool $separator = null,
         ?Spacing $spacing = null,
     ): self {
-        $self = new self();
-
-        $self->actions = $actions;
-        $self->fallback = $fallback;
-        $self->height = $height;
-        $self->separator = $separator;
-        $self->spacing = $spacing;
-
-        return $self;
+        return new self($actions, $fallback, $height, $separator, $spacing);
     }
 
     /**

@@ -21,7 +21,6 @@ use JsonSerializable;
  * Allows a user to input a Choice.
  *
  * @since 1.0
- * @psalm-suppress MissingConstructor
  */
 final class ChoiceSet extends Input implements
     JsonSerializable,
@@ -87,9 +86,59 @@ final class ChoiceSet extends Input implements
     public ?bool $wrap = null;
 
     /**
-     * Make an instance in a single call
+     * Create a "ChoiceSet" instance in a single call
+     *
+     * @param Input\Choice[]|null $choices
+     */
+    public function __construct(
+        string $id,
+        ?array $choices = null,
+        ?Query $choicesData = null,
+        ?bool $isMultiSelect = null,
+        ?ChoiceInputStyle $style = null,
+        ?string $value = null,
+        ?string $placeholder = null,
+        ?bool $wrap = null,
+        ?string $errorMessage = null,
+        ?bool $isRequired = null,
+        ?string $label = null,
+        ?\AdaptiveCard\InputLabelPosition $labelPosition = null,
+        string|int|null $labelWidth = null,
+        ?\AdaptiveCard\InputStyle $inputStyle = null,
+        ElementInterface|\AdaptiveCard\FallbackOption|null $fallback = null,
+        ?\AdaptiveCard\BlockElementHeight $height = null,
+        ?bool $separator = null,
+        ?\AdaptiveCard\Spacing $spacing = null,
+        ?bool $isVisible = null,
+        object|array|null $requires = null,
+    ) {
+        $this->id = $id;
+        $this->choices = $choices;
+        $this->choicesData = $choicesData;
+        $this->isMultiSelect = $isMultiSelect;
+        $this->style = $style;
+        $this->value = $value;
+        $this->placeholder = $placeholder;
+        $this->wrap = $wrap;
+        $this->errorMessage = $errorMessage;
+        $this->isRequired = $isRequired;
+        $this->label = $label;
+        $this->labelPosition = $labelPosition;
+        $this->labelWidth = $labelWidth;
+        $this->inputStyle = $inputStyle;
+        $this->fallback = $fallback;
+        $this->height = $height;
+        $this->separator = $separator;
+        $this->spacing = $spacing;
+        $this->isVisible = $isVisible;
+        $this->requires = $requires;
+    }
+
+    /**
+     * Make a "ChoiceSet" instance in a single call
      *
      * @psalm-api
+     *
      * @param Input\Choice[]|null $choices
      */
     public static function make(
@@ -114,30 +163,28 @@ final class ChoiceSet extends Input implements
         ?bool $isVisible = null,
         object|array|null $requires = null,
     ): self {
-        $self = new self();
-
-        $self->id = $id;
-        $self->choices = $choices;
-        $self->choicesData = $choicesData;
-        $self->isMultiSelect = $isMultiSelect;
-        $self->style = $style;
-        $self->value = $value;
-        $self->placeholder = $placeholder;
-        $self->wrap = $wrap;
-        $self->errorMessage = $errorMessage;
-        $self->isRequired = $isRequired;
-        $self->label = $label;
-        $self->labelPosition = $labelPosition;
-        $self->labelWidth = $labelWidth;
-        $self->inputStyle = $inputStyle;
-        $self->fallback = $fallback;
-        $self->height = $height;
-        $self->separator = $separator;
-        $self->spacing = $spacing;
-        $self->isVisible = $isVisible;
-        $self->requires = $requires;
-
-        return $self;
+        return new self(
+            $id,
+            $choices,
+            $choicesData,
+            $isMultiSelect,
+            $style,
+            $value,
+            $placeholder,
+            $wrap,
+            $errorMessage,
+            $isRequired,
+            $label,
+            $labelPosition,
+            $labelWidth,
+            $inputStyle,
+            $fallback,
+            $height,
+            $separator,
+            $spacing,
+            $isVisible,
+            $requires,
+        );
     }
 
     /**

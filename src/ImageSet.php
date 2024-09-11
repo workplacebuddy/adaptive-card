@@ -15,7 +15,6 @@ use JsonSerializable;
  * formats are PNG, JPEG, and GIF
  *
  * @since 1.0
- * @psalm-suppress MissingConstructor
  */
 final class ImageSet extends Element implements
     JsonSerializable,
@@ -48,9 +47,31 @@ final class ImageSet extends Element implements
     public ?ImageSize $imageSize = null;
 
     /**
-     * Make an instance in a single call
+     * Create a "ImageSet" instance in a single call
+     *
+     * @param Image[] $images
+     */
+    public function __construct(
+        array $images,
+        ?ImageSize $imageSize = null,
+        ElementInterface|FallbackOption|null $fallback = null,
+        ?BlockElementHeight $height = null,
+        ?bool $separator = null,
+        ?Spacing $spacing = null,
+    ) {
+        $this->images = $images;
+        $this->imageSize = $imageSize;
+        $this->fallback = $fallback;
+        $this->height = $height;
+        $this->separator = $separator;
+        $this->spacing = $spacing;
+    }
+
+    /**
+     * Make a "ImageSet" instance in a single call
      *
      * @psalm-api
+     *
      * @param Image[] $images
      */
     public static function make(
@@ -61,16 +82,14 @@ final class ImageSet extends Element implements
         ?bool $separator = null,
         ?Spacing $spacing = null,
     ): self {
-        $self = new self();
-
-        $self->images = $images;
-        $self->imageSize = $imageSize;
-        $self->fallback = $fallback;
-        $self->height = $height;
-        $self->separator = $separator;
-        $self->spacing = $spacing;
-
-        return $self;
+        return new self(
+            $images,
+            $imageSize,
+            $fallback,
+            $height,
+            $separator,
+            $spacing,
+        );
     }
 
     /**

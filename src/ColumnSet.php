@@ -14,7 +14,6 @@ use JsonSerializable;
  * ColumnSet divides a region into Columns, allowing elements to sit side-by-side.
  *
  * @since 1.0
- * @psalm-suppress MissingConstructor
  */
 final class ColumnSet extends Element implements
     JsonSerializable,
@@ -76,9 +75,39 @@ final class ColumnSet extends Element implements
     public ?HorizontalAlignment $horizontalAlignment = null;
 
     /**
-     * Make an instance in a single call
+     * Create a "ColumnSet" instance in a single call
+     *
+     * @param Column[]|null $columns
+     */
+    public function __construct(
+        ?array $columns = null,
+        ?ISelectActionInterface $selectAction = null,
+        ?ContainerStyle $style = null,
+        ?bool $bleed = null,
+        ?string $minHeight = null,
+        ?HorizontalAlignment $horizontalAlignment = null,
+        ElementInterface|FallbackOption|null $fallback = null,
+        ?BlockElementHeight $height = null,
+        ?bool $separator = null,
+        ?Spacing $spacing = null,
+    ) {
+        $this->columns = $columns;
+        $this->selectAction = $selectAction;
+        $this->style = $style;
+        $this->bleed = $bleed;
+        $this->minHeight = $minHeight;
+        $this->horizontalAlignment = $horizontalAlignment;
+        $this->fallback = $fallback;
+        $this->height = $height;
+        $this->separator = $separator;
+        $this->spacing = $spacing;
+    }
+
+    /**
+     * Make a "ColumnSet" instance in a single call
      *
      * @psalm-api
+     *
      * @param Column[]|null $columns
      */
     public static function make(
@@ -93,20 +122,18 @@ final class ColumnSet extends Element implements
         ?bool $separator = null,
         ?Spacing $spacing = null,
     ): self {
-        $self = new self();
-
-        $self->columns = $columns;
-        $self->selectAction = $selectAction;
-        $self->style = $style;
-        $self->bleed = $bleed;
-        $self->minHeight = $minHeight;
-        $self->horizontalAlignment = $horizontalAlignment;
-        $self->fallback = $fallback;
-        $self->height = $height;
-        $self->separator = $separator;
-        $self->spacing = $spacing;
-
-        return $self;
+        return new self(
+            $columns,
+            $selectAction,
+            $style,
+            $bleed,
+            $minHeight,
+            $horizontalAlignment,
+            $fallback,
+            $height,
+            $separator,
+            $spacing,
+        );
     }
 
     /**

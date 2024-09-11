@@ -14,7 +14,6 @@ use JsonSerializable;
  * Represents a cell within a row of a Table element.
  *
  * @since 1.5
- * @psalm-suppress MissingConstructor
  */
 final class TableCell implements JsonSerializable
 {
@@ -90,9 +89,35 @@ final class TableCell implements JsonSerializable
     public ?bool $rtl = null;
 
     /**
-     * Make an instance in a single call
+     * Create a "TableCell" instance in a single call
+     *
+     * @param ElementInterface[] $items
+     */
+    public function __construct(
+        array $items,
+        ?ISelectActionInterface $selectAction = null,
+        ?ContainerStyle $style = null,
+        ?VerticalContentAlignment $verticalContentAlignment = null,
+        ?bool $bleed = null,
+        BackgroundImage|string|null $backgroundImage = null,
+        ?string $minHeight = null,
+        ?bool $rtl = null,
+    ) {
+        $this->items = $items;
+        $this->selectAction = $selectAction;
+        $this->style = $style;
+        $this->verticalContentAlignment = $verticalContentAlignment;
+        $this->bleed = $bleed;
+        $this->backgroundImage = $backgroundImage;
+        $this->minHeight = $minHeight;
+        $this->rtl = $rtl;
+    }
+
+    /**
+     * Make a "TableCell" instance in a single call
      *
      * @psalm-api
+     *
      * @param ElementInterface[] $items
      */
     public static function make(
@@ -105,18 +130,16 @@ final class TableCell implements JsonSerializable
         ?string $minHeight = null,
         ?bool $rtl = null,
     ): self {
-        $self = new self();
-
-        $self->items = $items;
-        $self->selectAction = $selectAction;
-        $self->style = $style;
-        $self->verticalContentAlignment = $verticalContentAlignment;
-        $self->bleed = $bleed;
-        $self->backgroundImage = $backgroundImage;
-        $self->minHeight = $minHeight;
-        $self->rtl = $rtl;
-
-        return $self;
+        return new self(
+            $items,
+            $selectAction,
+            $style,
+            $verticalContentAlignment,
+            $bleed,
+            $backgroundImage,
+            $minHeight,
+            $rtl,
+        );
     }
 
     /**

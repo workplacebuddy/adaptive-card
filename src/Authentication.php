@@ -16,7 +16,6 @@ use JsonSerializable;
  * (https://docs.microsoft.com/dotnet/api/microsoft.bot.schema.oauthcard)
  *
  * @since 1.4
- * @psalm-suppress MissingConstructor
  */
 final class Authentication implements JsonSerializable
 {
@@ -60,9 +59,27 @@ final class Authentication implements JsonSerializable
     public ?array $buttons = null;
 
     /**
-     * Make an instance in a single call
+     * Create a "Authentication" instance in a single call
+     *
+     * @param AuthCardButton[]|null $buttons
+     */
+    public function __construct(
+        ?string $text = null,
+        ?string $connectionName = null,
+        ?TokenExchangeResource $tokenExchangeResource = null,
+        ?array $buttons = null,
+    ) {
+        $this->text = $text;
+        $this->connectionName = $connectionName;
+        $this->tokenExchangeResource = $tokenExchangeResource;
+        $this->buttons = $buttons;
+    }
+
+    /**
+     * Make a "Authentication" instance in a single call
      *
      * @psalm-api
+     *
      * @param AuthCardButton[]|null $buttons
      */
     public static function make(
@@ -71,14 +88,12 @@ final class Authentication implements JsonSerializable
         ?TokenExchangeResource $tokenExchangeResource = null,
         ?array $buttons = null,
     ): self {
-        $self = new self();
-
-        $self->text = $text;
-        $self->connectionName = $connectionName;
-        $self->tokenExchangeResource = $tokenExchangeResource;
-        $self->buttons = $buttons;
-
-        return $self;
+        return new self(
+            $text,
+            $connectionName,
+            $tokenExchangeResource,
+            $buttons,
+        );
     }
 
     /**

@@ -17,7 +17,6 @@ use JsonSerializable;
  * (https://docs.microsoft.com/dotnet/api/microsoft.bot.schema.tokenexchangeresource)
  *
  * @since 1.4
- * @psalm-suppress MissingConstructor
  */
 final class TokenExchangeResource implements JsonSerializable
 {
@@ -51,7 +50,17 @@ final class TokenExchangeResource implements JsonSerializable
     public string $providerId;
 
     /**
-     * Make an instance in a single call
+     * Create a "TokenExchangeResource" instance in a single call
+     */
+    public function __construct(string $id, string $uri, string $providerId)
+    {
+        $this->id = $id;
+        $this->uri = $uri;
+        $this->providerId = $providerId;
+    }
+
+    /**
+     * Make a "TokenExchangeResource" instance in a single call
      *
      * @psalm-api
      */
@@ -60,13 +69,7 @@ final class TokenExchangeResource implements JsonSerializable
         string $uri,
         string $providerId,
     ): self {
-        $self = new self();
-
-        $self->id = $id;
-        $self->uri = $uri;
-        $self->providerId = $providerId;
-
-        return $self;
+        return new self($id, $uri, $providerId);
     }
 
     /**

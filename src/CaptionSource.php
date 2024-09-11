@@ -14,7 +14,6 @@ use JsonSerializable;
  * Defines a source for captions
  *
  * @since 1.6
- * @psalm-suppress MissingConstructor
  */
 final class CaptionSource implements JsonSerializable
 {
@@ -49,7 +48,17 @@ final class CaptionSource implements JsonSerializable
     public string $label;
 
     /**
-     * Make an instance in a single call
+     * Create a "CaptionSource" instance in a single call
+     */
+    public function __construct(string $mimeType, string $url, string $label)
+    {
+        $this->mimeType = $mimeType;
+        $this->url = $url;
+        $this->label = $label;
+    }
+
+    /**
+     * Make a "CaptionSource" instance in a single call
      *
      * @psalm-api
      */
@@ -58,13 +67,7 @@ final class CaptionSource implements JsonSerializable
         string $url,
         string $label,
     ): self {
-        $self = new self();
-
-        $self->mimeType = $mimeType;
-        $self->url = $url;
-        $self->label = $label;
-
-        return $self;
+        return new self($mimeType, $url, $label);
     }
 
     /**

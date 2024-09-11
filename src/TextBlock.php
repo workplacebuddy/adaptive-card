@@ -14,7 +14,6 @@ use JsonSerializable;
  * Displays text, allowing control over font sizes, weight, and color.
  *
  * @since 1.0
- * @psalm-suppress MissingConstructor
  */
 final class TextBlock extends Element implements
     JsonSerializable,
@@ -103,7 +102,42 @@ final class TextBlock extends Element implements
     public ?TextBlockStyle $style = null;
 
     /**
-     * Make an instance in a single call
+     * Create a "TextBlock" instance in a single call
+     */
+    public function __construct(
+        string $text,
+        ?Colors $color = null,
+        ?FontType $fontType = null,
+        ?HorizontalAlignment $horizontalAlignment = null,
+        ?bool $isSubtle = null,
+        ?int $maxLines = null,
+        ?FontSize $size = null,
+        ?FontWeight $weight = null,
+        ?bool $wrap = null,
+        ?TextBlockStyle $style = null,
+        ElementInterface|FallbackOption|null $fallback = null,
+        ?BlockElementHeight $height = null,
+        ?bool $separator = null,
+        ?Spacing $spacing = null,
+    ) {
+        $this->text = $text;
+        $this->color = $color;
+        $this->fontType = $fontType;
+        $this->horizontalAlignment = $horizontalAlignment;
+        $this->isSubtle = $isSubtle;
+        $this->maxLines = $maxLines;
+        $this->size = $size;
+        $this->weight = $weight;
+        $this->wrap = $wrap;
+        $this->style = $style;
+        $this->fallback = $fallback;
+        $this->height = $height;
+        $this->separator = $separator;
+        $this->spacing = $spacing;
+    }
+
+    /**
+     * Make a "TextBlock" instance in a single call
      *
      * @psalm-api
      */
@@ -123,24 +157,22 @@ final class TextBlock extends Element implements
         ?bool $separator = null,
         ?Spacing $spacing = null,
     ): self {
-        $self = new self();
-
-        $self->text = $text;
-        $self->color = $color;
-        $self->fontType = $fontType;
-        $self->horizontalAlignment = $horizontalAlignment;
-        $self->isSubtle = $isSubtle;
-        $self->maxLines = $maxLines;
-        $self->size = $size;
-        $self->weight = $weight;
-        $self->wrap = $wrap;
-        $self->style = $style;
-        $self->fallback = $fallback;
-        $self->height = $height;
-        $self->separator = $separator;
-        $self->spacing = $spacing;
-
-        return $self;
+        return new self(
+            $text,
+            $color,
+            $fontType,
+            $horizontalAlignment,
+            $isSubtle,
+            $maxLines,
+            $size,
+            $weight,
+            $wrap,
+            $style,
+            $fallback,
+            $height,
+            $separator,
+            $spacing,
+        );
     }
 
     /**

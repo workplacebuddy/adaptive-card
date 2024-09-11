@@ -17,7 +17,6 @@ use JsonSerializable;
  * maximum number of choices that can be sent and to support pagination.
  *
  * @since 1.0
- * @psalm-suppress MissingConstructor
  */
 final class Query implements JsonSerializable
 {
@@ -52,7 +51,20 @@ final class Query implements JsonSerializable
     public ?int $skip = null;
 
     /**
-     * Make an instance in a single call
+     * Create a "Query" instance in a single call
+     */
+    public function __construct(
+        string $dataset,
+        ?int $count = null,
+        ?int $skip = null,
+    ) {
+        $this->dataset = $dataset;
+        $this->count = $count;
+        $this->skip = $skip;
+    }
+
+    /**
+     * Make a "Query" instance in a single call
      *
      * @psalm-api
      */
@@ -61,13 +73,7 @@ final class Query implements JsonSerializable
         ?int $count = null,
         ?int $skip = null,
     ): self {
-        $self = new self();
-
-        $self->dataset = $dataset;
-        $self->count = $count;
-        $self->skip = $skip;
-
-        return $self;
+        return new self($dataset, $count, $skip);
     }
 
     /**

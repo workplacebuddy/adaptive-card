@@ -14,7 +14,6 @@ use JsonSerializable;
  * Base input class
  *
  * @since 1.0
- * @psalm-suppress MissingConstructor
  */
 abstract class Input implements JsonSerializable
 {

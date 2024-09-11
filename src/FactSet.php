@@ -15,7 +15,6 @@ use JsonSerializable;
  * tabular form.
  *
  * @since 1.0
- * @psalm-suppress MissingConstructor
  */
 final class FactSet extends Element implements
     JsonSerializable,
@@ -39,9 +38,29 @@ final class FactSet extends Element implements
     public array $facts;
 
     /**
-     * Make an instance in a single call
+     * Create a "FactSet" instance in a single call
+     *
+     * @param Fact[] $facts
+     */
+    public function __construct(
+        array $facts,
+        ElementInterface|FallbackOption|null $fallback = null,
+        ?BlockElementHeight $height = null,
+        ?bool $separator = null,
+        ?Spacing $spacing = null,
+    ) {
+        $this->facts = $facts;
+        $this->fallback = $fallback;
+        $this->height = $height;
+        $this->separator = $separator;
+        $this->spacing = $spacing;
+    }
+
+    /**
+     * Make a "FactSet" instance in a single call
      *
      * @psalm-api
+     *
      * @param Fact[] $facts
      */
     public static function make(
@@ -51,15 +70,7 @@ final class FactSet extends Element implements
         ?bool $separator = null,
         ?Spacing $spacing = null,
     ): self {
-        $self = new self();
-
-        $self->facts = $facts;
-        $self->fallback = $fallback;
-        $self->height = $height;
-        $self->separator = $separator;
-        $self->spacing = $spacing;
-
-        return $self;
+        return new self($facts, $fallback, $height, $separator, $spacing);
     }
 
     /**

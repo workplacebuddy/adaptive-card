@@ -14,7 +14,6 @@ use JsonSerializable;
  * Defines a container that is part of a ColumnSet.
  *
  * @since 1.0
- * @psalm-suppress MissingConstructor
  */
 final class Column extends ToggleableItem implements
     JsonSerializable,
@@ -124,9 +123,47 @@ final class Column extends ToggleableItem implements
     public string|int|null $width = null;
 
     /**
-     * Make an instance in a single call
+     * Create a "Column" instance in a single call
+     *
+     * @param ElementInterface[]|null $items
+     */
+    public function __construct(
+        ?array $items = null,
+        BackgroundImage|string|null $backgroundImage = null,
+        ?bool $bleed = null,
+        Column|FallbackOption|null $fallback = null,
+        ?string $minHeight = null,
+        ?bool $rtl = null,
+        ?bool $separator = null,
+        ?Spacing $spacing = null,
+        ?ISelectActionInterface $selectAction = null,
+        ?ContainerStyle $style = null,
+        ?VerticalContentAlignment $verticalContentAlignment = null,
+        string|int|null $width = null,
+        ?string $id = null,
+        ?bool $isVisible = null,
+    ) {
+        $this->items = $items;
+        $this->backgroundImage = $backgroundImage;
+        $this->bleed = $bleed;
+        $this->fallback = $fallback;
+        $this->minHeight = $minHeight;
+        $this->rtl = $rtl;
+        $this->separator = $separator;
+        $this->spacing = $spacing;
+        $this->selectAction = $selectAction;
+        $this->style = $style;
+        $this->verticalContentAlignment = $verticalContentAlignment;
+        $this->width = $width;
+        $this->id = $id;
+        $this->isVisible = $isVisible;
+    }
+
+    /**
+     * Make a "Column" instance in a single call
      *
      * @psalm-api
+     *
      * @param ElementInterface[]|null $items
      */
     public static function make(
@@ -145,24 +182,22 @@ final class Column extends ToggleableItem implements
         ?string $id = null,
         ?bool $isVisible = null,
     ): self {
-        $self = new self();
-
-        $self->items = $items;
-        $self->backgroundImage = $backgroundImage;
-        $self->bleed = $bleed;
-        $self->fallback = $fallback;
-        $self->minHeight = $minHeight;
-        $self->rtl = $rtl;
-        $self->separator = $separator;
-        $self->spacing = $spacing;
-        $self->selectAction = $selectAction;
-        $self->style = $style;
-        $self->verticalContentAlignment = $verticalContentAlignment;
-        $self->width = $width;
-        $self->id = $id;
-        $self->isVisible = $isVisible;
-
-        return $self;
+        return new self(
+            $items,
+            $backgroundImage,
+            $bleed,
+            $fallback,
+            $minHeight,
+            $rtl,
+            $separator,
+            $spacing,
+            $selectAction,
+            $style,
+            $verticalContentAlignment,
+            $width,
+            $id,
+            $isVisible,
+        );
     }
 
     /**

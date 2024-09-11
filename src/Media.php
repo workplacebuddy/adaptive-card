@@ -14,7 +14,6 @@ use JsonSerializable;
  * Displays a media player for audio or video content.
  *
  * @since 1.1
- * @psalm-suppress MissingConstructor
  */
 final class Media extends Element implements
     JsonSerializable,
@@ -64,9 +63,36 @@ final class Media extends Element implements
     public ?array $captionSources = null;
 
     /**
-     * Make an instance in a single call
+     * Create a "Media" instance in a single call
+     *
+     * @param MediaSource[] $sources
+     * @param CaptionSource[]|null $captionSources
+     */
+    public function __construct(
+        array $sources,
+        ?string $poster = null,
+        ?string $altText = null,
+        ?array $captionSources = null,
+        ElementInterface|FallbackOption|null $fallback = null,
+        ?BlockElementHeight $height = null,
+        ?bool $separator = null,
+        ?Spacing $spacing = null,
+    ) {
+        $this->sources = $sources;
+        $this->poster = $poster;
+        $this->altText = $altText;
+        $this->captionSources = $captionSources;
+        $this->fallback = $fallback;
+        $this->height = $height;
+        $this->separator = $separator;
+        $this->spacing = $spacing;
+    }
+
+    /**
+     * Make a "Media" instance in a single call
      *
      * @psalm-api
+     *
      * @param MediaSource[] $sources
      * @param CaptionSource[]|null $captionSources
      */
@@ -80,18 +106,16 @@ final class Media extends Element implements
         ?bool $separator = null,
         ?Spacing $spacing = null,
     ): self {
-        $self = new self();
-
-        $self->sources = $sources;
-        $self->poster = $poster;
-        $self->altText = $altText;
-        $self->captionSources = $captionSources;
-        $self->fallback = $fallback;
-        $self->height = $height;
-        $self->separator = $separator;
-        $self->spacing = $spacing;
-
-        return $self;
+        return new self(
+            $sources,
+            $poster,
+            $altText,
+            $captionSources,
+            $fallback,
+            $height,
+            $separator,
+            $spacing,
+        );
     }
 
     /**

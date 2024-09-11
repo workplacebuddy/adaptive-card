@@ -14,7 +14,6 @@ use JsonSerializable;
  * Specifies a background image. Acceptable formats are PNG, JPEG, and GIF
  *
  * @since 1.2
- * @psalm-suppress MissingConstructor
  */
 final class BackgroundImage implements JsonSerializable
 {
@@ -56,7 +55,22 @@ final class BackgroundImage implements JsonSerializable
     public ?VerticalAlignment $verticalAlignment = null;
 
     /**
-     * Make an instance in a single call
+     * Create a "BackgroundImage" instance in a single call
+     */
+    public function __construct(
+        string $url,
+        ?ImageFillMode $fillMode = null,
+        ?HorizontalAlignment $horizontalAlignment = null,
+        ?VerticalAlignment $verticalAlignment = null,
+    ) {
+        $this->url = $url;
+        $this->fillMode = $fillMode;
+        $this->horizontalAlignment = $horizontalAlignment;
+        $this->verticalAlignment = $verticalAlignment;
+    }
+
+    /**
+     * Make a "BackgroundImage" instance in a single call
      *
      * @psalm-api
      */
@@ -66,14 +80,12 @@ final class BackgroundImage implements JsonSerializable
         ?HorizontalAlignment $horizontalAlignment = null,
         ?VerticalAlignment $verticalAlignment = null,
     ): self {
-        $self = new self();
-
-        $self->url = $url;
-        $self->fillMode = $fillMode;
-        $self->horizontalAlignment = $horizontalAlignment;
-        $self->verticalAlignment = $verticalAlignment;
-
-        return $self;
+        return new self(
+            $url,
+            $fillMode,
+            $horizontalAlignment,
+            $verticalAlignment,
+        );
     }
 
     /**

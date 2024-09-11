@@ -14,7 +14,6 @@ use JsonSerializable;
  * Defines a source for a Media element
  *
  * @since 1.1
- * @psalm-suppress MissingConstructor
  */
 final class MediaSource implements JsonSerializable
 {
@@ -41,18 +40,22 @@ final class MediaSource implements JsonSerializable
     public string $url;
 
     /**
-     * Make an instance in a single call
+     * Create a "MediaSource" instance in a single call
+     */
+    public function __construct(string $url, ?string $mimeType = null)
+    {
+        $this->url = $url;
+        $this->mimeType = $mimeType;
+    }
+
+    /**
+     * Make a "MediaSource" instance in a single call
      *
      * @psalm-api
      */
     public static function make(string $url, ?string $mimeType = null): self
     {
-        $self = new self();
-
-        $self->url = $url;
-        $self->mimeType = $mimeType;
-
-        return $self;
+        return new self($url, $mimeType);
     }
 
     /**

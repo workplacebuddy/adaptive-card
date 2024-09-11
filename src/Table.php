@@ -14,7 +14,6 @@ use JsonSerializable;
  * Provides a way to display data in a tabular form.
  *
  * @since 1.5
- * @psalm-suppress MissingConstructor
  */
 final class Table extends Element implements
     JsonSerializable,
@@ -85,9 +84,42 @@ final class Table extends Element implements
     public ?VerticalAlignment $verticalCellContentAlignment = null;
 
     /**
-     * Make an instance in a single call
+     * Create a "Table" instance in a single call
+     *
+     * @param TableColumnDefinition[]|null $columns
+     * @param TableRow[]|null $rows
+     */
+    public function __construct(
+        ?array $columns = null,
+        ?array $rows = null,
+        ?bool $firstRowAsHeader = null,
+        ?bool $showGridLines = null,
+        ?ContainerStyle $gridStyle = null,
+        ?HorizontalAlignment $horizontalCellContentAlignment = null,
+        ?VerticalAlignment $verticalCellContentAlignment = null,
+        ElementInterface|FallbackOption|null $fallback = null,
+        ?BlockElementHeight $height = null,
+        ?bool $separator = null,
+        ?Spacing $spacing = null,
+    ) {
+        $this->columns = $columns;
+        $this->rows = $rows;
+        $this->firstRowAsHeader = $firstRowAsHeader;
+        $this->showGridLines = $showGridLines;
+        $this->gridStyle = $gridStyle;
+        $this->horizontalCellContentAlignment = $horizontalCellContentAlignment;
+        $this->verticalCellContentAlignment = $verticalCellContentAlignment;
+        $this->fallback = $fallback;
+        $this->height = $height;
+        $this->separator = $separator;
+        $this->spacing = $spacing;
+    }
+
+    /**
+     * Make a "Table" instance in a single call
      *
      * @psalm-api
+     *
      * @param TableColumnDefinition[]|null $columns
      * @param TableRow[]|null $rows
      */
@@ -104,21 +136,19 @@ final class Table extends Element implements
         ?bool $separator = null,
         ?Spacing $spacing = null,
     ): self {
-        $self = new self();
-
-        $self->columns = $columns;
-        $self->rows = $rows;
-        $self->firstRowAsHeader = $firstRowAsHeader;
-        $self->showGridLines = $showGridLines;
-        $self->gridStyle = $gridStyle;
-        $self->horizontalCellContentAlignment = $horizontalCellContentAlignment;
-        $self->verticalCellContentAlignment = $verticalCellContentAlignment;
-        $self->fallback = $fallback;
-        $self->height = $height;
-        $self->separator = $separator;
-        $self->spacing = $spacing;
-
-        return $self;
+        return new self(
+            $columns,
+            $rows,
+            $firstRowAsHeader,
+            $showGridLines,
+            $gridStyle,
+            $horizontalCellContentAlignment,
+            $verticalCellContentAlignment,
+            $fallback,
+            $height,
+            $separator,
+            $spacing,
+        );
     }
 
     /**

@@ -14,7 +14,6 @@ use JsonSerializable;
  * Defines an array of inlines, allowing for inline text formatting.
  *
  * @since 1.2
- * @psalm-suppress MissingConstructor
  */
 final class RichTextBlock extends Element implements
     JsonSerializable,
@@ -47,9 +46,31 @@ final class RichTextBlock extends Element implements
     public ?HorizontalAlignment $horizontalAlignment = null;
 
     /**
-     * Make an instance in a single call
+     * Create a "RichTextBlock" instance in a single call
+     *
+     * @param InlineInterface[] $inlines
+     */
+    public function __construct(
+        array $inlines,
+        ?HorizontalAlignment $horizontalAlignment = null,
+        ElementInterface|FallbackOption|null $fallback = null,
+        ?BlockElementHeight $height = null,
+        ?bool $separator = null,
+        ?Spacing $spacing = null,
+    ) {
+        $this->inlines = $inlines;
+        $this->horizontalAlignment = $horizontalAlignment;
+        $this->fallback = $fallback;
+        $this->height = $height;
+        $this->separator = $separator;
+        $this->spacing = $spacing;
+    }
+
+    /**
+     * Make a "RichTextBlock" instance in a single call
      *
      * @psalm-api
+     *
      * @param InlineInterface[] $inlines
      */
     public static function make(
@@ -60,16 +81,14 @@ final class RichTextBlock extends Element implements
         ?bool $separator = null,
         ?Spacing $spacing = null,
     ): self {
-        $self = new self();
-
-        $self->inlines = $inlines;
-        $self->horizontalAlignment = $horizontalAlignment;
-        $self->fallback = $fallback;
-        $self->height = $height;
-        $self->separator = $separator;
-        $self->spacing = $spacing;
-
-        return $self;
+        return new self(
+            $inlines,
+            $horizontalAlignment,
+            $fallback,
+            $height,
+            $separator,
+            $spacing,
+        );
     }
 
     /**
