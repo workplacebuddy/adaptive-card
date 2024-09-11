@@ -279,6 +279,11 @@
                     "description": "Specifies the background image of the card.",
                     "version": "1.2"
                 },
+                "metadata": {
+                    "$ref": "#/definitions/Metadata",
+                    "description": "Defines various metadata properties typically not used for rendering the card",
+                    "version": "1.6"
+                },
                 "minHeight": {
                     "type": "string",
                     "description": "Specifies the minimum height of the card.",
@@ -352,6 +357,33 @@
                     "$ref": "#/definitions/Extendable.Element"
                 }
             ]
+        },
+        "CaptionSource": {
+            "description": "Defines a source for captions",
+            "version": "1.6",
+            "features": [196],
+            "properties": {
+                "type": {
+                    "enum": ["CaptionSource"],
+                    "description": "Must be `CaptionSource`"
+                },
+                "mimeType": {
+                    "type": "string",
+                    "description": "Mime type of associated caption file (e.g. `\"vtt\"`). For rendering in JavaScript, only `\"vtt\"` is supported, for rendering in UWP, `\"vtt\"` and `\"srt\"` are supported."
+                },
+                "url": {
+                    "type": "string",
+                    "format": "uri-reference",
+                    "description": "URL to captions."
+                },
+                "label": {
+                    "type": "string",
+                    "description": "Label of this caption to show to the user."
+                }
+            },
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["mimeType", "url", "label"]
         },
         "Column": {
             "description": "Defines a container that is part of a ColumnSet.",
@@ -944,6 +976,33 @@
                 }
             ]
         },
+        "Data.Query": {
+            "description": "The data populated in the event payload for fetching dynamic choices, sent to the card-author to help identify the dataset from which choices might be fetched to be displayed in the dropdown. It might contain auxillary data to limit the maximum number of choices that can be sent and to support pagination.",
+            "properties": {
+                "type": {
+                    "enum": ["Data.Query"],
+                    "description": "Must be `Data.Query`"
+                },
+                "dataset": {
+                    "type": "string",
+                    "description": "The dataset to be queried to get the choices.",
+                    "version": "1.6"
+                },
+                "count": {
+                    "type": "number",
+                    "description": "The maximum number of choices that should be returned by the query. It can be ignored if the card-author wants to send a different number.",
+                    "version": "1.6"
+                },
+                "skip": {
+                    "type": "number",
+                    "description": "The number of choices to be skipped in the list of choices returned by the query. It can be ignored if the card-author does not want pagination.",
+                    "version": "1.6"
+                }
+            },
+            "type": "object",
+            "additionalProperties": false,
+            "required": ["dataset"]
+        },
         "Input.Choice": {
             "description": "Describes a choice for use in a ChoiceSet.",
             "properties": {
@@ -978,6 +1037,11 @@
                     },
                     "description": "`Choice` options."
                 },
+                "choices.data": {
+                    "$ref": "#/definitions/Data.Query",
+                    "description": "Allows dynamic fetching of choices from the bot to be displayed as suggestions in the dropdown when the user types in the input field.",
+                    "version": "1.6"
+                },
                 "isMultiSelect": {
                     "type": "boolean",
                     "description": "Allow multiple choices to be selected.",
@@ -1003,6 +1067,9 @@
                 "errorMessage": [],
                 "isRequired": [],
                 "label": [],
+                "labelPosition": [],
+                "labelWidth": [],
+                "inputStyle": [],
                 "fallback": [],
                 "height": [],
                 "separator": [],
@@ -1045,6 +1112,9 @@
                 "errorMessage": [],
                 "isRequired": [],
                 "label": [],
+                "labelPosition": [],
+                "labelWidth": [],
+                "inputStyle": [],
                 "fallback": [],
                 "height": [],
                 "separator": [],
@@ -1087,6 +1157,9 @@
                 "errorMessage": [],
                 "isRequired": [],
                 "label": [],
+                "labelPosition": [],
+                "labelWidth": [],
+                "inputStyle": [],
                 "fallback": [],
                 "height": [],
                 "separator": [],
@@ -1144,6 +1217,9 @@
                 "errorMessage": [],
                 "isRequired": [],
                 "label": [],
+                "labelPosition": [],
+                "labelWidth": [],
+                "inputStyle": [],
                 "fallback": [],
                 "height": [],
                 "separator": [],
@@ -1186,6 +1262,9 @@
                 "errorMessage": [],
                 "isRequired": [],
                 "label": [],
+                "labelPosition": [],
+                "labelWidth": [],
+                "inputStyle": [],
                 "fallback": [],
                 "height": [],
                 "separator": [],
@@ -1236,6 +1315,9 @@
                 "errorMessage": [],
                 "isRequired": [],
                 "label": [],
+                "labelPosition": [],
+                "labelWidth": [],
+                "inputStyle": [],
                 "fallback": [],
                 "height": [],
                 "separator": [],
@@ -1271,11 +1353,20 @@
                 "poster": {
                     "type": "string",
                     "format": "uri-reference",
-                    "description": "URL of an image to display before playing. Supports data URI in version 1.2+"
+                    "description": "URL of an image to display before playing. Supports data URI in version 1.2+. If poster is omitted, the Media element will either use a default poster (controlled by the host application) or will attempt to automatically pull the poster from the target video service when the source URL points to a video from a Web provider such as YouTube."
                 },
                 "altText": {
                     "type": "string",
                     "description": "Alternate text describing the audio or video."
+                },
+                "captionSources": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/CaptionSource"
+                    },
+                    "description": "Array of captions sources for the media element to provide.",
+                    "required": false,
+                    "version": "1.6"
                 },
                 "fallback": [],
                 "height": [],
@@ -1305,7 +1396,8 @@
                 },
                 "mimeType": {
                     "type": "string",
-                    "description": "Mime type of associated media (e.g. `\"video/mp4\"`)."
+                    "description": "Mime type of associated media (e.g. `\"video/mp4\"`). For YouTube and other Web video URLs, `mimeType` can be omitted.",
+                    "required": false
                 },
                 "url": {
                     "type": "string",
@@ -1315,7 +1407,7 @@
             },
             "type": "object",
             "additionalProperties": false,
-            "required": ["mimeType", "url"]
+            "required": ["url"]
         },
         "RichTextBlock": {
             "description": "Defines an array of inlines, allowing for inline text formatting.",
@@ -1795,10 +1887,10 @@
             "description": "Style hint for `Input.ChoiceSet`.",
             "anyOf": [
                 {
-                    "enum": ["compact", "expanded"]
+                    "enum": ["compact", "expanded", "filtered"]
                 },
                 {
-                    "pattern": "^([c|C][o|O][m|M][p|P][a|A][c|C][t|T])|([e|E][x|X][p|P][a|A][n|N][d|D][e|E][d|D])$"
+                    "pattern": "^([c|C][o|O][m|M][p|P][a|A][c|C][t|T])|([e|E][x|X][p|P][a|A][n|N][d|D][e|E][d|D])|([f|F][i|I][l|L][t|T][e|E][r|R][e|E][d|D])$"
                 }
             ]
         },
@@ -1928,6 +2020,28 @@
                 },
                 {
                     "pattern": "^([d|D][e|E][f|F][a|A][u|U][l|L][t|T])|([p|P][e|E][r|R][s|S][o|O][n|N])$"
+                }
+            ]
+        },
+        "InputLabelPosition": {
+            "description": "Specifies position of the label with respect to input.",
+            "anyOf": [
+                {
+                    "enum": ["inline", "above"]
+                },
+                {
+                    "pattern": "^([i|I][n|N][l|L][i|I][n|N][e|E])|([a|A][b|B][o|O][v|V][e|E])$"
+                }
+            ]
+        },
+        "InputStyle": {
+            "description": "`revealOnHover`: Show input fields in read only view unless user takes any action. `default`: Show the default editable state for input controls",
+            "anyOf": [
+                {
+                    "enum": ["revealOnHover", "default"]
+                },
+                {
+                    "pattern": "^([r|R][e|E][v|V][e|E][a|A][l|L][o|O][n|N][h|H][o|O][v|V][e|E][r|R])|([d|D][e|E][f|F][a|A][u|U][l|L][t|T])$"
                 }
             ]
         },
@@ -2079,6 +2193,23 @@
             "additionalProperties": false,
             "required": ["url"]
         },
+        "Metadata": {
+            "description": "Defines various metadata properties",
+            "version": "1.6",
+            "properties": {
+                "type": {
+                    "enum": ["Metadata"],
+                    "description": "Must be `Metadata`"
+                },
+                "webUrl": {
+                    "type": "string",
+                    "format": "uri-reference",
+                    "description": "URL that uniquely identifies the card and serves as a browser fallback that can be used by some hosts."
+                }
+            },
+            "type": "object",
+            "additionalProperties": false
+        },
         "Refresh": {
             "description": "Defines how a card can be refreshed by making a request to the target Bot.",
             "version": "1.4",
@@ -2090,6 +2221,11 @@
                 "action": {
                     "$ref": "#/definitions/Action.Execute",
                     "description": "The action to be executed to refresh the card. Clients can run this refresh action automatically or can provide an affordance for users to trigger it manually."
+                },
+                "expires": {
+                    "type": "string",
+                    "description": "A timestamp that informs a Host when the card content has expired, and that it should trigger a refresh as appropriate. The format is ISO-8601 Instant format. E.g., 2022-01-01T12:00:00Z",
+                    "version": "1.6"
                 },
                 "userIds": {
                     "type": "array",
@@ -2841,6 +2977,28 @@
                     "type": "string",
                     "description": "Label for this input",
                     "version": "1.3"
+                },
+                "labelPosition": {
+                    "$ref": "#/definitions/InputLabelPosition",
+                    "description": "[SUPPORTED ONLY IN JAVASCRIPT SDK] Determines the position of the label. It can take 'inline' and 'above' values. By default, the label is placed 'above' when label position is not specified.",
+                    "version": "1.6"
+                },
+                "labelWidth": {
+                    "anyOf": [
+                        {
+                            "type": "string"
+                        },
+                        {
+                            "type": "number"
+                        }
+                    ],
+                    "description": "[SUPPORTED ONLY IN JAVASCRIPT SDK] Determines the width of the label in percent like 40 or a specific pixel width like '40px' when label is placed inline with the input. labelWidth would be ignored when the label is displayed above the input.",
+                    "version": "1.6"
+                },
+                "inputStyle": {
+                    "$ref": "#/definitions/InputStyle",
+                    "description": "[SUPPORTED ONLY IN JAVASCRIPT SDK] Style hint for input fields. Allows input fields to appear as read-only but when user clicks/focuses on the field, it allows them to update those fields.",
+                    "version": "1.6"
                 },
                 "fallback": {
                     "anyOf": [

@@ -9,6 +9,7 @@ declare(strict_types=1);
 namespace AdaptiveCard\Input;
 
 use AdaptiveCard\ChoiceInputStyle;
+use AdaptiveCard\Data\Query;
 use AdaptiveCard\ElementInterface;
 use AdaptiveCard\Input;
 use AdaptiveCard\InputInterface;
@@ -43,6 +44,14 @@ final class ChoiceSet extends Input implements
      * @since 1.0
      */
     public ?array $choices = null;
+
+    /**
+     * Allows dynamic fetching of choices from the bot to be displayed as suggestions
+     * in the dropdown when the user types in the input field.
+     *
+     * @since 1.6
+     */
+    public ?Query $choicesData = null;
 
     /**
      * Allow multiple choices to be selected.
@@ -86,6 +95,7 @@ final class ChoiceSet extends Input implements
     public static function make(
         string $id,
         ?array $choices = null,
+        ?Query $choicesData = null,
         ?bool $isMultiSelect = null,
         ?ChoiceInputStyle $style = null,
         ?string $value = null,
@@ -94,6 +104,9 @@ final class ChoiceSet extends Input implements
         ?string $errorMessage = null,
         ?bool $isRequired = null,
         ?string $label = null,
+        ?\AdaptiveCard\InputLabelPosition $labelPosition = null,
+        string|int|null $labelWidth = null,
+        ?\AdaptiveCard\InputStyle $inputStyle = null,
         ElementInterface|\AdaptiveCard\FallbackOption|null $fallback = null,
         ?\AdaptiveCard\BlockElementHeight $height = null,
         ?bool $separator = null,
@@ -105,6 +118,7 @@ final class ChoiceSet extends Input implements
 
         $self->id = $id;
         $self->choices = $choices;
+        $self->choicesData = $choicesData;
         $self->isMultiSelect = $isMultiSelect;
         $self->style = $style;
         $self->value = $value;
@@ -113,6 +127,9 @@ final class ChoiceSet extends Input implements
         $self->errorMessage = $errorMessage;
         $self->isRequired = $isRequired;
         $self->label = $label;
+        $self->labelPosition = $labelPosition;
+        $self->labelWidth = $labelWidth;
+        $self->inputStyle = $inputStyle;
         $self->fallback = $fallback;
         $self->height = $height;
         $self->separator = $separator;
@@ -134,6 +151,7 @@ final class ChoiceSet extends Input implements
                 [
                     'type' => self::TYPE,
                     'choices' => $this->choices,
+                    'choices.data' => $this->choicesData,
                     'isMultiSelect' => $this->isMultiSelect,
                     'style' => $this->style,
                     'value' => $this->value,

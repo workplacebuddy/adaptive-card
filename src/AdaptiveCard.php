@@ -96,6 +96,13 @@ final class AdaptiveCard implements JsonSerializable
     public BackgroundImage|string|null $backgroundImage = null;
 
     /**
+     * Defines various metadata properties typically not used for rendering the card
+     *
+     * @since 1.6
+     */
+    public ?Metadata $metadata = null;
+
+    /**
      * Specifies the minimum height of the card.
      *
      * @since 1.2
@@ -151,6 +158,7 @@ final class AdaptiveCard implements JsonSerializable
         ?ISelectActionInterface $selectAction = null,
         ?string $fallbackText = null,
         BackgroundImage|string|null $backgroundImage = null,
+        ?Metadata $metadata = null,
         ?string $minHeight = null,
         ?bool $rtl = null,
         ?string $speak = null,
@@ -167,6 +175,7 @@ final class AdaptiveCard implements JsonSerializable
         $self->selectAction = $selectAction;
         $self->fallbackText = $fallbackText;
         $self->backgroundImage = $backgroundImage;
+        $self->metadata = $metadata;
         $self->minHeight = $minHeight;
         $self->rtl = $rtl;
         $self->speak = $speak;
@@ -193,6 +202,7 @@ final class AdaptiveCard implements JsonSerializable
                 'selectAction' => $this->selectAction,
                 'fallbackText' => $this->fallbackText,
                 'backgroundImage' => $this->backgroundImage,
+                'metadata' => $this->metadata,
                 'minHeight' => $this->minHeight,
                 'rtl' => $this->rtl,
                 'speak' => $this->speak,

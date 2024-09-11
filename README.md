@@ -52,6 +52,6 @@ $card->actions = [
 -   Run `composer run generate` to generate a new version of classes/enums
 
 [adaptive card]: https://adaptivecards.io/
-[schema]: http://adaptivecards.io/schemas/adaptive-card.json
+[schema]: https://raw.githubusercontent.com/microsoft/AdaptiveCards/main/schemas/1.6.0/adaptive-card.json
 [packagist]: https://packagist.org/?query=yy
 [npm]: https://www.npmjs.com/

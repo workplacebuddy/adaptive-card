@@ -36,6 +36,15 @@ final class Refresh implements JsonSerializable
     public ?Execute $action = null;
 
     /**
+     * A timestamp that informs a Host when the card content has expired, and that it
+     * should trigger a refresh as appropriate. The format is ISO-8601 Instant format.
+     * E.g., 2022-01-01T12:00:00Z
+     *
+     * @since 1.6
+     */
+    public ?string $expires = null;
+
+    /**
      * A list of user Ids informing the client for which users should the refresh
      * action should be run automatically. Some clients will not run the refresh action
      * automatically unless this property is specified. Some clients may ignore this
@@ -54,11 +63,13 @@ final class Refresh implements JsonSerializable
      */
     public static function make(
         ?Execute $action = null,
+        ?string $expires = null,
         ?array $userIds = null,
     ): self {
         $self = new self();
 
         $self->action = $action;
+        $self->expires = $expires;
         $self->userIds = $userIds;
 
         return $self;
@@ -73,6 +84,7 @@ final class Refresh implements JsonSerializable
             [
                 'type' => self::TYPE,
                 'action' => $this->action,
+                'expires' => $this->expires,
                 'userIds' => $this->userIds,
             ],
             /** @psalm-suppress RedundantConditionGivenDocblockType */

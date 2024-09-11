@@ -220,6 +220,7 @@ class GenerateCommand extends Command
             'Version13' => '1.3',
             'Version14' => '1.4',
             'Version15' => '1.5',
+            'Version16' => '1.6',
         ];
 
         foreach ($versions as $caseName => $caseValue) {
@@ -429,6 +430,11 @@ class GenerateCommand extends Command
             // typo in the schema
             if ($propertyName === 'rtl?') {
                 $propertyName = 'rtl';
+            }
+
+            // invalid variable name in PHP
+            if ($propertyName === 'choices.data') {
+                $propertyName = 'choicesData';
             }
 
             // assume it available in the parent
@@ -687,11 +693,15 @@ class GenerateCommand extends Command
         }
 
         foreach ($ownProperties as $property) {
-            $propertyName = $property['property']->getName();
+            $fieldName = $propertyName = $property['property']->getName();
+
+            if ($fieldName === 'choicesData') {
+                $fieldName = 'choices.data';
+            }
 
             $body .= <<<BODY
 
-                '$propertyName' => \$this->$propertyName,
+                '$fieldName' => \$this->$propertyName,
             BODY;
         }
 

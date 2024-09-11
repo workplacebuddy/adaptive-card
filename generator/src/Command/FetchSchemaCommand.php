@@ -21,7 +21,7 @@ use Symfony\Component\Filesystem\Path;
 ]
 class FetchSchemaCommand extends Command
 {
-    private const SCHEMA = 'https://adaptivecards.io/schemas/adaptive-card.json';
+    private const SCHEMA = 'https://raw.githubusercontent.com/microsoft/AdaptiveCards/main/schemas/1.6.0/adaptive-card.json';
 
     protected function execute(
         InputInterface $input,
