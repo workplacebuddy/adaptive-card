@@ -15,7 +15,6 @@ use JsonSerializable;
  * Defines how a card can be refreshed by making a request to the target Bot.
  *
  * @since 1.4
- * @psalm-suppress MissingConstructor
  */
 final class Refresh implements JsonSerializable
 {
@@ -36,6 +35,15 @@ final class Refresh implements JsonSerializable
     public ?Execute $action = null;
 
     /**
+     * A timestamp that informs a Host when the card content has expired, and that it
+     * should trigger a refresh as appropriate. The format is ISO-8601 Instant format.
+     * E.g., 2022-01-01T12:00:00Z
+     *
+     * @since 1.6
+     */
+    public ?string $expires = null;
+
+    /**
      * A list of user Ids informing the client for which users should the refresh
      * action should be run automatically. Some clients will not run the refresh action
      * automatically unless this property is specified. Some clients may ignore this
@@ -47,21 +55,33 @@ final class Refresh implements JsonSerializable
     public ?array $userIds = null;
 
     /**
-     * Make an instance in a single call
+     * Create a "Refresh" instance in a single call
+     *
+     * @param string[]|null $userIds
+     */
+    public function __construct(
+        ?Execute $action = null,
+        ?string $expires = null,
+        ?array $userIds = null,
+    ) {
+        $this->action = $action;
+        $this->expires = $expires;
+        $this->userIds = $userIds;
+    }
+
+    /**
+     * Make a "Refresh" instance in a single call
      *
      * @psalm-api
+     *
      * @param string[]|null $userIds
      */
     public static function make(
         ?Execute $action = null,
+        ?string $expires = null,
         ?array $userIds = null,
     ): self {
-        $self = new self();
-
-        $self->action = $action;
-        $self->userIds = $userIds;
-
-        return $self;
+        return new self($action, $expires, $userIds);
     }
 
     /**
@@ -73,6 +93,7 @@ final class Refresh implements JsonSerializable
             [
                 'type' => self::TYPE,
                 'action' => $this->action,
+                'expires' => $this->expires,
                 'userIds' => $this->userIds,
             ],
             /** @psalm-suppress RedundantConditionGivenDocblockType */

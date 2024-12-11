@@ -14,7 +14,6 @@ use JsonSerializable;
  * Describes a choice for use in a ChoiceSet.
  *
  * @since 1.0
- * @psalm-suppress MissingConstructor
  */
 final class Choice implements JsonSerializable
 {
@@ -42,18 +41,22 @@ final class Choice implements JsonSerializable
     public string $value;
 
     /**
-     * Make an instance in a single call
+     * Create a "Choice" instance in a single call
+     */
+    public function __construct(string $title, string $value)
+    {
+        $this->title = $title;
+        $this->value = $value;
+    }
+
+    /**
+     * Make a "Choice" instance in a single call
      *
      * @psalm-api
      */
     public static function make(string $title, string $value): self
     {
-        $self = new self();
-
-        $self->title = $title;
-        $self->value = $value;
-
-        return $self;
+        return new self($title, $value);
     }
 
     /**

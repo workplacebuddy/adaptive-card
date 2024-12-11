@@ -70,10 +70,53 @@ final class AdaptiveCardTest extends TestCase
 
     /**
      * @covers AdaptiveCard
+     * @covers TextBlock
+     */
+    public function testSimpleTextBlockCardWithConstructor(): void
+    {
+        $card = new AdaptiveCard();
+
+        $card->body = [new TextBlock(text: 'Hello world!')];
+
+        $this->assertJsonStructure(
+            [
+                'type' => 'AdaptiveCard',
+                '$schema' =>
+                    'http://adaptivecards.io/schemas/adaptive-card.json',
+                'version' => '1.0',
+                'body' => [['type' => 'TextBlock', 'text' => 'Hello world!']],
+            ],
+            $card,
+        );
+    }
+
+    /**
+     * @covers AdaptiveCard
      */
     public function testSimpleEnumValueCard(): void
     {
         $card = AdaptiveCard::make(
+            verticalContentAlignment: VerticalContentAlignment::Center,
+        );
+
+        $this->assertJsonStructure(
+            [
+                'type' => 'AdaptiveCard',
+                '$schema' =>
+                    'http://adaptivecards.io/schemas/adaptive-card.json',
+                'version' => '1.0',
+                'verticalContentAlignment' => 'center',
+            ],
+            $card,
+        );
+    }
+
+    /**
+     * @covers AdaptiveCard
+     */
+    public function testSimpleEnumValueCardWithConstructor(): void
+    {
+        $card = new AdaptiveCard(
             verticalContentAlignment: VerticalContentAlignment::Center,
         );
 
