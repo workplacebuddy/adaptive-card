@@ -367,6 +367,7 @@ final class AdaptiveCardTest extends TestCase
     ): void {
         $json = json_encode($card);
 
+        $this->assertNotFalse($json);
         $this->assertJson($json);
 
         /** @var array $data */

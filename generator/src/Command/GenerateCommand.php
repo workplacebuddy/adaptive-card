@@ -15,9 +15,6 @@ use Nette\PhpGenerator\PhpNamespace;
 use Nette\PhpGenerator\Property;
 use Nette\PhpGenerator\PsrPrinter;
 use Symfony\Component\Console\Attribute\AsCommand;
-use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Path;
 use Symfony\Component\String\UnicodeString;
@@ -69,15 +66,13 @@ use Symfony\Component\String\UnicodeString;
         description: 'Generate Adaptive Card classes/enums',
     ),
 ]
-class GenerateCommand extends Command
+final class GenerateCommand
 {
     private const SCHEMA = 'http://adaptivecards.io/schemas/adaptive-card.json';
     private const BASE_NAMESPACE = 'AdaptiveCard';
 
-    protected function execute(
-        InputInterface $input,
-        OutputInterface $output,
-    ): int {
+    public function __invoke(): int
+    {
         $filesystem = new Filesystem();
 
         $baseLocation = Path::canonicalize(__DIR__ . '/../../../src');
@@ -86,10 +81,14 @@ class GenerateCommand extends Command
             __DIR__ . '/../../data/schema.json',
         );
 
+        $schemaContents = file_get_contents($schemaFilename);
+
+        assert($schemaContents !== false);
+
         /**
          * @psalm-var array{definitions: array<string, TDefinition>} $schema
          */
-        $schema = json_decode(file_get_contents($schemaFilename), true);
+        $schema = json_decode($schemaContents, true);
 
         /** @var array<string, array{string, PhpFile}> $generated */
         $generated = [];
@@ -180,7 +179,7 @@ class GenerateCommand extends Command
             $phpFilename =
                 $baseLocation .
                 '/' .
-                preg_replace(
+                (string) preg_replace(
                     '/^' . self::BASE_NAMESPACE . '\//',
                     '',
                     str_replace('\\', '/', $info[0]),
@@ -254,7 +253,7 @@ class GenerateCommand extends Command
 
         $namespace = self::BASE_NAMESPACE;
 
-        $className = preg_replace(
+        $className = (string) preg_replace(
             ['/^Extendable\./', '/^ImplementationsOf\.(.*)$/'],
             ['', '$1Interface'],
             $definitionName,
@@ -828,7 +827,7 @@ class GenerateCommand extends Command
         $phpBaseNamespace = new PhpNamespace(self::BASE_NAMESPACE);
 
         if (isset($info['$ref'])) {
-            $replaced = preg_replace(
+            $replaced = (string) preg_replace(
                 [
                     '@#/definitions/ImplementationsOf.(\w+)@i',
                     '@#/definitions/Extendable.(\w+)$@i',

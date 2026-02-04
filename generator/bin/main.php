@@ -14,8 +14,8 @@ Debug::enable();
 $application = new Application();
 $application->setName('Adaptive Card generator');
 
-$application->add(new FetchSchemaCommand());
-$application->add(new GenerateCommand());
+$application->addCommand(new FetchSchemaCommand());
+$application->addCommand(new GenerateCommand());
 
 $application->run();
 

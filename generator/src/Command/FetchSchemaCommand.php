@@ -6,10 +6,7 @@ namespace AdaptiveCardGenerator\Command;
 
 use Exception;
 use Symfony\Component\Console\Attribute\AsCommand;
-use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Exception\RuntimeException;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Filesystem\Path;
 
@@ -19,14 +16,12 @@ use Symfony\Component\Filesystem\Path;
         description: 'Fetch a fresh Adaptive Card schema',
     ),
 ]
-class FetchSchemaCommand extends Command
+final class FetchSchemaCommand
 {
     private const SCHEMA = 'https://raw.githubusercontent.com/microsoft/AdaptiveCards/main/schemas/1.6.0/adaptive-card.json';
 
-    protected function execute(
-        InputInterface $input,
-        OutputInterface $output,
-    ): int {
+    public function __invoke(): int
+    {
         $filesystem = new Filesystem();
 
         $schemaLocation = Path::canonicalize(__DIR__ . '/../../data');
@@ -55,13 +50,12 @@ class FetchSchemaCommand extends Command
             throw new RuntimeException('Could not decode schema', 0, $e);
         }
 
-        $filesystem->dumpFile(
-            $schemaFilename,
-            json_encode(
-                $schemaData,
-                JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES,
-            ) . "\n",
+        $jsonData = json_encode(
+            $schemaData,
+            JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_THROW_ON_ERROR,
         );
+
+        $filesystem->dumpFile($schemaFilename, $jsonData . "\n");
 
         return 0;
     }
