@@ -16,7 +16,7 @@ Some more specific elements are in their own namespaces, like
 the actions and the inputs:
 
 -   `AdaptiveCard\Action\OpenUrl` to open an URL when clicked
--   `AdapticeCard\Input\Text` to ask for some text
+-   `AdaptiveCard\Input\Text` to ask for some text
 -   Etc..
 
 All elements can be found here: https://adaptivecards.io/explorer/, everything
@@ -28,12 +28,12 @@ All elements also have a constructor to quickly create a single element:
 ### For example
 
 ```php
-$card = new AdaptiveCard\AdapticeCard();
+$card = new AdaptiveCard\AdaptiveCard();
 
 $card->body = [new AdaptiveCard\TextBlock(text: 'Hello world!')];
 
 $card->actions = [
-    new AdapticeCard\Action\OpenUrl(
+    new AdaptiveCard\Action\OpenUrl(
         title: 'Website',
         url: 'https://www.workplacebuddy.com/',
     ),
