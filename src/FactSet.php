@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 namespace AdaptiveCard;
 
+use AdaptiveCard\Extension\FactSetExtensionInterface;
 use JsonSerializable;
 
 /**
@@ -38,9 +39,17 @@ final class FactSet extends Element implements
     public array $facts;
 
     /**
+     * Extensions to augment this element
+     *
+     * @var FactSetExtensionInterface[]|null
+     */
+    public ?array $extensions;
+
+    /**
      * Create a "FactSet" instance in a single call
      *
      * @param Fact[] $facts
+     * @param FactSetExtensionInterface[]|null $extensions
      */
     public function __construct(
         array $facts,
@@ -48,12 +57,14 @@ final class FactSet extends Element implements
         ?BlockElementHeight $height = null,
         ?bool $separator = null,
         ?Spacing $spacing = null,
+        ?array $extensions = null,
     ) {
         $this->facts = $facts;
         $this->fallback = $fallback;
         $this->height = $height;
         $this->separator = $separator;
         $this->spacing = $spacing;
+        $this->extensions = $extensions;
     }
 
     /**
@@ -62,6 +73,7 @@ final class FactSet extends Element implements
      * @psalm-api
      *
      * @param Fact[] $facts
+     * @param FactSetExtensionInterface[]|null $extensions
      */
     public static function make(
         array $facts,
@@ -69,8 +81,16 @@ final class FactSet extends Element implements
         ?BlockElementHeight $height = null,
         ?bool $separator = null,
         ?Spacing $spacing = null,
+        ?array $extensions = null,
     ): self {
-        return new self($facts, $fallback, $height, $separator, $spacing);
+        return new self(
+            $facts,
+            $fallback,
+            $height,
+            $separator,
+            $spacing,
+            $extensions,
+        );
     }
 
     /**
@@ -78,12 +98,22 @@ final class FactSet extends Element implements
      */
     public function jsonSerialize(): array
     {
+        $extensionProperties = [];
+
+        foreach ($this->extensions ?? [] as $extension) {
+            $extensionProperties = array_merge_recursive(
+                $extensionProperties,
+                $extension->getExtensionProperties(),
+            );
+        }
+
         return array_merge(
             parent::jsonSerialize(),
             array_filter(
                 [
                     'type' => self::TYPE,
                     'facts' => $this->facts,
+                    ...$extensionProperties,
                 ],
                 /** @psalm-suppress RedundantConditionGivenDocblockType */
                 fn(mixed $value): bool => $value !== null,

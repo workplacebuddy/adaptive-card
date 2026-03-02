@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 namespace AdaptiveCard;
 
+use AdaptiveCard\Extension\AdaptiveCardExtensionInterface;
 use JsonSerializable;
 
 /**
@@ -142,10 +143,18 @@ final class AdaptiveCard implements JsonSerializable
     public ?VerticalContentAlignment $verticalContentAlignment = null;
 
     /**
+     * Extensions to augment this element
+     *
+     * @var AdaptiveCardExtensionInterface[]|null
+     */
+    public ?array $extensions;
+
+    /**
      * Create a "AdaptiveCard" instance in a single call
      *
      * @param ElementInterface[]|null $body
      * @param ActionInterface[]|null $actions
+     * @param AdaptiveCardExtensionInterface[]|null $extensions
      */
     public function __construct(
         Version $version = Version::Version10,
@@ -162,6 +171,7 @@ final class AdaptiveCard implements JsonSerializable
         ?string $speak = null,
         ?string $lang = null,
         ?VerticalContentAlignment $verticalContentAlignment = null,
+        ?array $extensions = null,
     ) {
         $this->version = $version;
         $this->refresh = $refresh;
@@ -177,6 +187,7 @@ final class AdaptiveCard implements JsonSerializable
         $this->speak = $speak;
         $this->lang = $lang;
         $this->verticalContentAlignment = $verticalContentAlignment;
+        $this->extensions = $extensions;
     }
 
     /**
@@ -186,6 +197,7 @@ final class AdaptiveCard implements JsonSerializable
      *
      * @param ElementInterface[]|null $body
      * @param ActionInterface[]|null $actions
+     * @param AdaptiveCardExtensionInterface[]|null $extensions
      */
     public static function make(
         Version $version = Version::Version10,
@@ -202,6 +214,7 @@ final class AdaptiveCard implements JsonSerializable
         ?string $speak = null,
         ?string $lang = null,
         ?VerticalContentAlignment $verticalContentAlignment = null,
+        ?array $extensions = null,
     ): self {
         return new self(
             $version,
@@ -218,6 +231,7 @@ final class AdaptiveCard implements JsonSerializable
             $speak,
             $lang,
             $verticalContentAlignment,
+            $extensions,
         );
     }
 
@@ -226,6 +240,15 @@ final class AdaptiveCard implements JsonSerializable
      */
     public function jsonSerialize(): array
     {
+        $extensionProperties = [];
+
+        foreach ($this->extensions ?? [] as $extension) {
+            $extensionProperties = array_merge_recursive(
+                $extensionProperties,
+                $extension->getExtensionProperties(),
+            );
+        }
+
         return array_filter(
             [
                 'type' => self::TYPE,
@@ -244,6 +267,7 @@ final class AdaptiveCard implements JsonSerializable
                 'speak' => $this->speak,
                 'lang' => $this->lang,
                 'verticalContentAlignment' => $this->verticalContentAlignment,
+                ...$extensionProperties,
             ],
             /** @psalm-suppress RedundantConditionGivenDocblockType */
             fn(mixed $value): bool => $value !== null,

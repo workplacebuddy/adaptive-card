@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 namespace AdaptiveCard;
 
+use AdaptiveCard\Extension\TextBlockExtensionInterface;
 use JsonSerializable;
 
 /**
@@ -102,7 +103,16 @@ final class TextBlock extends Element implements
     public ?TextBlockStyle $style = null;
 
     /**
+     * Extensions to augment this element
+     *
+     * @var TextBlockExtensionInterface[]|null
+     */
+    public ?array $extensions;
+
+    /**
      * Create a "TextBlock" instance in a single call
+     *
+     * @param TextBlockExtensionInterface[]|null $extensions
      */
     public function __construct(
         string $text,
@@ -119,6 +129,7 @@ final class TextBlock extends Element implements
         ?BlockElementHeight $height = null,
         ?bool $separator = null,
         ?Spacing $spacing = null,
+        ?array $extensions = null,
     ) {
         $this->text = $text;
         $this->color = $color;
@@ -134,12 +145,15 @@ final class TextBlock extends Element implements
         $this->height = $height;
         $this->separator = $separator;
         $this->spacing = $spacing;
+        $this->extensions = $extensions;
     }
 
     /**
      * Make a "TextBlock" instance in a single call
      *
      * @psalm-api
+     *
+     * @param TextBlockExtensionInterface[]|null $extensions
      */
     public static function make(
         string $text,
@@ -156,6 +170,7 @@ final class TextBlock extends Element implements
         ?BlockElementHeight $height = null,
         ?bool $separator = null,
         ?Spacing $spacing = null,
+        ?array $extensions = null,
     ): self {
         return new self(
             $text,
@@ -172,6 +187,7 @@ final class TextBlock extends Element implements
             $height,
             $separator,
             $spacing,
+            $extensions,
         );
     }
 
@@ -180,6 +196,15 @@ final class TextBlock extends Element implements
      */
     public function jsonSerialize(): array
     {
+        $extensionProperties = [];
+
+        foreach ($this->extensions ?? [] as $extension) {
+            $extensionProperties = array_merge_recursive(
+                $extensionProperties,
+                $extension->getExtensionProperties(),
+            );
+        }
+
         return array_merge(
             parent::jsonSerialize(),
             array_filter(
@@ -195,6 +220,7 @@ final class TextBlock extends Element implements
                     'weight' => $this->weight,
                     'wrap' => $this->wrap,
                     'style' => $this->style,
+                    ...$extensionProperties,
                 ],
                 /** @psalm-suppress RedundantConditionGivenDocblockType */
                 fn(mixed $value): bool => $value !== null,

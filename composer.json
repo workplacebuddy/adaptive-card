@@ -17,7 +17,8 @@
     },
     "autoload": {
         "psr-4": {
-            "AdaptiveCard\\": "src"
+            "AdaptiveCard\\": "src",
+            "AdaptiveCardExtension\\": "extension"
         }
     },
     "autoload-dev": {

@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 namespace AdaptiveCard;
 
+use AdaptiveCard\Extension\ContainerExtensionInterface;
 use JsonSerializable;
 
 /**
@@ -93,9 +94,17 @@ final class Container extends Element implements
     public ?bool $rtl = null;
 
     /**
+     * Extensions to augment this element
+     *
+     * @var ContainerExtensionInterface[]|null
+     */
+    public ?array $extensions;
+
+    /**
      * Create a "Container" instance in a single call
      *
      * @param ElementInterface[] $items
+     * @param ContainerExtensionInterface[]|null $extensions
      */
     public function __construct(
         array $items,
@@ -110,6 +119,7 @@ final class Container extends Element implements
         ?BlockElementHeight $height = null,
         ?bool $separator = null,
         ?Spacing $spacing = null,
+        ?array $extensions = null,
     ) {
         $this->items = $items;
         $this->selectAction = $selectAction;
@@ -123,6 +133,7 @@ final class Container extends Element implements
         $this->height = $height;
         $this->separator = $separator;
         $this->spacing = $spacing;
+        $this->extensions = $extensions;
     }
 
     /**
@@ -131,6 +142,7 @@ final class Container extends Element implements
      * @psalm-api
      *
      * @param ElementInterface[] $items
+     * @param ContainerExtensionInterface[]|null $extensions
      */
     public static function make(
         array $items,
@@ -145,6 +157,7 @@ final class Container extends Element implements
         ?BlockElementHeight $height = null,
         ?bool $separator = null,
         ?Spacing $spacing = null,
+        ?array $extensions = null,
     ): self {
         return new self(
             $items,
@@ -159,6 +172,7 @@ final class Container extends Element implements
             $height,
             $separator,
             $spacing,
+            $extensions,
         );
     }
 
@@ -167,6 +181,15 @@ final class Container extends Element implements
      */
     public function jsonSerialize(): array
     {
+        $extensionProperties = [];
+
+        foreach ($this->extensions ?? [] as $extension) {
+            $extensionProperties = array_merge_recursive(
+                $extensionProperties,
+                $extension->getExtensionProperties(),
+            );
+        }
+
         return array_merge(
             parent::jsonSerialize(),
             array_filter(
@@ -181,6 +204,7 @@ final class Container extends Element implements
                     'backgroundImage' => $this->backgroundImage,
                     'minHeight' => $this->minHeight,
                     'rtl' => $this->rtl,
+                    ...$extensionProperties,
                 ],
                 /** @psalm-suppress RedundantConditionGivenDocblockType */
                 fn(mixed $value): bool => $value !== null,

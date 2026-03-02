@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 namespace AdaptiveCard;
 
+use AdaptiveCard\Extension\ImageExtensionInterface;
 use JsonSerializable;
 
 /**
@@ -146,7 +147,16 @@ final class Image implements
     public object|array|null $requires = null;
 
     /**
+     * Extensions to augment this element
+     *
+     * @var ImageExtensionInterface[]|null
+     */
+    public ?array $extensions;
+
+    /**
      * Create a "Image" instance in a single call
+     *
+     * @param ImageExtensionInterface[]|null $extensions
      */
     public function __construct(
         string $url,
@@ -164,6 +174,7 @@ final class Image implements
         ?string $id = null,
         ?bool $isVisible = null,
         object|array|null $requires = null,
+        ?array $extensions = null,
     ) {
         $this->url = $url;
         $this->altText = $altText;
@@ -180,12 +191,15 @@ final class Image implements
         $this->id = $id;
         $this->isVisible = $isVisible;
         $this->requires = $requires;
+        $this->extensions = $extensions;
     }
 
     /**
      * Make a "Image" instance in a single call
      *
      * @psalm-api
+     *
+     * @param ImageExtensionInterface[]|null $extensions
      */
     public static function make(
         string $url,
@@ -203,6 +217,7 @@ final class Image implements
         ?string $id = null,
         ?bool $isVisible = null,
         object|array|null $requires = null,
+        ?array $extensions = null,
     ): self {
         return new self(
             $url,
@@ -220,6 +235,7 @@ final class Image implements
             $id,
             $isVisible,
             $requires,
+            $extensions,
         );
     }
 
@@ -228,6 +244,15 @@ final class Image implements
      */
     public function jsonSerialize(): array
     {
+        $extensionProperties = [];
+
+        foreach ($this->extensions ?? [] as $extension) {
+            $extensionProperties = array_merge_recursive(
+                $extensionProperties,
+                $extension->getExtensionProperties(),
+            );
+        }
+
         return array_filter(
             [
                 'type' => self::TYPE,
@@ -246,6 +271,7 @@ final class Image implements
                 'id' => $this->id,
                 'isVisible' => $this->isVisible,
                 'requires' => $this->requires,
+                ...$extensionProperties,
             ],
             /** @psalm-suppress RedundantConditionGivenDocblockType */
             fn(mixed $value): bool => $value !== null,

@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 namespace AdaptiveCard;
 
+use AdaptiveCard\Extension\TargetElementExtensionInterface;
 use JsonSerializable;
 
 /**
@@ -40,24 +41,40 @@ final class TargetElement implements JsonSerializable
     public ?bool $isVisible = null;
 
     /**
-     * Create a "TargetElement" instance in a single call
+     * Extensions to augment this element
+     *
+     * @var TargetElementExtensionInterface[]|null
      */
-    public function __construct(string $elementId, ?bool $isVisible = null)
-    {
+    public ?array $extensions;
+
+    /**
+     * Create a "TargetElement" instance in a single call
+     *
+     * @param TargetElementExtensionInterface[]|null $extensions
+     */
+    public function __construct(
+        string $elementId,
+        ?bool $isVisible = null,
+        ?array $extensions = null,
+    ) {
         $this->elementId = $elementId;
         $this->isVisible = $isVisible;
+        $this->extensions = $extensions;
     }
 
     /**
      * Make a "TargetElement" instance in a single call
      *
      * @psalm-api
+     *
+     * @param TargetElementExtensionInterface[]|null $extensions
      */
     public static function make(
         string $elementId,
         ?bool $isVisible = null,
+        ?array $extensions = null,
     ): self {
-        return new self($elementId, $isVisible);
+        return new self($elementId, $isVisible, $extensions);
     }
 
     /**
@@ -65,11 +82,21 @@ final class TargetElement implements JsonSerializable
      */
     public function jsonSerialize(): array
     {
+        $extensionProperties = [];
+
+        foreach ($this->extensions ?? [] as $extension) {
+            $extensionProperties = array_merge_recursive(
+                $extensionProperties,
+                $extension->getExtensionProperties(),
+            );
+        }
+
         return array_filter(
             [
                 'type' => self::TYPE,
                 'elementId' => $this->elementId,
                 'isVisible' => $this->isVisible,
+                ...$extensionProperties,
             ],
             /** @psalm-suppress RedundantConditionGivenDocblockType */
             fn(mixed $value): bool => $value !== null,

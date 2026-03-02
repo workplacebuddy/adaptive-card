@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 namespace AdaptiveCard;
 
+use AdaptiveCard\Extension\AuthCardButtonExtensionInterface;
 use JsonSerializable;
 
 /**
@@ -49,29 +50,43 @@ final class AuthCardButton implements JsonSerializable
     public string $value;
 
     /**
+     * Extensions to augment this element
+     *
+     * @var AuthCardButtonExtensionInterface[]|null
+     */
+    public ?array $extensions;
+
+    /**
      * Create a "AuthCardButton" instance in a single call
+     *
+     * @param AuthCardButtonExtensionInterface[]|null $extensions
      */
     public function __construct(
         string $value,
         ?string $title = null,
         ?string $image = null,
+        ?array $extensions = null,
     ) {
         $this->value = $value;
         $this->title = $title;
         $this->image = $image;
+        $this->extensions = $extensions;
     }
 
     /**
      * Make a "AuthCardButton" instance in a single call
      *
      * @psalm-api
+     *
+     * @param AuthCardButtonExtensionInterface[]|null $extensions
      */
     public static function make(
         string $value,
         ?string $title = null,
         ?string $image = null,
+        ?array $extensions = null,
     ): self {
-        return new self($value, $title, $image);
+        return new self($value, $title, $image, $extensions);
     }
 
     /**
@@ -79,12 +94,22 @@ final class AuthCardButton implements JsonSerializable
      */
     public function jsonSerialize(): array
     {
+        $extensionProperties = [];
+
+        foreach ($this->extensions ?? [] as $extension) {
+            $extensionProperties = array_merge_recursive(
+                $extensionProperties,
+                $extension->getExtensionProperties(),
+            );
+        }
+
         return array_filter(
             [
                 'type' => self::TYPE,
                 'title' => $this->title,
                 'image' => $this->image,
                 'value' => $this->value,
+                ...$extensionProperties,
             ],
             /** @psalm-suppress RedundantConditionGivenDocblockType */
             fn(mixed $value): bool => $value !== null,

@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 namespace AdaptiveCard;
 
+use AdaptiveCard\Extension\MediaExtensionInterface;
 use JsonSerializable;
 
 /**
@@ -63,10 +64,18 @@ final class Media extends Element implements
     public ?array $captionSources = null;
 
     /**
+     * Extensions to augment this element
+     *
+     * @var MediaExtensionInterface[]|null
+     */
+    public ?array $extensions;
+
+    /**
      * Create a "Media" instance in a single call
      *
      * @param MediaSource[] $sources
      * @param CaptionSource[]|null $captionSources
+     * @param MediaExtensionInterface[]|null $extensions
      */
     public function __construct(
         array $sources,
@@ -77,6 +86,7 @@ final class Media extends Element implements
         ?BlockElementHeight $height = null,
         ?bool $separator = null,
         ?Spacing $spacing = null,
+        ?array $extensions = null,
     ) {
         $this->sources = $sources;
         $this->poster = $poster;
@@ -86,6 +96,7 @@ final class Media extends Element implements
         $this->height = $height;
         $this->separator = $separator;
         $this->spacing = $spacing;
+        $this->extensions = $extensions;
     }
 
     /**
@@ -95,6 +106,7 @@ final class Media extends Element implements
      *
      * @param MediaSource[] $sources
      * @param CaptionSource[]|null $captionSources
+     * @param MediaExtensionInterface[]|null $extensions
      */
     public static function make(
         array $sources,
@@ -105,6 +117,7 @@ final class Media extends Element implements
         ?BlockElementHeight $height = null,
         ?bool $separator = null,
         ?Spacing $spacing = null,
+        ?array $extensions = null,
     ): self {
         return new self(
             $sources,
@@ -115,6 +128,7 @@ final class Media extends Element implements
             $height,
             $separator,
             $spacing,
+            $extensions,
         );
     }
 
@@ -123,6 +137,15 @@ final class Media extends Element implements
      */
     public function jsonSerialize(): array
     {
+        $extensionProperties = [];
+
+        foreach ($this->extensions ?? [] as $extension) {
+            $extensionProperties = array_merge_recursive(
+                $extensionProperties,
+                $extension->getExtensionProperties(),
+            );
+        }
+
         return array_merge(
             parent::jsonSerialize(),
             array_filter(
@@ -132,6 +155,7 @@ final class Media extends Element implements
                     'poster' => $this->poster,
                     'altText' => $this->altText,
                     'captionSources' => $this->captionSources,
+                    ...$extensionProperties,
                 ],
                 /** @psalm-suppress RedundantConditionGivenDocblockType */
                 fn(mixed $value): bool => $value !== null,

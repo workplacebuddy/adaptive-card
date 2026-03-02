@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 namespace AdaptiveCard;
 
+use AdaptiveCard\Extension\ColumnExtensionInterface;
 use JsonSerializable;
 
 /**
@@ -123,9 +124,17 @@ final class Column extends ToggleableItem implements
     public string|int|null $width = null;
 
     /**
+     * Extensions to augment this element
+     *
+     * @var ColumnExtensionInterface[]|null
+     */
+    public ?array $extensions;
+
+    /**
      * Create a "Column" instance in a single call
      *
      * @param ElementInterface[]|null $items
+     * @param ColumnExtensionInterface[]|null $extensions
      */
     public function __construct(
         ?array $items = null,
@@ -142,6 +151,7 @@ final class Column extends ToggleableItem implements
         string|int|null $width = null,
         ?string $id = null,
         ?bool $isVisible = null,
+        ?array $extensions = null,
     ) {
         $this->items = $items;
         $this->backgroundImage = $backgroundImage;
@@ -157,6 +167,7 @@ final class Column extends ToggleableItem implements
         $this->width = $width;
         $this->id = $id;
         $this->isVisible = $isVisible;
+        $this->extensions = $extensions;
     }
 
     /**
@@ -165,6 +176,7 @@ final class Column extends ToggleableItem implements
      * @psalm-api
      *
      * @param ElementInterface[]|null $items
+     * @param ColumnExtensionInterface[]|null $extensions
      */
     public static function make(
         ?array $items = null,
@@ -181,6 +193,7 @@ final class Column extends ToggleableItem implements
         string|int|null $width = null,
         ?string $id = null,
         ?bool $isVisible = null,
+        ?array $extensions = null,
     ): self {
         return new self(
             $items,
@@ -197,6 +210,7 @@ final class Column extends ToggleableItem implements
             $width,
             $id,
             $isVisible,
+            $extensions,
         );
     }
 
@@ -205,6 +219,15 @@ final class Column extends ToggleableItem implements
      */
     public function jsonSerialize(): array
     {
+        $extensionProperties = [];
+
+        foreach ($this->extensions ?? [] as $extension) {
+            $extensionProperties = array_merge_recursive(
+                $extensionProperties,
+                $extension->getExtensionProperties(),
+            );
+        }
+
         return array_merge(
             parent::jsonSerialize(),
             array_filter(
@@ -223,6 +246,7 @@ final class Column extends ToggleableItem implements
                     'verticalContentAlignment' =>
                         $this->verticalContentAlignment,
                     'width' => $this->width,
+                    ...$extensionProperties,
                 ],
                 /** @psalm-suppress RedundantConditionGivenDocblockType */
                 fn(mixed $value): bool => $value !== null,

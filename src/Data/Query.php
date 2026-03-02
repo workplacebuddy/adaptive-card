@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 namespace AdaptiveCard\Data;
 
+use AdaptiveCard\Extension\Data\QueryExtensionInterface;
 use JsonSerializable;
 
 /**
@@ -51,29 +52,43 @@ final class Query implements JsonSerializable
     public ?int $skip = null;
 
     /**
+     * Extensions to augment this element
+     *
+     * @var QueryExtensionInterface[]|null
+     */
+    public ?array $extensions;
+
+    /**
      * Create a "Query" instance in a single call
+     *
+     * @param QueryExtensionInterface[]|null $extensions
      */
     public function __construct(
         string $dataset,
         ?int $count = null,
         ?int $skip = null,
+        ?array $extensions = null,
     ) {
         $this->dataset = $dataset;
         $this->count = $count;
         $this->skip = $skip;
+        $this->extensions = $extensions;
     }
 
     /**
      * Make a "Query" instance in a single call
      *
      * @psalm-api
+     *
+     * @param QueryExtensionInterface[]|null $extensions
      */
     public static function make(
         string $dataset,
         ?int $count = null,
         ?int $skip = null,
+        ?array $extensions = null,
     ): self {
-        return new self($dataset, $count, $skip);
+        return new self($dataset, $count, $skip, $extensions);
     }
 
     /**
@@ -81,12 +96,22 @@ final class Query implements JsonSerializable
      */
     public function jsonSerialize(): array
     {
+        $extensionProperties = [];
+
+        foreach ($this->extensions ?? [] as $extension) {
+            $extensionProperties = array_merge_recursive(
+                $extensionProperties,
+                $extension->getExtensionProperties(),
+            );
+        }
+
         return array_filter(
             [
                 'type' => self::TYPE,
                 'dataset' => $this->dataset,
                 'count' => $this->count,
                 'skip' => $this->skip,
+                ...$extensionProperties,
             ],
             /** @psalm-suppress RedundantConditionGivenDocblockType */
             fn(mixed $value): bool => $value !== null,

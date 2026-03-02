@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 namespace AdaptiveCard;
 
+use AdaptiveCard\Extension\TableColumnDefinitionExtensionInterface;
 use JsonSerializable;
 
 /**
@@ -55,32 +56,47 @@ final class TableColumnDefinition implements JsonSerializable
     public ?VerticalAlignment $verticalCellContentAlignment = null;
 
     /**
+     * Extensions to augment this element
+     *
+     * @var TableColumnDefinitionExtensionInterface[]|null
+     */
+    public ?array $extensions;
+
+    /**
      * Create a "TableColumnDefinition" instance in a single call
+     *
+     * @param TableColumnDefinitionExtensionInterface[]|null $extensions
      */
     public function __construct(
         string|int|null $width = null,
         ?HorizontalAlignment $horizontalCellContentAlignment = null,
         ?VerticalAlignment $verticalCellContentAlignment = null,
+        ?array $extensions = null,
     ) {
         $this->width = $width;
         $this->horizontalCellContentAlignment = $horizontalCellContentAlignment;
         $this->verticalCellContentAlignment = $verticalCellContentAlignment;
+        $this->extensions = $extensions;
     }
 
     /**
      * Make a "TableColumnDefinition" instance in a single call
      *
      * @psalm-api
+     *
+     * @param TableColumnDefinitionExtensionInterface[]|null $extensions
      */
     public static function make(
         string|int|null $width = null,
         ?HorizontalAlignment $horizontalCellContentAlignment = null,
         ?VerticalAlignment $verticalCellContentAlignment = null,
+        ?array $extensions = null,
     ): self {
         return new self(
             $width,
             $horizontalCellContentAlignment,
             $verticalCellContentAlignment,
+            $extensions,
         );
     }
 
@@ -89,6 +105,15 @@ final class TableColumnDefinition implements JsonSerializable
      */
     public function jsonSerialize(): array
     {
+        $extensionProperties = [];
+
+        foreach ($this->extensions ?? [] as $extension) {
+            $extensionProperties = array_merge_recursive(
+                $extensionProperties,
+                $extension->getExtensionProperties(),
+            );
+        }
+
         return array_filter(
             [
                 'type' => self::TYPE,
@@ -97,6 +122,7 @@ final class TableColumnDefinition implements JsonSerializable
                     $this->horizontalCellContentAlignment,
                 'verticalCellContentAlignment' =>
                     $this->verticalCellContentAlignment,
+                ...$extensionProperties,
             ],
             /** @psalm-suppress RedundantConditionGivenDocblockType */
             fn(mixed $value): bool => $value !== null,

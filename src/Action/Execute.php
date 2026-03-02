@@ -11,6 +11,7 @@ namespace AdaptiveCard\Action;
 use AdaptiveCard\Action;
 use AdaptiveCard\ActionInterface;
 use AdaptiveCard\AssociatedInputs;
+use AdaptiveCard\Extension\Action\ExecuteExtensionInterface;
 use AdaptiveCard\ISelectActionInterface;
 use AdaptiveCard\ItemInterface;
 use JsonSerializable;
@@ -62,7 +63,16 @@ final class Execute extends Action implements
     public ?AssociatedInputs $associatedInputs = null;
 
     /**
+     * Extensions to augment this element
+     *
+     * @var ExecuteExtensionInterface[]|null
+     */
+    public ?array $extensions;
+
+    /**
      * Create a "Execute" instance in a single call
+     *
+     * @param ExecuteExtensionInterface[]|null $extensions
      */
     public function __construct(
         ?string $verb = null,
@@ -76,6 +86,7 @@ final class Execute extends Action implements
         ?string $tooltip = null,
         ?bool $isEnabled = null,
         ?\AdaptiveCard\ActionMode $mode = null,
+        ?array $extensions = null,
     ) {
         $this->verb = $verb;
         $this->data = $data;
@@ -88,12 +99,15 @@ final class Execute extends Action implements
         $this->tooltip = $tooltip;
         $this->isEnabled = $isEnabled;
         $this->mode = $mode;
+        $this->extensions = $extensions;
     }
 
     /**
      * Make a "Execute" instance in a single call
      *
      * @psalm-api
+     *
+     * @param ExecuteExtensionInterface[]|null $extensions
      */
     public static function make(
         ?string $verb = null,
@@ -107,6 +121,7 @@ final class Execute extends Action implements
         ?string $tooltip = null,
         ?bool $isEnabled = null,
         ?\AdaptiveCard\ActionMode $mode = null,
+        ?array $extensions = null,
     ): self {
         return new self(
             $verb,
@@ -120,6 +135,7 @@ final class Execute extends Action implements
             $tooltip,
             $isEnabled,
             $mode,
+            $extensions,
         );
     }
 
@@ -128,6 +144,15 @@ final class Execute extends Action implements
      */
     public function jsonSerialize(): array
     {
+        $extensionProperties = [];
+
+        foreach ($this->extensions ?? [] as $extension) {
+            $extensionProperties = array_merge_recursive(
+                $extensionProperties,
+                $extension->getExtensionProperties(),
+            );
+        }
+
         return array_merge(
             parent::jsonSerialize(),
             array_filter(
@@ -136,6 +161,7 @@ final class Execute extends Action implements
                     'verb' => $this->verb,
                     'data' => $this->data,
                     'associatedInputs' => $this->associatedInputs,
+                    ...$extensionProperties,
                 ],
                 /** @psalm-suppress RedundantConditionGivenDocblockType */
                 fn(mixed $value): bool => $value !== null,

@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 namespace AdaptiveCard;
 
+use AdaptiveCard\Extension\TableExtensionInterface;
 use JsonSerializable;
 
 /**
@@ -84,10 +85,18 @@ final class Table extends Element implements
     public ?VerticalAlignment $verticalCellContentAlignment = null;
 
     /**
+     * Extensions to augment this element
+     *
+     * @var TableExtensionInterface[]|null
+     */
+    public ?array $extensions;
+
+    /**
      * Create a "Table" instance in a single call
      *
      * @param TableColumnDefinition[]|null $columns
      * @param TableRow[]|null $rows
+     * @param TableExtensionInterface[]|null $extensions
      */
     public function __construct(
         ?array $columns = null,
@@ -101,6 +110,7 @@ final class Table extends Element implements
         ?BlockElementHeight $height = null,
         ?bool $separator = null,
         ?Spacing $spacing = null,
+        ?array $extensions = null,
     ) {
         $this->columns = $columns;
         $this->rows = $rows;
@@ -113,6 +123,7 @@ final class Table extends Element implements
         $this->height = $height;
         $this->separator = $separator;
         $this->spacing = $spacing;
+        $this->extensions = $extensions;
     }
 
     /**
@@ -122,6 +133,7 @@ final class Table extends Element implements
      *
      * @param TableColumnDefinition[]|null $columns
      * @param TableRow[]|null $rows
+     * @param TableExtensionInterface[]|null $extensions
      */
     public static function make(
         ?array $columns = null,
@@ -135,6 +147,7 @@ final class Table extends Element implements
         ?BlockElementHeight $height = null,
         ?bool $separator = null,
         ?Spacing $spacing = null,
+        ?array $extensions = null,
     ): self {
         return new self(
             $columns,
@@ -148,6 +161,7 @@ final class Table extends Element implements
             $height,
             $separator,
             $spacing,
+            $extensions,
         );
     }
 
@@ -156,6 +170,15 @@ final class Table extends Element implements
      */
     public function jsonSerialize(): array
     {
+        $extensionProperties = [];
+
+        foreach ($this->extensions ?? [] as $extension) {
+            $extensionProperties = array_merge_recursive(
+                $extensionProperties,
+                $extension->getExtensionProperties(),
+            );
+        }
+
         return array_merge(
             parent::jsonSerialize(),
             array_filter(
@@ -170,6 +193,7 @@ final class Table extends Element implements
                         $this->horizontalCellContentAlignment,
                     'verticalCellContentAlignment' =>
                         $this->verticalCellContentAlignment,
+                    ...$extensionProperties,
                 ],
                 /** @psalm-suppress RedundantConditionGivenDocblockType */
                 fn(mixed $value): bool => $value !== null,

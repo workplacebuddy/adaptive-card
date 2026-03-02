@@ -40,6 +40,47 @@ $card->actions = [
 ];
 ```
 
+## Extensions
+
+All elements have an extensions property to inject custom properties into the
+elements; for every element there is an unique interface, so injecting
+extensions for the wrong element is not possible.
+
+The extensions exist as a stopgap for missing properties in the schema. There
+is currently no up-to-date schema available.
+
+Merging is done with `array_merge_recursive`:
+
+> If the input arrays have the same string keys, then the values for these keys
+> are merged together into an array, and this is done recursively, so that if
+> one of the values is an array itself, the function will merge it with a
+> corresponding entry in another array too. If, however, the arrays have the
+> same numeric key, the later value will not overwrite the original value, but
+> will be appended.
+
+### Shipped extensions
+
+-   `AdaptiveCardExtension\MicrosoftTeams\FullWidth`
+    You can use the `msteams` property to expand the width of an Adaptive Card
+    and make use of extra canvas space. The next section provides information
+    on how to use the property.
+-   `AdaptiveCardExtension\MicrosoftTeams\AllowExpand`
+    In an Adaptive Card, you can use the `msteams` property to add the ability
+    to display images in Stageview selectively. When users hover over the
+    images, they can see an expand icon, for which the allowExpand attribute is
+    set to 'true`.
+-   `AdaptiveCardExtension\MicrosoftTeams\Mention`
+    You can add @mentions within an Adaptive Card body for bots and message
+    extension responses. To add @mentions in cards, follow the same
+    notification logic and rendering as that of message based mentions in
+    channel and group chat conversations.
+
+### Create your own extensions
+
+-   Find the interface for the element you want to extend
+-   Create a class that implements that interface
+-   Add the extension to the constructor of the element
+
 ## How to generate
 
 -   Clone this repo

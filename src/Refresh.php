@@ -9,6 +9,7 @@ declare(strict_types=1);
 namespace AdaptiveCard;
 
 use AdaptiveCard\Action\Execute;
+use AdaptiveCard\Extension\RefreshExtensionInterface;
 use JsonSerializable;
 
 /**
@@ -55,18 +56,28 @@ final class Refresh implements JsonSerializable
     public ?array $userIds = null;
 
     /**
+     * Extensions to augment this element
+     *
+     * @var RefreshExtensionInterface[]|null
+     */
+    public ?array $extensions;
+
+    /**
      * Create a "Refresh" instance in a single call
      *
      * @param string[]|null $userIds
+     * @param RefreshExtensionInterface[]|null $extensions
      */
     public function __construct(
         ?Execute $action = null,
         ?string $expires = null,
         ?array $userIds = null,
+        ?array $extensions = null,
     ) {
         $this->action = $action;
         $this->expires = $expires;
         $this->userIds = $userIds;
+        $this->extensions = $extensions;
     }
 
     /**
@@ -75,13 +86,15 @@ final class Refresh implements JsonSerializable
      * @psalm-api
      *
      * @param string[]|null $userIds
+     * @param RefreshExtensionInterface[]|null $extensions
      */
     public static function make(
         ?Execute $action = null,
         ?string $expires = null,
         ?array $userIds = null,
+        ?array $extensions = null,
     ): self {
-        return new self($action, $expires, $userIds);
+        return new self($action, $expires, $userIds, $extensions);
     }
 
     /**
@@ -89,12 +102,22 @@ final class Refresh implements JsonSerializable
      */
     public function jsonSerialize(): array
     {
+        $extensionProperties = [];
+
+        foreach ($this->extensions ?? [] as $extension) {
+            $extensionProperties = array_merge_recursive(
+                $extensionProperties,
+                $extension->getExtensionProperties(),
+            );
+        }
+
         return array_filter(
             [
                 'type' => self::TYPE,
                 'action' => $this->action,
                 'expires' => $this->expires,
                 'userIds' => $this->userIds,
+                ...$extensionProperties,
             ],
             /** @psalm-suppress RedundantConditionGivenDocblockType */
             fn(mixed $value): bool => $value !== null,
