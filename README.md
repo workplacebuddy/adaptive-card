@@ -40,6 +40,30 @@ $card->actions = [
 ];
 ```
 
+## Extensions
+
+All elements have an extensions property to inject custom properties into the
+elements; for every element there is an unique interface, so injecting
+extensions for the wrong element is not possible.
+
+The extensions exist as a stopgap for missing properties in the schema. There
+is currently no up-to-date schema available.
+
+Merging is done with `array_merge_recursive`:
+
+> If the input arrays have the same string keys, then the values for these keys
+> are merged together into an array, and this is done recursively, so that if
+> one of the values is an array itself, the function will merge it with a
+> corresponding entry in another array too. If, however, the arrays have the
+> same numeric key, the later value will not overwrite the original value, but
+> will be appended.
+
+### Create your own extensions
+
+-   Find the interface for the element you want to extend
+-   Create a class that implements that interface
+-   Add the extension to the constructor of the element
+
 ## How to generate
 
 -   Clone this repo

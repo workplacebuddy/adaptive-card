@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 namespace AdaptiveCard;
 
+use AdaptiveCard\Extension\AuthenticationExtensionInterface;
 use JsonSerializable;
 
 /**
@@ -59,20 +60,30 @@ final class Authentication implements JsonSerializable
     public ?array $buttons = null;
 
     /**
+     * Extensions to augment this element
+     *
+     * @var AuthenticationExtensionInterface[]|null
+     */
+    public ?array $extensions;
+
+    /**
      * Create a "Authentication" instance in a single call
      *
      * @param AuthCardButton[]|null $buttons
+     * @param AuthenticationExtensionInterface[]|null $extensions
      */
     public function __construct(
         ?string $text = null,
         ?string $connectionName = null,
         ?TokenExchangeResource $tokenExchangeResource = null,
         ?array $buttons = null,
+        ?array $extensions = null,
     ) {
         $this->text = $text;
         $this->connectionName = $connectionName;
         $this->tokenExchangeResource = $tokenExchangeResource;
         $this->buttons = $buttons;
+        $this->extensions = $extensions;
     }
 
     /**
@@ -81,18 +92,21 @@ final class Authentication implements JsonSerializable
      * @psalm-api
      *
      * @param AuthCardButton[]|null $buttons
+     * @param AuthenticationExtensionInterface[]|null $extensions
      */
     public static function make(
         ?string $text = null,
         ?string $connectionName = null,
         ?TokenExchangeResource $tokenExchangeResource = null,
         ?array $buttons = null,
+        ?array $extensions = null,
     ): self {
         return new self(
             $text,
             $connectionName,
             $tokenExchangeResource,
             $buttons,
+            $extensions,
         );
     }
 
@@ -101,6 +115,15 @@ final class Authentication implements JsonSerializable
      */
     public function jsonSerialize(): array
     {
+        $extensionProperties = [];
+
+        foreach ($this->extensions ?? [] as $extension) {
+            $extensionProperties = array_merge_recursive(
+                $extensionProperties,
+                $extension->getExtensionProperties(),
+            );
+        }
+
         return array_filter(
             [
                 'type' => self::TYPE,
@@ -108,6 +131,7 @@ final class Authentication implements JsonSerializable
                 'connectionName' => $this->connectionName,
                 'tokenExchangeResource' => $this->tokenExchangeResource,
                 'buttons' => $this->buttons,
+                ...$extensionProperties,
             ],
             /** @psalm-suppress RedundantConditionGivenDocblockType */
             fn(mixed $value): bool => $value !== null,

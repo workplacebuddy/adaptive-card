@@ -11,6 +11,7 @@ namespace AdaptiveCard\Input;
 use AdaptiveCard\ChoiceInputStyle;
 use AdaptiveCard\Data\Query;
 use AdaptiveCard\ElementInterface;
+use AdaptiveCard\Extension\Input\ChoiceSetExtensionInterface;
 use AdaptiveCard\Input;
 use AdaptiveCard\InputInterface;
 use AdaptiveCard\ItemInterface;
@@ -86,9 +87,17 @@ final class ChoiceSet extends Input implements
     public ?bool $wrap = null;
 
     /**
+     * Extensions to augment this element
+     *
+     * @var ChoiceSetExtensionInterface[]|null
+     */
+    public ?array $extensions;
+
+    /**
      * Create a "ChoiceSet" instance in a single call
      *
      * @param Input\Choice[]|null $choices
+     * @param ChoiceSetExtensionInterface[]|null $extensions
      */
     public function __construct(
         string $id,
@@ -111,6 +120,7 @@ final class ChoiceSet extends Input implements
         ?\AdaptiveCard\Spacing $spacing = null,
         ?bool $isVisible = null,
         object|array|null $requires = null,
+        ?array $extensions = null,
     ) {
         $this->id = $id;
         $this->choices = $choices;
@@ -132,6 +142,7 @@ final class ChoiceSet extends Input implements
         $this->spacing = $spacing;
         $this->isVisible = $isVisible;
         $this->requires = $requires;
+        $this->extensions = $extensions;
     }
 
     /**
@@ -140,6 +151,7 @@ final class ChoiceSet extends Input implements
      * @psalm-api
      *
      * @param Input\Choice[]|null $choices
+     * @param ChoiceSetExtensionInterface[]|null $extensions
      */
     public static function make(
         string $id,
@@ -162,6 +174,7 @@ final class ChoiceSet extends Input implements
         ?\AdaptiveCard\Spacing $spacing = null,
         ?bool $isVisible = null,
         object|array|null $requires = null,
+        ?array $extensions = null,
     ): self {
         return new self(
             $id,
@@ -184,6 +197,7 @@ final class ChoiceSet extends Input implements
             $spacing,
             $isVisible,
             $requires,
+            $extensions,
         );
     }
 
@@ -192,6 +206,15 @@ final class ChoiceSet extends Input implements
      */
     public function jsonSerialize(): array
     {
+        $extensionProperties = [];
+
+        foreach ($this->extensions ?? [] as $extension) {
+            $extensionProperties = array_merge_recursive(
+                $extensionProperties,
+                $extension->getExtensionProperties(),
+            );
+        }
+
         return array_merge(
             parent::jsonSerialize(),
             array_filter(
@@ -204,6 +227,7 @@ final class ChoiceSet extends Input implements
                     'value' => $this->value,
                     'placeholder' => $this->placeholder,
                     'wrap' => $this->wrap,
+                    ...$extensionProperties,
                 ],
                 /** @psalm-suppress RedundantConditionGivenDocblockType */
                 fn(mixed $value): bool => $value !== null,

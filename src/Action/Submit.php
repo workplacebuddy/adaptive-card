@@ -11,6 +11,7 @@ namespace AdaptiveCard\Action;
 use AdaptiveCard\Action;
 use AdaptiveCard\ActionInterface;
 use AdaptiveCard\AssociatedInputs;
+use AdaptiveCard\Extension\Action\SubmitExtensionInterface;
 use AdaptiveCard\ISelectActionInterface;
 use AdaptiveCard\ItemInterface;
 use JsonSerializable;
@@ -55,7 +56,16 @@ final class Submit extends Action implements
     public ?AssociatedInputs $associatedInputs = null;
 
     /**
+     * Extensions to augment this element
+     *
+     * @var SubmitExtensionInterface[]|null
+     */
+    public ?array $extensions;
+
+    /**
      * Create a "Submit" instance in a single call
+     *
+     * @param SubmitExtensionInterface[]|null $extensions
      */
     public function __construct(
         string|object|array|null $data = null,
@@ -68,6 +78,7 @@ final class Submit extends Action implements
         ?string $tooltip = null,
         ?bool $isEnabled = null,
         ?\AdaptiveCard\ActionMode $mode = null,
+        ?array $extensions = null,
     ) {
         $this->data = $data;
         $this->associatedInputs = $associatedInputs;
@@ -79,12 +90,15 @@ final class Submit extends Action implements
         $this->tooltip = $tooltip;
         $this->isEnabled = $isEnabled;
         $this->mode = $mode;
+        $this->extensions = $extensions;
     }
 
     /**
      * Make a "Submit" instance in a single call
      *
      * @psalm-api
+     *
+     * @param SubmitExtensionInterface[]|null $extensions
      */
     public static function make(
         string|object|array|null $data = null,
@@ -97,6 +111,7 @@ final class Submit extends Action implements
         ?string $tooltip = null,
         ?bool $isEnabled = null,
         ?\AdaptiveCard\ActionMode $mode = null,
+        ?array $extensions = null,
     ): self {
         return new self(
             $data,
@@ -109,6 +124,7 @@ final class Submit extends Action implements
             $tooltip,
             $isEnabled,
             $mode,
+            $extensions,
         );
     }
 
@@ -117,6 +133,15 @@ final class Submit extends Action implements
      */
     public function jsonSerialize(): array
     {
+        $extensionProperties = [];
+
+        foreach ($this->extensions ?? [] as $extension) {
+            $extensionProperties = array_merge_recursive(
+                $extensionProperties,
+                $extension->getExtensionProperties(),
+            );
+        }
+
         return array_merge(
             parent::jsonSerialize(),
             array_filter(
@@ -124,6 +149,7 @@ final class Submit extends Action implements
                     'type' => self::TYPE,
                     'data' => $this->data,
                     'associatedInputs' => $this->associatedInputs,
+                    ...$extensionProperties,
                 ],
                 /** @psalm-suppress RedundantConditionGivenDocblockType */
                 fn(mixed $value): bool => $value !== null,

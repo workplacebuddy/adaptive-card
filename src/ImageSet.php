@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 namespace AdaptiveCard;
 
+use AdaptiveCard\Extension\ImageSetExtensionInterface;
 use JsonSerializable;
 
 /**
@@ -47,9 +48,17 @@ final class ImageSet extends Element implements
     public ?ImageSize $imageSize = null;
 
     /**
+     * Extensions to augment this element
+     *
+     * @var ImageSetExtensionInterface[]|null
+     */
+    public ?array $extensions;
+
+    /**
      * Create a "ImageSet" instance in a single call
      *
      * @param Image[] $images
+     * @param ImageSetExtensionInterface[]|null $extensions
      */
     public function __construct(
         array $images,
@@ -58,6 +67,7 @@ final class ImageSet extends Element implements
         ?BlockElementHeight $height = null,
         ?bool $separator = null,
         ?Spacing $spacing = null,
+        ?array $extensions = null,
     ) {
         $this->images = $images;
         $this->imageSize = $imageSize;
@@ -65,6 +75,7 @@ final class ImageSet extends Element implements
         $this->height = $height;
         $this->separator = $separator;
         $this->spacing = $spacing;
+        $this->extensions = $extensions;
     }
 
     /**
@@ -73,6 +84,7 @@ final class ImageSet extends Element implements
      * @psalm-api
      *
      * @param Image[] $images
+     * @param ImageSetExtensionInterface[]|null $extensions
      */
     public static function make(
         array $images,
@@ -81,6 +93,7 @@ final class ImageSet extends Element implements
         ?BlockElementHeight $height = null,
         ?bool $separator = null,
         ?Spacing $spacing = null,
+        ?array $extensions = null,
     ): self {
         return new self(
             $images,
@@ -89,6 +102,7 @@ final class ImageSet extends Element implements
             $height,
             $separator,
             $spacing,
+            $extensions,
         );
     }
 
@@ -97,6 +111,15 @@ final class ImageSet extends Element implements
      */
     public function jsonSerialize(): array
     {
+        $extensionProperties = [];
+
+        foreach ($this->extensions ?? [] as $extension) {
+            $extensionProperties = array_merge_recursive(
+                $extensionProperties,
+                $extension->getExtensionProperties(),
+            );
+        }
+
         return array_merge(
             parent::jsonSerialize(),
             array_filter(
@@ -104,6 +127,7 @@ final class ImageSet extends Element implements
                     'type' => self::TYPE,
                     'images' => $this->images,
                     'imageSize' => $this->imageSize,
+                    ...$extensionProperties,
                 ],
                 /** @psalm-suppress RedundantConditionGivenDocblockType */
                 fn(mixed $value): bool => $value !== null,

@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 namespace AdaptiveCard\Input;
 
+use AdaptiveCard\Extension\Input\ChoiceExtensionInterface;
 use JsonSerializable;
 
 /**
@@ -41,22 +42,40 @@ final class Choice implements JsonSerializable
     public string $value;
 
     /**
-     * Create a "Choice" instance in a single call
+     * Extensions to augment this element
+     *
+     * @var ChoiceExtensionInterface[]|null
      */
-    public function __construct(string $title, string $value)
-    {
+    public ?array $extensions;
+
+    /**
+     * Create a "Choice" instance in a single call
+     *
+     * @param ChoiceExtensionInterface[]|null $extensions
+     */
+    public function __construct(
+        string $title,
+        string $value,
+        ?array $extensions = null,
+    ) {
         $this->title = $title;
         $this->value = $value;
+        $this->extensions = $extensions;
     }
 
     /**
      * Make a "Choice" instance in a single call
      *
      * @psalm-api
+     *
+     * @param ChoiceExtensionInterface[]|null $extensions
      */
-    public static function make(string $title, string $value): self
-    {
-        return new self($title, $value);
+    public static function make(
+        string $title,
+        string $value,
+        ?array $extensions = null,
+    ): self {
+        return new self($title, $value, $extensions);
     }
 
     /**
@@ -64,11 +83,21 @@ final class Choice implements JsonSerializable
      */
     public function jsonSerialize(): array
     {
+        $extensionProperties = [];
+
+        foreach ($this->extensions ?? [] as $extension) {
+            $extensionProperties = array_merge_recursive(
+                $extensionProperties,
+                $extension->getExtensionProperties(),
+            );
+        }
+
         return array_filter(
             [
                 'type' => self::TYPE,
                 'title' => $this->title,
                 'value' => $this->value,
+                ...$extensionProperties,
             ],
             /** @psalm-suppress RedundantConditionGivenDocblockType */
             fn(mixed $value): bool => $value !== null,

@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 namespace AdaptiveCard;
 
+use AdaptiveCard\Extension\MetadataExtensionInterface;
 use JsonSerializable;
 
 /**
@@ -33,21 +34,37 @@ final class Metadata implements JsonSerializable
     public ?string $webUrl = null;
 
     /**
-     * Create a "Metadata" instance in a single call
+     * Extensions to augment this element
+     *
+     * @var MetadataExtensionInterface[]|null
      */
-    public function __construct(?string $webUrl = null)
-    {
+    public ?array $extensions;
+
+    /**
+     * Create a "Metadata" instance in a single call
+     *
+     * @param MetadataExtensionInterface[]|null $extensions
+     */
+    public function __construct(
+        ?string $webUrl = null,
+        ?array $extensions = null,
+    ) {
         $this->webUrl = $webUrl;
+        $this->extensions = $extensions;
     }
 
     /**
      * Make a "Metadata" instance in a single call
      *
      * @psalm-api
+     *
+     * @param MetadataExtensionInterface[]|null $extensions
      */
-    public static function make(?string $webUrl = null): self
-    {
-        return new self($webUrl);
+    public static function make(
+        ?string $webUrl = null,
+        ?array $extensions = null,
+    ): self {
+        return new self($webUrl, $extensions);
     }
 
     /**
@@ -55,10 +72,20 @@ final class Metadata implements JsonSerializable
      */
     public function jsonSerialize(): array
     {
+        $extensionProperties = [];
+
+        foreach ($this->extensions ?? [] as $extension) {
+            $extensionProperties = array_merge_recursive(
+                $extensionProperties,
+                $extension->getExtensionProperties(),
+            );
+        }
+
         return array_filter(
             [
                 'type' => self::TYPE,
                 'webUrl' => $this->webUrl,
+                ...$extensionProperties,
             ],
             /** @psalm-suppress RedundantConditionGivenDocblockType */
             fn(mixed $value): bool => $value !== null,

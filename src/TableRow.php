@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 namespace AdaptiveCard;
 
+use AdaptiveCard\Extension\TableRowExtensionInterface;
 use JsonSerializable;
 
 /**
@@ -61,20 +62,30 @@ final class TableRow implements JsonSerializable
     public ?VerticalAlignment $verticalCellContentAlignment = null;
 
     /**
+     * Extensions to augment this element
+     *
+     * @var TableRowExtensionInterface[]|null
+     */
+    public ?array $extensions;
+
+    /**
      * Create a "TableRow" instance in a single call
      *
      * @param TableCell[]|null $cells
+     * @param TableRowExtensionInterface[]|null $extensions
      */
     public function __construct(
         ?array $cells = null,
         ?ContainerStyle $style = null,
         ?HorizontalAlignment $horizontalCellContentAlignment = null,
         ?VerticalAlignment $verticalCellContentAlignment = null,
+        ?array $extensions = null,
     ) {
         $this->cells = $cells;
         $this->style = $style;
         $this->horizontalCellContentAlignment = $horizontalCellContentAlignment;
         $this->verticalCellContentAlignment = $verticalCellContentAlignment;
+        $this->extensions = $extensions;
     }
 
     /**
@@ -83,18 +94,21 @@ final class TableRow implements JsonSerializable
      * @psalm-api
      *
      * @param TableCell[]|null $cells
+     * @param TableRowExtensionInterface[]|null $extensions
      */
     public static function make(
         ?array $cells = null,
         ?ContainerStyle $style = null,
         ?HorizontalAlignment $horizontalCellContentAlignment = null,
         ?VerticalAlignment $verticalCellContentAlignment = null,
+        ?array $extensions = null,
     ): self {
         return new self(
             $cells,
             $style,
             $horizontalCellContentAlignment,
             $verticalCellContentAlignment,
+            $extensions,
         );
     }
 
@@ -103,6 +117,15 @@ final class TableRow implements JsonSerializable
      */
     public function jsonSerialize(): array
     {
+        $extensionProperties = [];
+
+        foreach ($this->extensions ?? [] as $extension) {
+            $extensionProperties = array_merge_recursive(
+                $extensionProperties,
+                $extension->getExtensionProperties(),
+            );
+        }
+
         return array_filter(
             [
                 'type' => self::TYPE,
@@ -112,6 +135,7 @@ final class TableRow implements JsonSerializable
                     $this->horizontalCellContentAlignment,
                 'verticalCellContentAlignment' =>
                     $this->verticalCellContentAlignment,
+                ...$extensionProperties,
             ],
             /** @psalm-suppress RedundantConditionGivenDocblockType */
             fn(mixed $value): bool => $value !== null,

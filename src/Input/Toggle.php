@@ -9,6 +9,7 @@ declare(strict_types=1);
 namespace AdaptiveCard\Input;
 
 use AdaptiveCard\ElementInterface;
+use AdaptiveCard\Extension\Input\ToggleExtensionInterface;
 use AdaptiveCard\Input;
 use AdaptiveCard\InputInterface;
 use AdaptiveCard\ItemInterface;
@@ -71,7 +72,16 @@ final class Toggle extends Input implements
     public ?bool $wrap = null;
 
     /**
+     * Extensions to augment this element
+     *
+     * @var ToggleExtensionInterface[]|null
+     */
+    public ?array $extensions;
+
+    /**
      * Create a "Toggle" instance in a single call
+     *
+     * @param ToggleExtensionInterface[]|null $extensions
      */
     public function __construct(
         string $title,
@@ -92,6 +102,7 @@ final class Toggle extends Input implements
         ?\AdaptiveCard\Spacing $spacing = null,
         ?bool $isVisible = null,
         object|array|null $requires = null,
+        ?array $extensions = null,
     ) {
         $this->title = $title;
         $this->id = $id;
@@ -111,12 +122,15 @@ final class Toggle extends Input implements
         $this->spacing = $spacing;
         $this->isVisible = $isVisible;
         $this->requires = $requires;
+        $this->extensions = $extensions;
     }
 
     /**
      * Make a "Toggle" instance in a single call
      *
      * @psalm-api
+     *
+     * @param ToggleExtensionInterface[]|null $extensions
      */
     public static function make(
         string $title,
@@ -137,6 +151,7 @@ final class Toggle extends Input implements
         ?\AdaptiveCard\Spacing $spacing = null,
         ?bool $isVisible = null,
         object|array|null $requires = null,
+        ?array $extensions = null,
     ): self {
         return new self(
             $title,
@@ -157,6 +172,7 @@ final class Toggle extends Input implements
             $spacing,
             $isVisible,
             $requires,
+            $extensions,
         );
     }
 
@@ -165,6 +181,15 @@ final class Toggle extends Input implements
      */
     public function jsonSerialize(): array
     {
+        $extensionProperties = [];
+
+        foreach ($this->extensions ?? [] as $extension) {
+            $extensionProperties = array_merge_recursive(
+                $extensionProperties,
+                $extension->getExtensionProperties(),
+            );
+        }
+
         return array_merge(
             parent::jsonSerialize(),
             array_filter(
@@ -175,6 +200,7 @@ final class Toggle extends Input implements
                     'valueOff' => $this->valueOff,
                     'valueOn' => $this->valueOn,
                     'wrap' => $this->wrap,
+                    ...$extensionProperties,
                 ],
                 /** @psalm-suppress RedundantConditionGivenDocblockType */
                 fn(mixed $value): bool => $value !== null,

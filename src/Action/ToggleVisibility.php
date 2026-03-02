@@ -10,6 +10,7 @@ namespace AdaptiveCard\Action;
 
 use AdaptiveCard\Action;
 use AdaptiveCard\ActionInterface;
+use AdaptiveCard\Extension\Action\ToggleVisibilityExtensionInterface;
 use AdaptiveCard\ISelectActionInterface;
 use AdaptiveCard\ItemInterface;
 use AdaptiveCard\TargetElement;
@@ -46,9 +47,17 @@ final class ToggleVisibility extends Action implements
     public array $targetElements;
 
     /**
+     * Extensions to augment this element
+     *
+     * @var ToggleVisibilityExtensionInterface[]|null
+     */
+    public ?array $extensions;
+
+    /**
      * Create a "ToggleVisibility" instance in a single call
      *
      * @param TargetElement[] $targetElements
+     * @param ToggleVisibilityExtensionInterface[]|null $extensions
      */
     public function __construct(
         array $targetElements,
@@ -60,6 +69,7 @@ final class ToggleVisibility extends Action implements
         ?string $tooltip = null,
         ?bool $isEnabled = null,
         ?\AdaptiveCard\ActionMode $mode = null,
+        ?array $extensions = null,
     ) {
         $this->targetElements = $targetElements;
         $this->title = $title;
@@ -70,6 +80,7 @@ final class ToggleVisibility extends Action implements
         $this->tooltip = $tooltip;
         $this->isEnabled = $isEnabled;
         $this->mode = $mode;
+        $this->extensions = $extensions;
     }
 
     /**
@@ -78,6 +89,7 @@ final class ToggleVisibility extends Action implements
      * @psalm-api
      *
      * @param TargetElement[] $targetElements
+     * @param ToggleVisibilityExtensionInterface[]|null $extensions
      */
     public static function make(
         array $targetElements,
@@ -89,6 +101,7 @@ final class ToggleVisibility extends Action implements
         ?string $tooltip = null,
         ?bool $isEnabled = null,
         ?\AdaptiveCard\ActionMode $mode = null,
+        ?array $extensions = null,
     ): self {
         return new self(
             $targetElements,
@@ -100,6 +113,7 @@ final class ToggleVisibility extends Action implements
             $tooltip,
             $isEnabled,
             $mode,
+            $extensions,
         );
     }
 
@@ -108,12 +122,22 @@ final class ToggleVisibility extends Action implements
      */
     public function jsonSerialize(): array
     {
+        $extensionProperties = [];
+
+        foreach ($this->extensions ?? [] as $extension) {
+            $extensionProperties = array_merge_recursive(
+                $extensionProperties,
+                $extension->getExtensionProperties(),
+            );
+        }
+
         return array_merge(
             parent::jsonSerialize(),
             array_filter(
                 [
                     'type' => self::TYPE,
                     'targetElements' => $this->targetElements,
+                    ...$extensionProperties,
                 ],
                 /** @psalm-suppress RedundantConditionGivenDocblockType */
                 fn(mixed $value): bool => $value !== null,

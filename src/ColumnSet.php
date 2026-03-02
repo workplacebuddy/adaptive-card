@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 namespace AdaptiveCard;
 
+use AdaptiveCard\Extension\ColumnSetExtensionInterface;
 use JsonSerializable;
 
 /**
@@ -75,9 +76,17 @@ final class ColumnSet extends Element implements
     public ?HorizontalAlignment $horizontalAlignment = null;
 
     /**
+     * Extensions to augment this element
+     *
+     * @var ColumnSetExtensionInterface[]|null
+     */
+    public ?array $extensions;
+
+    /**
      * Create a "ColumnSet" instance in a single call
      *
      * @param Column[]|null $columns
+     * @param ColumnSetExtensionInterface[]|null $extensions
      */
     public function __construct(
         ?array $columns = null,
@@ -90,6 +99,7 @@ final class ColumnSet extends Element implements
         ?BlockElementHeight $height = null,
         ?bool $separator = null,
         ?Spacing $spacing = null,
+        ?array $extensions = null,
     ) {
         $this->columns = $columns;
         $this->selectAction = $selectAction;
@@ -101,6 +111,7 @@ final class ColumnSet extends Element implements
         $this->height = $height;
         $this->separator = $separator;
         $this->spacing = $spacing;
+        $this->extensions = $extensions;
     }
 
     /**
@@ -109,6 +120,7 @@ final class ColumnSet extends Element implements
      * @psalm-api
      *
      * @param Column[]|null $columns
+     * @param ColumnSetExtensionInterface[]|null $extensions
      */
     public static function make(
         ?array $columns = null,
@@ -121,6 +133,7 @@ final class ColumnSet extends Element implements
         ?BlockElementHeight $height = null,
         ?bool $separator = null,
         ?Spacing $spacing = null,
+        ?array $extensions = null,
     ): self {
         return new self(
             $columns,
@@ -133,6 +146,7 @@ final class ColumnSet extends Element implements
             $height,
             $separator,
             $spacing,
+            $extensions,
         );
     }
 
@@ -141,6 +155,15 @@ final class ColumnSet extends Element implements
      */
     public function jsonSerialize(): array
     {
+        $extensionProperties = [];
+
+        foreach ($this->extensions ?? [] as $extension) {
+            $extensionProperties = array_merge_recursive(
+                $extensionProperties,
+                $extension->getExtensionProperties(),
+            );
+        }
+
         return array_merge(
             parent::jsonSerialize(),
             array_filter(
@@ -152,6 +175,7 @@ final class ColumnSet extends Element implements
                     'bleed' => $this->bleed,
                     'minHeight' => $this->minHeight,
                     'horizontalAlignment' => $this->horizontalAlignment,
+                    ...$extensionProperties,
                 ],
                 /** @psalm-suppress RedundantConditionGivenDocblockType */
                 fn(mixed $value): bool => $value !== null,

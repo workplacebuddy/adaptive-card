@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 namespace AdaptiveCard;
 
+use AdaptiveCard\Extension\TableCellExtensionInterface;
 use JsonSerializable;
 
 /**
@@ -89,9 +90,17 @@ final class TableCell implements JsonSerializable
     public ?bool $rtl = null;
 
     /**
+     * Extensions to augment this element
+     *
+     * @var TableCellExtensionInterface[]|null
+     */
+    public ?array $extensions;
+
+    /**
      * Create a "TableCell" instance in a single call
      *
      * @param ElementInterface[] $items
+     * @param TableCellExtensionInterface[]|null $extensions
      */
     public function __construct(
         array $items,
@@ -102,6 +111,7 @@ final class TableCell implements JsonSerializable
         BackgroundImage|string|null $backgroundImage = null,
         ?string $minHeight = null,
         ?bool $rtl = null,
+        ?array $extensions = null,
     ) {
         $this->items = $items;
         $this->selectAction = $selectAction;
@@ -111,6 +121,7 @@ final class TableCell implements JsonSerializable
         $this->backgroundImage = $backgroundImage;
         $this->minHeight = $minHeight;
         $this->rtl = $rtl;
+        $this->extensions = $extensions;
     }
 
     /**
@@ -119,6 +130,7 @@ final class TableCell implements JsonSerializable
      * @psalm-api
      *
      * @param ElementInterface[] $items
+     * @param TableCellExtensionInterface[]|null $extensions
      */
     public static function make(
         array $items,
@@ -129,6 +141,7 @@ final class TableCell implements JsonSerializable
         BackgroundImage|string|null $backgroundImage = null,
         ?string $minHeight = null,
         ?bool $rtl = null,
+        ?array $extensions = null,
     ): self {
         return new self(
             $items,
@@ -139,6 +152,7 @@ final class TableCell implements JsonSerializable
             $backgroundImage,
             $minHeight,
             $rtl,
+            $extensions,
         );
     }
 
@@ -147,6 +161,15 @@ final class TableCell implements JsonSerializable
      */
     public function jsonSerialize(): array
     {
+        $extensionProperties = [];
+
+        foreach ($this->extensions ?? [] as $extension) {
+            $extensionProperties = array_merge_recursive(
+                $extensionProperties,
+                $extension->getExtensionProperties(),
+            );
+        }
+
         return array_filter(
             [
                 'type' => self::TYPE,
@@ -158,6 +181,7 @@ final class TableCell implements JsonSerializable
                 'backgroundImage' => $this->backgroundImage,
                 'minHeight' => $this->minHeight,
                 'rtl' => $this->rtl,
+                ...$extensionProperties,
             ],
             /** @psalm-suppress RedundantConditionGivenDocblockType */
             fn(mixed $value): bool => $value !== null,

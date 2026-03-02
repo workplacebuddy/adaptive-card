@@ -11,6 +11,7 @@ namespace AdaptiveCard\Action;
 use AdaptiveCard\Action;
 use AdaptiveCard\ActionInterface;
 use AdaptiveCard\AdaptiveCard;
+use AdaptiveCard\Extension\Action\ShowCardExtensionInterface;
 use AdaptiveCard\ItemInterface;
 use JsonSerializable;
 
@@ -43,7 +44,16 @@ final class ShowCard extends Action implements
     public ?AdaptiveCard $card = null;
 
     /**
+     * Extensions to augment this element
+     *
+     * @var ShowCardExtensionInterface[]|null
+     */
+    public ?array $extensions;
+
+    /**
      * Create a "ShowCard" instance in a single call
+     *
+     * @param ShowCardExtensionInterface[]|null $extensions
      */
     public function __construct(
         ?AdaptiveCard $card = null,
@@ -55,6 +65,7 @@ final class ShowCard extends Action implements
         ?string $tooltip = null,
         ?bool $isEnabled = null,
         ?\AdaptiveCard\ActionMode $mode = null,
+        ?array $extensions = null,
     ) {
         $this->card = $card;
         $this->title = $title;
@@ -65,12 +76,15 @@ final class ShowCard extends Action implements
         $this->tooltip = $tooltip;
         $this->isEnabled = $isEnabled;
         $this->mode = $mode;
+        $this->extensions = $extensions;
     }
 
     /**
      * Make a "ShowCard" instance in a single call
      *
      * @psalm-api
+     *
+     * @param ShowCardExtensionInterface[]|null $extensions
      */
     public static function make(
         ?AdaptiveCard $card = null,
@@ -82,6 +96,7 @@ final class ShowCard extends Action implements
         ?string $tooltip = null,
         ?bool $isEnabled = null,
         ?\AdaptiveCard\ActionMode $mode = null,
+        ?array $extensions = null,
     ): self {
         return new self(
             $card,
@@ -93,6 +108,7 @@ final class ShowCard extends Action implements
             $tooltip,
             $isEnabled,
             $mode,
+            $extensions,
         );
     }
 
@@ -101,12 +117,22 @@ final class ShowCard extends Action implements
      */
     public function jsonSerialize(): array
     {
+        $extensionProperties = [];
+
+        foreach ($this->extensions ?? [] as $extension) {
+            $extensionProperties = array_merge_recursive(
+                $extensionProperties,
+                $extension->getExtensionProperties(),
+            );
+        }
+
         return array_merge(
             parent::jsonSerialize(),
             array_filter(
                 [
                     'type' => self::TYPE,
                     'card' => $this->card,
+                    ...$extensionProperties,
                 ],
                 /** @psalm-suppress RedundantConditionGivenDocblockType */
                 fn(mixed $value): bool => $value !== null,

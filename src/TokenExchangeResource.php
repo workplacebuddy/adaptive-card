@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 namespace AdaptiveCard;
 
+use AdaptiveCard\Extension\TokenExchangeResourceExtensionInterface;
 use JsonSerializable;
 
 /**
@@ -50,26 +51,43 @@ final class TokenExchangeResource implements JsonSerializable
     public string $providerId;
 
     /**
-     * Create a "TokenExchangeResource" instance in a single call
+     * Extensions to augment this element
+     *
+     * @var TokenExchangeResourceExtensionInterface[]|null
      */
-    public function __construct(string $id, string $uri, string $providerId)
-    {
+    public ?array $extensions;
+
+    /**
+     * Create a "TokenExchangeResource" instance in a single call
+     *
+     * @param TokenExchangeResourceExtensionInterface[]|null $extensions
+     */
+    public function __construct(
+        string $id,
+        string $uri,
+        string $providerId,
+        ?array $extensions = null,
+    ) {
         $this->id = $id;
         $this->uri = $uri;
         $this->providerId = $providerId;
+        $this->extensions = $extensions;
     }
 
     /**
      * Make a "TokenExchangeResource" instance in a single call
      *
      * @psalm-api
+     *
+     * @param TokenExchangeResourceExtensionInterface[]|null $extensions
      */
     public static function make(
         string $id,
         string $uri,
         string $providerId,
+        ?array $extensions = null,
     ): self {
-        return new self($id, $uri, $providerId);
+        return new self($id, $uri, $providerId, $extensions);
     }
 
     /**
@@ -77,12 +95,22 @@ final class TokenExchangeResource implements JsonSerializable
      */
     public function jsonSerialize(): array
     {
+        $extensionProperties = [];
+
+        foreach ($this->extensions ?? [] as $extension) {
+            $extensionProperties = array_merge_recursive(
+                $extensionProperties,
+                $extension->getExtensionProperties(),
+            );
+        }
+
         return array_filter(
             [
                 'type' => self::TYPE,
                 'id' => $this->id,
                 'uri' => $this->uri,
                 'providerId' => $this->providerId,
+                ...$extensionProperties,
             ],
             /** @psalm-suppress RedundantConditionGivenDocblockType */
             fn(mixed $value): bool => $value !== null,

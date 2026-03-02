@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 namespace AdaptiveCard;
 
+use AdaptiveCard\Extension\BackgroundImageExtensionInterface;
 use JsonSerializable;
 
 /**
@@ -55,36 +56,51 @@ final class BackgroundImage implements JsonSerializable
     public ?VerticalAlignment $verticalAlignment = null;
 
     /**
+     * Extensions to augment this element
+     *
+     * @var BackgroundImageExtensionInterface[]|null
+     */
+    public ?array $extensions;
+
+    /**
      * Create a "BackgroundImage" instance in a single call
+     *
+     * @param BackgroundImageExtensionInterface[]|null $extensions
      */
     public function __construct(
         string $url,
         ?ImageFillMode $fillMode = null,
         ?HorizontalAlignment $horizontalAlignment = null,
         ?VerticalAlignment $verticalAlignment = null,
+        ?array $extensions = null,
     ) {
         $this->url = $url;
         $this->fillMode = $fillMode;
         $this->horizontalAlignment = $horizontalAlignment;
         $this->verticalAlignment = $verticalAlignment;
+        $this->extensions = $extensions;
     }
 
     /**
      * Make a "BackgroundImage" instance in a single call
      *
      * @psalm-api
+     *
+     * @param BackgroundImageExtensionInterface[]|null $extensions
      */
     public static function make(
         string $url,
         ?ImageFillMode $fillMode = null,
         ?HorizontalAlignment $horizontalAlignment = null,
         ?VerticalAlignment $verticalAlignment = null,
+        ?array $extensions = null,
     ): self {
         return new self(
             $url,
             $fillMode,
             $horizontalAlignment,
             $verticalAlignment,
+            $extensions,
         );
     }
 
@@ -93,6 +109,15 @@ final class BackgroundImage implements JsonSerializable
      */
     public function jsonSerialize(): array
     {
+        $extensionProperties = [];
+
+        foreach ($this->extensions ?? [] as $extension) {
+            $extensionProperties = array_merge_recursive(
+                $extensionProperties,
+                $extension->getExtensionProperties(),
+            );
+        }
+
         return array_filter(
             [
                 'type' => self::TYPE,
@@ -100,6 +125,7 @@ final class BackgroundImage implements JsonSerializable
                 'fillMode' => $this->fillMode,
                 'horizontalAlignment' => $this->horizontalAlignment,
                 'verticalAlignment' => $this->verticalAlignment,
+                ...$extensionProperties,
             ],
             /** @psalm-suppress RedundantConditionGivenDocblockType */
             fn(mixed $value): bool => $value !== null,

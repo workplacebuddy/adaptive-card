@@ -71,6 +71,8 @@ final class GenerateCommand
     private const SCHEMA = 'http://adaptivecards.io/schemas/adaptive-card.json';
     private const BASE_NAMESPACE = 'AdaptiveCard';
 
+    private const EXTENSION_INTERFACE_SUFFIX = 'ExtensionInterface';
+
     public function __invoke(): int
     {
         $filesystem = new Filesystem();
@@ -162,11 +164,23 @@ final class GenerateCommand
                 continue;
             }
 
+            $extensionInterface = $this->generateExtensionInterface(
+                $definitionName,
+                $definition,
+            );
+
+            if ($extensionInterface !== null) {
+                $generated[
+                    $definitionName . self::EXTENSION_INTERFACE_SUFFIX
+                ] = $extensionInterface;
+            }
+
             $generated[$definitionName] = $this->generatePhpFile(
                 $definitionName,
                 $definition,
                 $implementations,
                 $parentProperties,
+                $extensionInterface,
             );
         }
 
@@ -236,6 +250,7 @@ final class GenerateCommand
      * @psalm-param TDefinition $definition
      * @param array<string, array<array{string, PhpFile, ...}>> $implementations
      * @psalm-param array<string, array<array{fullType: string, property: Property}>> $parentProperties
+     * @psalm-param ?array{string, PhpFile, array<array{fullType: string, property: Property}>} $extensionInterface
      * @return array{string, PhpFile, array<array{fullType: string, property: Property}>}
      */
     private function generatePhpFile(
@@ -243,6 +258,7 @@ final class GenerateCommand
         array $definition,
         array $implementations,
         array $parentProperties,
+        ?array $extensionInterface = null,
     ): array {
         $phpFile = new PhpFile();
         $phpFile->setStrictTypes(true);
@@ -366,15 +382,45 @@ final class GenerateCommand
             $ownProperties = [];
         }
 
+        $hasExtensions = false;
+
         if (!$isExtentable) {
+            $extensionsProperties = [];
+
+            if ($extensionInterface !== null) {
+                $phpNamespace->addUse($extensionInterface[0]);
+
+                $extensionsProperty = $phpClass->addProperty('extensions');
+                $extensionsProperty->setPublic();
+                $extensionsProperty->setNullable();
+                $extensionsProperty->setType('array');
+                $extensionsProperty->addComment(
+                    'Extensions to augment this element',
+                );
+                $extensionsProperty->addComment('');
+
+                $fullType =
+                    $phpNamespace->simplifyType($extensionInterface[0]) . '[]';
+                $extensionsProperty->addComment('@var ' . $fullType . '|null');
+
+                $extensionsProperties[] = [
+                    'fullType' => $fullType,
+                    'property' => $extensionsProperty,
+                ];
+
+                $hasExtensions = true;
+            }
+
             $this->addTheConstructor($phpClass, [
                 ...$ownProperties,
                 ...$currentParentProperties,
+                ...$extensionsProperties,
             ]);
 
             $this->addTheMaker($phpClass, [
                 ...$ownProperties,
                 ...$currentParentProperties,
+                ...$extensionsProperties,
             ]);
         }
 
@@ -384,6 +430,7 @@ final class GenerateCommand
             hasSchema: $hasSchema,
             isExtending: $isExtending,
             ownProperties: $ownProperties,
+            hasExtensions: $hasExtensions,
         );
 
         return [$fullClassName, $phpFile, $ownProperties];
@@ -543,6 +590,22 @@ final class GenerateCommand
         }
 
         return [$hasType, $hasSchema, $ownProperties];
+    }
+
+    /**
+     * @psalm-param TDefinition $definition
+     */
+    private function isEnum(array $definition): bool
+    {
+        if (isset($definition['anyOf'])) {
+            foreach ($definition['anyOf'] as $type) {
+                if (isset($type['enum'])) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 
     /**
@@ -733,6 +796,7 @@ final class GenerateCommand
         bool $hasSchema,
         bool $isExtending,
         array $ownProperties,
+        bool $hasExtensions,
     ): void {
         $phpMethod = $phpClass->addMethod('jsonSerialize');
         $phpMethod->addComment(
@@ -740,12 +804,29 @@ final class GenerateCommand
         );
         $phpMethod->setReturnType('array');
 
+        $body = '';
+
+        if ($hasExtensions) {
+            $body .= <<<BODY
+            \$extensionProperties = [];
+
+            foreach (\$this->extensions ?? [] as \$extension) {
+                \$extensionProperties = array_merge_recursive(
+                    \$extensionProperties,
+                    \$extension->getExtensionProperties(),
+                );
+            }
+
+
+            BODY;
+        }
+
         if ($isExtending) {
-            $body = <<<BODY
+            $body .= <<<BODY
             return array_merge(parent::jsonSerialize(), array_filter([
             BODY;
         } else {
-            $body = <<<BODY
+            $body .= <<<BODY
             return array_filter([
             BODY;
         }
@@ -774,6 +855,13 @@ final class GenerateCommand
             $body .= <<<BODY
 
                 '$fieldName' => \$this->$propertyName,
+            BODY;
+        }
+
+        if ($hasExtensions) {
+            $body .= <<<BODY
+
+                ...\$extensionProperties,
             BODY;
         }
 
@@ -812,6 +900,65 @@ final class GenerateCommand
 
         $node->addComment((string) $descriptionParts);
         $node->addComment('');
+    }
+
+    /**
+     * @param string $definitionName
+     * @param array $definition
+     * @psalm-param TDefinition $definition
+     * @return ?array{string, PhpFile, array<array{fullType: string, property: Property}>}
+     */
+    private function generateExtensionInterface(
+        string $definitionName,
+        array $definition,
+    ): ?array {
+        $phpFile = new PhpFile();
+        $phpFile->setStrictTypes(true);
+
+        $phpFile->addComment(
+            'This is a generated file, do not modify this by hand.',
+        );
+
+        $namespace = self::BASE_NAMESPACE . '\\Extension';
+
+        $className = (string) preg_replace(
+            ['/^Extendable\./', '/^ImplementationsOf\.(.*)$/'],
+            ['', '$1Interface'],
+            $definitionName,
+        );
+
+        if (str_contains($className, '.')) {
+            $namespaceParts = explode('.', $className);
+            $className = array_pop($namespaceParts);
+
+            if (!empty($namespaceParts)) {
+                $namespace .= '\\' . implode('\\', $namespaceParts);
+            }
+        }
+
+        $isExtentable = str_contains($definitionName, 'Extendable.');
+        $isInterface = str_contains($definitionName, 'ImplementationsOf.');
+        $isEnum = $this->isEnum($definition);
+
+        if ($isExtentable || $isInterface || $isEnum) {
+            return null;
+        }
+
+        $className .= self::EXTENSION_INTERFACE_SUFFIX;
+
+        $phpNamespace = $phpFile->addNamespace($namespace);
+        $phpInterface = $phpNamespace->addInterface($className);
+
+        $phpMethod = $phpInterface->addMethod('getExtensionProperties');
+        $phpMethod->setPublic();
+        $phpMethod->setReturnType('array');
+        $phpMethod->addComment(
+            'Get additional properties for the extension. These will be merged with the main properties of the class.',
+        );
+        $phpMethod->addComment('');
+        $phpMethod->addComment('@return array<string, mixed>');
+
+        return [$phpNamespace->resolveName($className), $phpFile, []];
     }
 
     /**

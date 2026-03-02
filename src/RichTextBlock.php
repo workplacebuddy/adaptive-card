@@ -8,6 +8,7 @@ declare(strict_types=1);
 
 namespace AdaptiveCard;
 
+use AdaptiveCard\Extension\RichTextBlockExtensionInterface;
 use JsonSerializable;
 
 /**
@@ -46,9 +47,17 @@ final class RichTextBlock extends Element implements
     public ?HorizontalAlignment $horizontalAlignment = null;
 
     /**
+     * Extensions to augment this element
+     *
+     * @var RichTextBlockExtensionInterface[]|null
+     */
+    public ?array $extensions;
+
+    /**
      * Create a "RichTextBlock" instance in a single call
      *
      * @param InlineInterface[] $inlines
+     * @param RichTextBlockExtensionInterface[]|null $extensions
      */
     public function __construct(
         array $inlines,
@@ -57,6 +66,7 @@ final class RichTextBlock extends Element implements
         ?BlockElementHeight $height = null,
         ?bool $separator = null,
         ?Spacing $spacing = null,
+        ?array $extensions = null,
     ) {
         $this->inlines = $inlines;
         $this->horizontalAlignment = $horizontalAlignment;
@@ -64,6 +74,7 @@ final class RichTextBlock extends Element implements
         $this->height = $height;
         $this->separator = $separator;
         $this->spacing = $spacing;
+        $this->extensions = $extensions;
     }
 
     /**
@@ -72,6 +83,7 @@ final class RichTextBlock extends Element implements
      * @psalm-api
      *
      * @param InlineInterface[] $inlines
+     * @param RichTextBlockExtensionInterface[]|null $extensions
      */
     public static function make(
         array $inlines,
@@ -80,6 +92,7 @@ final class RichTextBlock extends Element implements
         ?BlockElementHeight $height = null,
         ?bool $separator = null,
         ?Spacing $spacing = null,
+        ?array $extensions = null,
     ): self {
         return new self(
             $inlines,
@@ -88,6 +101,7 @@ final class RichTextBlock extends Element implements
             $height,
             $separator,
             $spacing,
+            $extensions,
         );
     }
 
@@ -96,6 +110,15 @@ final class RichTextBlock extends Element implements
      */
     public function jsonSerialize(): array
     {
+        $extensionProperties = [];
+
+        foreach ($this->extensions ?? [] as $extension) {
+            $extensionProperties = array_merge_recursive(
+                $extensionProperties,
+                $extension->getExtensionProperties(),
+            );
+        }
+
         return array_merge(
             parent::jsonSerialize(),
             array_filter(
@@ -103,6 +126,7 @@ final class RichTextBlock extends Element implements
                     'type' => self::TYPE,
                     'inlines' => $this->inlines,
                     'horizontalAlignment' => $this->horizontalAlignment,
+                    ...$extensionProperties,
                 ],
                 /** @psalm-suppress RedundantConditionGivenDocblockType */
                 fn(mixed $value): bool => $value !== null,

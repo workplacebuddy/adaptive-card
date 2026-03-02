@@ -9,6 +9,7 @@ declare(strict_types=1);
 namespace AdaptiveCard\Input;
 
 use AdaptiveCard\ElementInterface;
+use AdaptiveCard\Extension\Input\TextExtensionInterface;
 use AdaptiveCard\ISelectActionInterface;
 use AdaptiveCard\Input;
 use AdaptiveCard\InputInterface;
@@ -88,7 +89,16 @@ final class Text extends Input implements
     public ?string $value = null;
 
     /**
+     * Extensions to augment this element
+     *
+     * @var TextExtensionInterface[]|null
+     */
+    public ?array $extensions;
+
+    /**
      * Create a "Text" instance in a single call
+     *
+     * @param TextExtensionInterface[]|null $extensions
      */
     public function __construct(
         string $id,
@@ -111,6 +121,7 @@ final class Text extends Input implements
         ?\AdaptiveCard\Spacing $spacing = null,
         ?bool $isVisible = null,
         object|array|null $requires = null,
+        ?array $extensions = null,
     ) {
         $this->id = $id;
         $this->isMultiline = $isMultiline;
@@ -132,12 +143,15 @@ final class Text extends Input implements
         $this->spacing = $spacing;
         $this->isVisible = $isVisible;
         $this->requires = $requires;
+        $this->extensions = $extensions;
     }
 
     /**
      * Make a "Text" instance in a single call
      *
      * @psalm-api
+     *
+     * @param TextExtensionInterface[]|null $extensions
      */
     public static function make(
         string $id,
@@ -160,6 +174,7 @@ final class Text extends Input implements
         ?\AdaptiveCard\Spacing $spacing = null,
         ?bool $isVisible = null,
         object|array|null $requires = null,
+        ?array $extensions = null,
     ): self {
         return new self(
             $id,
@@ -182,6 +197,7 @@ final class Text extends Input implements
             $spacing,
             $isVisible,
             $requires,
+            $extensions,
         );
     }
 
@@ -190,6 +206,15 @@ final class Text extends Input implements
      */
     public function jsonSerialize(): array
     {
+        $extensionProperties = [];
+
+        foreach ($this->extensions ?? [] as $extension) {
+            $extensionProperties = array_merge_recursive(
+                $extensionProperties,
+                $extension->getExtensionProperties(),
+            );
+        }
+
         return array_merge(
             parent::jsonSerialize(),
             array_filter(
@@ -202,6 +227,7 @@ final class Text extends Input implements
                     'style' => $this->style,
                     'inlineAction' => $this->inlineAction,
                     'value' => $this->value,
+                    ...$extensionProperties,
                 ],
                 /** @psalm-suppress RedundantConditionGivenDocblockType */
                 fn(mixed $value): bool => $value !== null,

@@ -9,6 +9,7 @@ declare(strict_types=1);
 namespace AdaptiveCard\Input;
 
 use AdaptiveCard\ElementInterface;
+use AdaptiveCard\Extension\Input\NumberExtensionInterface;
 use AdaptiveCard\Input;
 use AdaptiveCard\InputInterface;
 use AdaptiveCard\ItemInterface;
@@ -63,7 +64,16 @@ final class Number extends Input implements
     public ?int $value = null;
 
     /**
+     * Extensions to augment this element
+     *
+     * @var NumberExtensionInterface[]|null
+     */
+    public ?array $extensions;
+
+    /**
      * Create a "Number" instance in a single call
+     *
+     * @param NumberExtensionInterface[]|null $extensions
      */
     public function __construct(
         string $id,
@@ -83,6 +93,7 @@ final class Number extends Input implements
         ?\AdaptiveCard\Spacing $spacing = null,
         ?bool $isVisible = null,
         object|array|null $requires = null,
+        ?array $extensions = null,
     ) {
         $this->id = $id;
         $this->max = $max;
@@ -101,12 +112,15 @@ final class Number extends Input implements
         $this->spacing = $spacing;
         $this->isVisible = $isVisible;
         $this->requires = $requires;
+        $this->extensions = $extensions;
     }
 
     /**
      * Make a "Number" instance in a single call
      *
      * @psalm-api
+     *
+     * @param NumberExtensionInterface[]|null $extensions
      */
     public static function make(
         string $id,
@@ -126,6 +140,7 @@ final class Number extends Input implements
         ?\AdaptiveCard\Spacing $spacing = null,
         ?bool $isVisible = null,
         object|array|null $requires = null,
+        ?array $extensions = null,
     ): self {
         return new self(
             $id,
@@ -145,6 +160,7 @@ final class Number extends Input implements
             $spacing,
             $isVisible,
             $requires,
+            $extensions,
         );
     }
 
@@ -153,6 +169,15 @@ final class Number extends Input implements
      */
     public function jsonSerialize(): array
     {
+        $extensionProperties = [];
+
+        foreach ($this->extensions ?? [] as $extension) {
+            $extensionProperties = array_merge_recursive(
+                $extensionProperties,
+                $extension->getExtensionProperties(),
+            );
+        }
+
         return array_merge(
             parent::jsonSerialize(),
             array_filter(
@@ -162,6 +187,7 @@ final class Number extends Input implements
                     'min' => $this->min,
                     'placeholder' => $this->placeholder,
                     'value' => $this->value,
+                    ...$extensionProperties,
                 ],
                 /** @psalm-suppress RedundantConditionGivenDocblockType */
                 fn(mixed $value): bool => $value !== null,
