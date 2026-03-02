@@ -58,6 +58,23 @@ Merging is done with `array_merge_recursive`:
 > same numeric key, the later value will not overwrite the original value, but
 > will be appended.
 
+### Shipped extensions
+
+-   `AdaptiveCardExtension\MicrosoftTeams\FullWidth`
+    You can use the `msteams` property to expand the width of an Adaptive Card
+    and make use of extra canvas space. The next section provides information
+    on how to use the property.
+-   `AdaptiveCardExtension\MicrosoftTeams\AllowExpand`
+    In an Adaptive Card, you can use the `msteams` property to add the ability
+    to display images in Stageview selectively. When users hover over the
+    images, they can see an expand icon, for which the allowExpand attribute is
+    set to 'true`.
+-   `AdaptiveCardExtension\MicrosoftTeams\Mention`
+    You can add @mentions within an Adaptive Card body for bots and message
+    extension responses. To add @mentions in cards, follow the same
+    notification logic and rendering as that of message based mentions in
+    channel and group chat conversations.
+
 ### Create your own extensions
 
 -   Find the interface for the element you want to extend
